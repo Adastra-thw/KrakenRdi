@@ -2,9 +2,9 @@
 # Kraken RDI 
 # Author: Adastra.
 # Website: http://thehackerway.com 
-# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Github: https://github.com/Adastra-thw/KrakenRdi
 # Simple command to generate a new image using this Dockerfile
-# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
 
 
 ###################################################################################################################
@@ -26,23 +26,58 @@ FROM debian:${VERSION} AS base
 	LABEL author="Adastra"
 	LABEL description="Layer with the needed libraries and software."
 	ENV ROOT_DIR /redteam
+	SHELL ["/bin/bash", "-c"]
 
-	#RUN instrucction for the base packages and dependencies. Needed to install another tools
-
+	########################################
+	#	WORKING DIRS FROM <LAYER> IMAGE
+	########################################
 	#WORKDIRS for every layer
 
 	########################################
-	#	GLOBAL VARIABLES FROM WEAPON IMAGE
+	#	CONFIGURATION AND SYSTEM VARIABLES
 	########################################
-
-	# Arguments with ARGS instructions. The values in every ARG will be setted in the ENVs
+	#Global envs for the system.
 	# This arguments will be used to control which software install, parameters like usernames
-	# and passwords, versions for some tools, etc. Anything needed to compile or install tools.  
+	# and passwords, versions for some tools, etc. 
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
 
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
+
+	########################################
+	#	GLOBAL VARIABLES FROM <LAYER> IMAGE
+	########################################
+	# Arguments with ARGS instructions. The values in every ARG will be setted in the ENVs
+	# Anything needed to compile or install tools.  
 	# Environment variables with ARGS. All of this variables will recibe the values from 
 	# the ARG represented with the same name. For example:
 	# ARG USERNAME=Adastra.
 	# ENV USERNAME $USERNAME
+
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
+	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
+		python3 python3-dev python3-pip \
+		python python-dev python-pip \
+		unzip wget curl git gcc libc-dev libxslt-dev \
+		openjdk-11-jre openjdk-11-jdk \
+		libevent-dev libssl-dev zlib1g zlib1g-dev \
+		firefox-esr xfce4-terminal \
+		autoconf automake libtool apt-utils \
+		openssh-server openssl \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		software-properties-common sudo locate \
+		&& useradd -m ${USERNAME} \
+		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
+		&& adduser ${USERNAME} sudo
+
+	#######################################################
+	#	DEPENDENCIES AND SOFTWARE FOR <LAYER> IMAGE
+	#######################################################
 
 
 ###################################################################################################################
@@ -68,21 +103,21 @@ FROM base AS <NAME OF LAYER>
 # DESCRIPTION:																									  
 # Include every layer of this Dockerfile to create the final composition										  
 ###################################################################################################################
-FROM base as reddocker-composition
+FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
 	WORKDIR <WORKDIR DEFINED IN THE ENV VARIABLE FOR CURRENT LAYER>
 	COPY --from=<NAME OF LAYER> ${WORKDIR DEFINED IN THE ENV VARIABLE} ${WORKDIR DEFINED IN THE ENV VARIABLE}
-	# Installation of any required dependency or library for every layer.
+	#Installation of any program that needs Shared libraries needs to be run in the final image and just after the "COPY --from..." instruction.
 
 ###################################################################################################################
 # OUTPUT LAYER 																							          
 # DESCRIPTION:																									  
-# Include every layer of this Dockerfile to create the final composition										  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
 ###################################################################################################################
-FROM reddocker-output
-	RUN apt-get update && apt-get -y install sudo && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		useradd -m ${USERNAME} && echo "${USERNAME}:${PASSWORD}" | chpasswd && adduser ${USERNAME} sudo && \
+FROM kraken-composition
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
 	USER ${USERNAME}
 	EXPOSE $EXPOSE_PORTS

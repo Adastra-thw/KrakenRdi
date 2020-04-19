@@ -1,1 +1,3 @@
-SOCKSPort 9050
+SocksPort 9050
+AvoidDiskWrites 1
+RunAsDaemon 1

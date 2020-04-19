@@ -7,6 +7,7 @@ TOR Wiki:				http://torwikignoueupfm.onion/index.php?title=Main_Page
 Hacking wiki links:		http://wikilink77h7lrbi.onion/dir/hacking.html
 OnionDir: 				http://dirnxxdraygbifgc.onion
 DeepLink: 				http://deeplinkdeatbml7.onion
+Onion List Links: 		http://onionsnjajzkhm5g.onion/onions.php
 
 SEARCHERS
 Visitor: 		http://visitorfi5kl7q7i.onion/ 
@@ -18,8 +19,11 @@ Ahmia: 			http://msydqstlz2kzerdg.onion
 TORSearcher: 	http://jdpskjmgy6kk4urv.onion/ 
 UnderDIR:		http://underdj5ziov3ic7.onion/
 OnionLinks:		http://onionlnkooppcbrs.onion 
+Atlayo: 		http://xvwhmrw3sgwwmkko.onion
+CB3ROB: 		http://acjhxk5yqwnw2jdu.onion
+FreshOnions: 	http://zlal32teyptf4tvi.onion/?is_up=on
 
-MISC:
+MISC
 Tor Links: 			http://torlinkbgs6aabns.onion #Onion Links
 RateList: 			http://relatecxjngl4qs7.onion/ #Search for organizations.
 AnonGTS: 			http://ocu3errhpxppmwpr.onion/ #The anonymous GTS forum
@@ -33,11 +37,3 @@ Hacking cons: 		http://w27irt6ldaydjoacyovepuzlethuoypazhhbot6tljuywy52emetn7qd.
 Dir:				http://auutwvp35ak2fe4n.onion/ #Directory and voting system.
 OnionTube:			http://tubef7zilcjhme2g.onion/ #Like YouTube in TOR.
 HackerPlace:		http://hackerw6dcplg3ej.onion
-
- 
- 
- Atlayo: http://xvwhmrw3sgwwmkko.onion
- 
- CB3ROB: http://acjhxk5yqwnw2jdu.onion
- FreshOnions: http://zlal32teyptf4tvi.onion/?is_up=on
- Onion List Links: http://onionsnjajzkhm5g.onion/onions.php

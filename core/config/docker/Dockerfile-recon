@@ -1,9 +1,10 @@
-# Dockerfile for RECON image in RedDocker.
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
 # Author: Adastra.
 # Website: http://thehackerway.com 
-# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Github: https://github.com/Adastra-thw/KrakenRdi
 # Simple command to generate a new image using this Dockerfile
-# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
 
 
 ###################################################################################################################
@@ -13,7 +14,6 @@
 ###################################################################################################################
 
 # Declaration of arguments to control the building flow and create images dynamically. 
-
 ARG VERSION=latest
 
 ###################################################################################################################
@@ -26,19 +26,24 @@ FROM debian:${VERSION} AS base
 	LABEL author="Adastra"
 	LABEL description="Layer with the needed libraries and software."
 	ENV ROOT_DIR /redteam
-	RUN apt-get update && apt-get -y install net-tools netcat nano \
-		python3 python3-dev python3-pip \
-		python python-dev python-pip \
-		unzip wget curl git gcc libc-dev libxslt-dev \
-		openjdk-11-jre openjdk-11-jdk \
-		libevent-dev libssl-dev zlib1g zlib1g-dev \
-		firefox-esr xfce4-terminal \
-		autoconf automake libtool apt-utils \
-		openssh-server
+	SHELL ["/bin/bash", "-c"]
 
-
+	########################################
+	#	WORKING DIRS FROM <LAYER> IMAGE
+	########################################
 	ENV WORKDIR_FULL=${ROOT_DIR}/tools
 	ENV WORKDIR_RECON=${WORKDIR_FULL}/recon
+
+	########################################
+	#	CONFIGURATION AND SYSTEM VARIABLES
+	########################################
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
+
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
 
 	########################################
 	#	GLOBAL VARIABLES FROM RECON IMAGE
@@ -65,21 +70,39 @@ FROM debian:${VERSION} AS base
 	ENV RECON_PHONEINFOGA $RECON_PHONEINFOGA
 	ENV RECON_NMAP $RECON_NMAP
 
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
+	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
+		python3 python3-dev python3-pip \
+		python python-dev python-pip \
+		unzip wget curl git gcc libc-dev libxslt-dev \
+		openjdk-11-jre openjdk-11-jdk \
+		libevent-dev libssl-dev zlib1g zlib1g-dev \
+		firefox-esr xfce4-terminal \
+		autoconf automake libtool apt-utils \
+		openssh-server openssl \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		software-properties-common sudo locate \
+		&& useradd -m ${USERNAME} \
+		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
+		&& adduser ${USERNAME} sudo
+
 ###################################################################################################################
 # RECON IMAGE 																							          
 # DESCRIPTION:																									  
 # Include the tools for the Intelligence gathering stage.						 								  
 # TOOLS:																										  
-#	[*]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
-#	[*] Photon: https://github.com/s0md3v/Photon  																  
-#	[*] skiptracer: https://github.com/xillwillx/skiptracer	        											  
-#	[*] theHarvester: https://github.com/laramies/theHarvester 													  
-#	[*] metagoofil: https://github.com/laramies/metagoofil 														  
-#	[*] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
-#	[*] Maltego: https://www.paterva.com/web7/downloads.php 														  
-#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+#	[^]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
+#	[^] Photon: https://github.com/s0md3v/Photon  																  
+#	[^] skiptracer: https://github.com/xillwillx/skiptracer	        											  
+#	[^] theHarvester: https://github.com/laramies/theHarvester 													  
+#	[^] metagoofil: https://github.com/laramies/metagoofil 														  
+#	[^] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
+#	[^] Maltego: https://www.paterva.com/web7/downloads.php 														  
+#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot														  
 ###################################################################################################################
-FROM base AS reddocker-recon
+FROM base AS kraken-recon
 	LABEL author="Adastra"
 	LABEL description="Layer for recon stage."
 	ENV ROOT_DIR /redteam
@@ -97,19 +120,18 @@ FROM base AS reddocker-recon
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
 		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi
 
-
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
 # DESCRIPTION:																									  
 # Include every layer of this Dockerfile to create the final composition										  
 ###################################################################################################################
-FROM base as reddocker-composition
+FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
 	WORKDIR ${WORKDIR_RECON}
-	COPY --from=reddocker-recon ${WORKDIR_RECON} ${WORKDIR_RECON}
+	COPY --from=kraken-recon ${WORKDIR_RECON} ${WORKDIR_RECON}
 
-	#Installation of any program that needs Shared libraries needs to be run in the final image and just after the "COPY --from..." instruction.
+	#Programs and dependencies for RECON.
 	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON}/recon-ng && pip3 install -r REQUIREMENTS; fi ; \
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
@@ -118,14 +140,16 @@ FROM base as reddocker-composition
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ;
 
 ###################################################################################################################
-# COMPOSITION LAYER 																							          
+# OUTPUT LAYER 																							          
 # DESCRIPTION:																									  
-# Include every layer of this Dockerfile to create the final composition										  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
 ###################################################################################################################
-FROM reddocker-composition
-	RUN apt-get update && apt-get -y install sudo && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		useradd -m reddocker && echo "reddocker:reddocker" | chpasswd && adduser reddocker sudo && \
-		chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL}
-	USER reddocker
-	EXPOSE 22 80 443 8080 8081 8000
+FROM kraken-composition
+	USER root
+	SHELL ["/bin/bash", "-c"]
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+	EXPOSE $EXPOSE_PORTS
+	USER ${USERNAME}
 	CMD tail -f /dev/null

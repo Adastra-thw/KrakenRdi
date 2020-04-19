@@ -1,9 +1,10 @@
-# Dockerfile base for all images in RedDocker.
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
 # Author: Adastra.
 # Website: http://thehackerway.com 
-# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Github: https://github.com/Adastra-thw/KrakenRdi
 # Simple command to generate a new image using this Dockerfile
-# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
 
 
 ###################################################################################################################
@@ -24,28 +25,33 @@ ARG VERSION=latest
 FROM debian:${VERSION} AS base
 	LABEL author="Adastra"
 	LABEL description="Layer with the needed libraries and software."
+	ENV ROOT_DIR /redteam
+	SHELL ["/bin/bash", "-c"]
 
 	########################################
-	#	SYSTEM VARIABLES
+	#	WORKING DIRS FROM <LAYER> IMAGE
 	########################################
-	ARG USERNAME=reddocker
-	ARG PASSWORD=reddocker
+	ENV WORKDIR_FULL=${ROOT_DIR}/tools
+	ENV WORKDIR_COMMON=${WORKDIR_FULL}/common
+
+	########################################
+	#	CONFIGURATION AND SYSTEM VARIABLES
+	########################################
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
 	ARG RUBY_VERSION=2.6.6
 	ARG RVM_DIR=/usr/local/rvm/
 	ARG RVM_LOADER=/etc/profile.d/rvm.sh
 
-	ENV USERNAME $USERNAME
-	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
 	ENV RUBY_VERSION $RUBY_VERSION
 	ENV RVM_DIR $RVM_DIR
 	ENV RVM_LOADER $RVM_LOADER	
-	ENV ROOT_DIR /redteam
-	ENV WORKDIR_FULL=${ROOT_DIR}/tools
-	ENV WORKDIR_COMMON=${WORKDIR_FULL}/common
 
 
 	########################################
-	#	GLOBAL VARIABLES FROM TRANSVERSAL IMAGE
+	#	GLOBAL VARIABLES FROM COMMON IMAGE
 	########################################
 	ARG COMMON_THC_HYDRA=True
 	ARG COMMON_CWEL=True
@@ -59,8 +65,9 @@ FROM debian:${VERSION} AS base
 	ENV COMMON_FUZZDB $COMMON_FUZZDB
 	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
 
-	#Installing all the common software and dependencies that could be shared between the tools.
-	SHELL ["/bin/bash", "-c"]
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
 	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
 		python3 python3-dev python3-pip \
 		python python-dev python-pip \
@@ -72,10 +79,13 @@ FROM debian:${VERSION} AS base
 		openssh-server openssl \
 		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
 		software-properties-common sudo locate \
-		&& useradd -m reddocker \
+		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
 		&& adduser ${USERNAME} sudo
 
+	#######################################################
+	#	DEPENDENCIES AND SOFTWARE FOR COMMON IMAGE
+	#######################################################
 	#Installation for RVM 
 	RUN	curl -sSL https://get.rvm.io | bash \
 		&& source ${RVM_LOADER} \
@@ -92,69 +102,59 @@ FROM debian:${VERSION} AS base
                  libgcrypt20-dev; fi
 
 ###################################################################################################################
-# TRANSVERSAL IMAGE 																							          
+# COMMON IMAGE 																							          
 # DESCRIPTION:																									  
-# Include the tools for the Weaponization stage.						 								  
+# Include the tools for the COMMON stage.						 								  
 # TOOLS:
-#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
-#	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
-#	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
-#	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
-#	[^] Demiguise: https://github.com/nccgroup/demiguise
-#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+#	[^] THC-HYDRA: https://github.com/vanhauser-thc/thc-hydra
+#	[^] CEWL: https://github.com/digininja/CeWL 
+#	[^] POSTMAN: https://dl.pstmn.io/download/latest/linux64
+#	[^] FuzzDB: https://github.com/fuzzdb-project/fuzzdb
+#	[^] DirBuster: https://github.com/Adastra-thw/DirBuster-1.0
 ###################################################################################################################
-FROM base AS reddocker-transversal
+FROM base AS kraken-common
 	LABEL author="Adastra"
 	LABEL description="Layer for transversal stage."
 	WORKDIR ${WORKDIR_COMMON}
 	SHELL ["/bin/bash", "-c"]
 
-	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then \
-			cd ${WORKDIR_COMMON} && git clone https://github.com/vanhauser-thc/thc-hydra.git && \
-			cd thc-hydra && ./configure && make; \
-		fi ; \
-		if [ "$COMMON_CWEL" = "True" ] ; then \
-			cd ${WORKDIR_COMMON} && git clone https://github.com/digininja/CeWL.git cewl; \
-		fi ; \
-		if [ "$COMMON_POSTMAN" = "True" ] ; then \
-			cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && \
-			tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; \
-		fi ; \
-		if [ "$COMMON_FUZZDB" = "True" ] ; then \
-			cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; \
-		fi ; \
-		if [ "$COMMON_DIRBUSTER" = "True" ] ; then \
-			cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0.git DirBuster && \
-			cd DirBuster && tar -xvf DirBuster.tar.bz2 && rm -rf DirBuster.tar.bz2 ; \
-		fi ;
-
-###################################################################################################################
-# COMPOSITION LAYER
-# DESCRIPTION:																									  
-# Include every layer of this Dockerfile to create the final composition										  
-###################################################################################################################
-FROM base as reddocker-composition
-	LABEL author="Adastra"
-	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
-	WORKDIR ${WORKDIR_COMMON}
-	COPY --from=reddocker-transversal ${WORKDIR_COMMON} ${WORKDIR_COMMON}
-	RUN	if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && \
-			source ${RVM_LOADER} && rvm use ${RUBY_VERSION} && \
-			cd ${WORKDIR_COMMON}/cewl && gem install bundle && bundle install; \
-		fi ; 
+	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/vanhauser-thc/thc-hydra.git && cd thc-hydra && ./configure && make; fi ; \
+		if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/digininja/CeWL.git cewl; fi ; \
+		if [ "$COMMON_POSTMAN" = "True" ] ; then cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; fi ; \
+		if [ "$COMMON_FUZZDB" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; fi ; \
+		if [ "$COMMON_DIRBUSTER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0 DirBuster && cd DirBuster && tar -xvf DirBuster-1.0-RC1.tar.bz2 && rm -rf DirBuster-1.0-RC1.tar.bz2 ; fi ;
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
 # DESCRIPTION:																									  
 # Include every layer of this Dockerfile to create the final composition										  
 ###################################################################################################################
-FROM reddocker-composition
+FROM base as kraken-composition
+	LABEL author="Adastra"
+	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
+	WORKDIR ${WORKDIR_COMMON}
+	COPY --from=kraken-common ${WORKDIR_COMMON} ${WORKDIR_COMMON}
+
+	#Programs and dependencies for COMMON.
+	USER ${USERNAME}
+	RUN	if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && \
+			source ${RVM_LOADER} && rvm use ${RUBY_VERSION} && \
+			cd ${WORKDIR_COMMON}/cewl && gem install bundle && bundle install; \
+		fi ; 
+	USER root
+
+###################################################################################################################
+# OUTPUT LAYER 																							          
+# DESCRIPTION:																									  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
+###################################################################################################################
+FROM kraken-composition
 	USER root
 	SHELL ["/bin/bash", "-c"]
 	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL} && \
-		/etc/init.d/postgresql start
-	EXPOSE 22 80 443 5432 8080 8081 8000
-	USER reddocker
+		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+	EXPOSE $EXPOSE_PORTS
+	USER ${USERNAME}
 	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
 	CMD tail -f /dev/null

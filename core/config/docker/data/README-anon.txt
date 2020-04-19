@@ -4,7 +4,7 @@ In <REDTEAM_TOOLS>/anon you will find  the following tools for anonymize your co
 TOR: 
 If you specify to install The Onion Router as a service in the system, you Just need to run /etc/init.d/tor <status|start|stop|restart> to manage it.
 On other hand, if you choose to install the latest TOR version from source code, to start the TOR instance you need to run <ANON_DIRECTORY>/tor-latest/src/app/tor -f <ANON_DIRECTORY>/torrc
-You can edit or include your own torrc file if you want. 
+You can edit or include your own torrc file if you want. Also, you can run this command in background so you can continue using the shell, just append "&" in the end of the command as usual or include "RunAsDaemon 1" in the configuration file (torrc).
 
 ProxyChains: This tool is installed in the system. Just run "proxychains <command>" after add your proxies in /etc/proxychains.conf
 

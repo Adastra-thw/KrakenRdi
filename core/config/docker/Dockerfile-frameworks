@@ -1,9 +1,10 @@
-# Dockerfile base for all images in RedDocker.
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
 # Author: Adastra.
 # Website: http://thehackerway.com 
-# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Github: https://github.com/Adastra-thw/KrakenRdi
 # Simple command to generate a new image using this Dockerfile
-# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
 
 
 ###################################################################################################################
@@ -24,12 +25,21 @@ ARG VERSION=latest
 FROM debian:${VERSION} AS base
 	LABEL author="Adastra"
 	LABEL description="Layer with the needed libraries and software."
+	ENV ROOT_DIR /redteam
+	SHELL ["/bin/bash", "-c"]
 
 	########################################
-	#	SYSTEM VARIABLES
+	#	WORKING DIRS FROM <LAYER> IMAGE
 	########################################
-	ARG USERNAME=reddocker
-	ARG PASSWORD=reddocker
+	ENV WORKDIR_FULL=${ROOT_DIR}/tools
+	ENV WORKDIR_FRAMEWORK=${WORKDIR_FULL}/frameworks
+
+	########################################
+	#	CONFIGURATION AND SYSTEM VARIABLES
+	########################################
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
 	ARG RUBY_VERSION=2.6.6
 	ARG RVM_DIR=/usr/local/rvm/
 	ARG RVM_LOADER=/etc/profile.d/rvm.sh
@@ -40,14 +50,10 @@ FROM debian:${VERSION} AS base
 
 	ENV USERNAME $USERNAME
 	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
 	ENV RUBY_VERSION $RUBY_VERSION
 	ENV RVM_DIR $RVM_DIR
 	ENV RVM_LOADER $RVM_LOADER
-
-	ENV ROOT_DIR /redteam
-	ENV WORKDIR_FULL=${ROOT_DIR}/tools
-	ENV WORKDIR_FRAMEWORK=${WORKDIR_FULL}/frameworks
-
 
 	########################################
 	#	GLOBAL VARIABLES FROM FRAMEWORK IMAGE
@@ -60,9 +66,9 @@ FROM debian:${VERSION} AS base
 	ENV FRAMEWORK_BEEF $FRAMEWORK_BEEF
 	ENV FRAMEWORK_BETTERCAP $FRAMEWORK_BETTERCAP
 
-
-	#Installing all the common software and dependencies that could be shared between the tools.
-	SHELL ["/bin/bash", "-c"]
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
 	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
 		python3 python3-dev python3-pip \
 		python python-dev python-pip \
@@ -74,9 +80,13 @@ FROM debian:${VERSION} AS base
 		openssh-server openssl \
 		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
 		software-properties-common sudo locate \
-		&& useradd -m reddocker \
+		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
 		&& adduser ${USERNAME} sudo
+
+	#######################################################
+	#	DEPENDENCIES AND SOFTWARE FOR FRAMEWORKS IMAGE
+	#######################################################
 
 	#Installation for RVM 
 	RUN	curl -sSL https://get.rvm.io | bash \
@@ -88,7 +98,6 @@ FROM debian:${VERSION} AS base
 
 	#Installation for PostgreSQL.
 	RUN apt-get -y install postgresql postgresql-client postgresql-contrib postgresql-common
-
 	USER postgres
 	RUN	/etc/init.d/postgresql start && \
 		psql --command "CREATE USER ${POSTGRES_DB_USERNAME} WITH SUPERUSER PASSWORD '${POSTGRES_DB_PASSWORD}';" && \
@@ -117,32 +126,28 @@ FROM debian:${VERSION} AS base
 #	[^] Demiguise: https://github.com/nccgroup/demiguise
 #	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
 ###################################################################################################################
-FROM base AS reddocker-FRAMEWORK
+FROM base AS kraken-framework
 	LABEL author="Adastra"
-	LABEL description="Layer for FRAMEWORK stage."
+	LABEL description="Layer for framework stage."
 	WORKDIR ${WORKDIR_FRAMEWORK}
 	SHELL ["/bin/bash", "-c"]
 
-	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then \
-			cd ${WORKDIR_FRAMEWORK} \
-			&& git clone https://github.com/rapid7/metasploit-framework.git && chmod -R 777 metasploit-framework; fi ; \
-		if [ "$FRAMEWORK_BEEF" = "True" ] ; then \
-			cd ${WORKDIR_FRAMEWORK} \
-			&& git clone https://github.com/beefproject/beef && chmod -R 777 beef; fi ; \
-		if [ "$FRAMEWORK_BETTERCAP" = "True" ] ; then \
-			cd ${WORKDIR_FRAMEWORK} \
-			&& git clone https://github.com/bettercap/bettercap.git && cd bettercap && make build; fi
+	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/rapid7/metasploit-framework.git && chmod -R 777 metasploit-framework; fi ; \
+		if [ "$FRAMEWORK_BEEF" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/beefproject/beef && chmod -R 777 beef; fi ; \
+		if [ "$FRAMEWORK_BETTERCAP" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/bettercap/bettercap.git && cd bettercap && make build; fi
 
 ###################################################################################################################
-# COMPOSITION LAYER
+# COMPOSITION LAYER 																							          
 # DESCRIPTION:																									  
 # Include every layer of this Dockerfile to create the final composition										  
 ###################################################################################################################
-FROM base as reddocker-composition
+FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
 	WORKDIR ${WORKDIR_FRAMEWORK}
-	COPY --from=reddocker-FRAMEWORK ${WORKDIR_FRAMEWORK} ${WORKDIR_FRAMEWORK}
+	COPY --from=kraken-framework ${WORKDIR_FRAMEWORK} ${WORKDIR_FRAMEWORK}
+
+	#Programs and dependencies for FRAMEWORKS.
 	USER ${USERNAME}
 	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then \
 			source ${RVM_LOADER} \
@@ -153,22 +158,21 @@ FROM base as reddocker-composition
 			source ${RVM_LOADER} \
 			&& rvm use ${RUBY_VERSION} \
 			&& cd ${WORKDIR_FRAMEWORK}/beef \
-			&& bundle install; fi ; \
-		if [ "$FRAMEWORK_BETTERCAP" = "True" ] ; then echo "BETTERCAP"; fi
+			&& bundle install; fi 
 	USER root
 
 ###################################################################################################################
-# COMPOSITION LAYER 																							          
+# OUTPUT LAYER 																							          
 # DESCRIPTION:																									  
-# Include every layer of this Dockerfile to create the final composition										  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
 ###################################################################################################################
-FROM reddocker-composition
+FROM kraken-composition
 	USER root
 	SHELL ["/bin/bash", "-c"]
 	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL} && \
-		/etc/init.d/postgresql start
-	EXPOSE 22 80 443 5432 8080 8081 8000
-	USER reddocker
+		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+	EXPOSE $EXPOSE_PORTS
+	USER ${USERNAME}
 	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
 	CMD tail -f /dev/null

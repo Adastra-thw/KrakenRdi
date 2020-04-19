@@ -1,9 +1,10 @@
-# Dockerfile base for all images in RedDocker.
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
 # Author: Adastra.
 # Website: http://thehackerway.com 
-# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Github: https://github.com/Adastra-thw/KrakenRdi
 # Simple command to generate a new image using this Dockerfile
-# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
 
 
 ###################################################################################################################
@@ -25,7 +26,46 @@ FROM debian:${VERSION} AS base
 	LABEL author="Adastra"
 	LABEL description="Layer with the needed libraries and software."
 	ENV ROOT_DIR /redteam
-	RUN apt-get update && apt-get -y install net-tools netcat nano \
+	SHELL ["/bin/bash", "-c"]
+
+	########################################
+	#	WORKING DIRS FROM ANON IMAGE
+	########################################
+	ENV WORKDIR_FULL=${ROOT_DIR}/tools
+	ENV WORKDIR_ANON=${WORKDIR_FULL}/anon
+
+	########################################
+	#	CONFIGURATION AND SYSTEM VARIABLES
+	########################################
+	ARG TOR_LATEST_VERSION=0.4.2.7
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
+
+	ENV TOR_LATEST_VERSION $TOR_LATEST_VERSION
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
+
+	########################################
+	#	GLOBAL VARIABLES FROM ANON IMAGE
+	########################################
+	ARG ANON_TOR_SOURCE=True
+	ARG ANON_TOR_APT=False	
+	ARG ANON_TORBROWSER=True
+	ARG ANON_TORSOCKS=True
+	ARG ANON_PROXYCHAINS=True
+
+	ENV ANON_TOR_SOURCE $ANON_TOR_SOURCE
+	ENV ANON_TOR_APT $ANON_TOR_APT	
+	ENV ANON_TORBROWSER $ANON_TORBROWSER
+	ENV ANON_TORSOCKS $ANON_TORSOCKS
+	ENV ANON_PROXYCHAINS $ANON_PROXYCHAINS
+
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
+	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
 		python3 python3-dev python3-pip \
 		python python-dev python-pip \
 		unzip wget curl git gcc libc-dev libxslt-dev \
@@ -33,27 +73,12 @@ FROM debian:${VERSION} AS base
 		libevent-dev libssl-dev zlib1g zlib1g-dev \
 		firefox-esr xfce4-terminal \
 		autoconf automake libtool apt-utils \
-		openssh-server
-
-	ENV WORKDIR_FULL=${ROOT_DIR}/tools
-	ENV WORKDIR_ANON=${WORKDIR_FULL}/anon
-
-	########################################
-	#	GLOBAL VARIABLES FROM ANON IMAGE
-	########################################
-	ARG TOR_LATEST_VERSION=0.4.2.7
-	ARG ANON_TOR_SOURCE=True
-	ARG ANON_TOR_APT=False	
-	ARG ANON_TORBROWSER=True
-	ARG ANON_TORSOCKS=True
-	ARG ANON_PROXYCHAINS=True
-
-	ENV TOR_LATEST_VERSION $TOR_LATEST_VERSION
-	ENV ANON_TOR_SOURCE $ANON_TOR_SOURCE
-	ENV ANON_TOR_APT $ANON_TOR_APT	
-	ENV ANON_TORBROWSER $ANON_TORBROWSER
-	ENV ANON_TORSOCKS $ANON_TORSOCKS
-	ENV ANON_PROXYCHAINS $ANON_PROXYCHAINS
+		openssh-server openssl \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		software-properties-common sudo locate \
+		&& useradd -m ${USERNAME} \
+		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
+		&& adduser ${USERNAME} sudo
 
 ###################################################################################################################
 # ANON IMAGE 																							          
@@ -66,13 +91,14 @@ FROM debian:${VERSION} AS base
 #	[^] Proxychains
 #	[^] Listado de ONION sites.
 ###################################################################################################################
-FROM base AS reddocker-anon
+FROM base AS kraken-anon
 	LABEL author="Adastra"
 	LABEL description="Layer for anon stage."
 	WORKDIR ${WORKDIR_ANON}
 	SHELL ["/bin/bash", "-c"]
 	COPY data/onionsites.txt ${WORKDIR_ANON}
 	COPY data/README-anon.txt ${WORKDIR_ANON}
+	COPY data/torrc ${WORKDIR_ANON}
 
 	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz && tar -xvf tor-browser-linux64-9.0.9_en-US.tar.xz && rm -rf tor-browser-linux64-9.0.9_en-US.tar.xz; fi ; \
 		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
@@ -82,11 +108,11 @@ FROM base AS reddocker-anon
 # DESCRIPTION:																									  
 # Include every layer of this Dockerfile to create the final composition										  
 ###################################################################################################################
-FROM base as reddocker-composition
+FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
 	WORKDIR ${WORKDIR_ANON}
-	COPY --from=reddocker-anon ${WORKDIR_ANON} ${WORKDIR_ANON}
+	COPY --from=kraken-anon ${WORKDIR_ANON} ${WORKDIR_ANON}
 
 	#Programs and dependencies for ANON.
 	RUN if [ "$ANON_TOR_SOURCE" = "True" ] ; then cd ${WORKDIR_ANON}/tor-latest && ./configure && make; fi ; \
@@ -94,16 +120,17 @@ FROM base as reddocker-composition
 		if [ "$ANON_TORSOCKS" = "True" ] ; then apt-get -y install torsocks; fi ; \
 		if [ "$ANON_PROXYCHAINS" = "True" ] ; then apt-get -y install proxychains; fi
 
-
 ###################################################################################################################
-# COMPOSITION LAYER 																							          
+# OUTPUT LAYER 																							          
 # DESCRIPTION:																									  
-# Include every layer of this Dockerfile to create the final composition										  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
 ###################################################################################################################
-FROM reddocker-composition
-	RUN apt-get update && apt-get -y install sudo && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		useradd -m reddocker && echo "reddocker:reddocker" | chpasswd && adduser reddocker sudo && \
-		chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL}
-	USER reddocker
-	EXPOSE 22 80 443 8080 8081 8000
+FROM kraken-composition
+		USER root
+	SHELL ["/bin/bash", "-c"]
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+	EXPOSE $EXPOSE_PORTS
+	USER ${USERNAME}
 	CMD tail -f /dev/null
