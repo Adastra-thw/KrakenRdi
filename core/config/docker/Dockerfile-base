@@ -1,0 +1,365 @@
+# Dockerfile base for all images in RedDocker.
+# Author: Adastra.
+# Website: http://thehackerway.com 
+# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Simple command to generate a new image using this Dockerfile
+# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+
+
+###################################################################################################################
+# This Dockerfile uses multi-stage build patterns to include multiple configurations and inhereit common features 
+# For more information about multi-stage buildings in Docker, please read the official documentation.             
+# https://docs.docker.com/develop/develop-images/multistage-build/ 												  
+###################################################################################################################
+
+# Declaration of arguments to control the building flow and create images dynamically. 
+
+ARG VERSION=latest
+
+###################################################################################################################
+# BASE IMAGE 																							          
+# DESCRIPTION:																									  
+# This will be the base image, the parent of every image declared in the project. 								  
+# This will include the needed software to install the tools of every stage smothly.							  
+###################################################################################################################
+FROM debian:${VERSION} AS base
+	LABEL author="Adastra"
+	LABEL description="Layer with the needed libraries and software."
+	ENV ROOT_DIR /redteam
+	RUN apt-get update && apt-get -y install net-tools netcat nano \
+		python3 python3-dev python3-pip \
+		python python-dev python-pip \
+		unzip wget curl git gcc libc-dev libxslt-dev \
+		openjdk-11-jre openjdk-11-jdk \
+		libevent-dev libssl-dev zlib1g zlib1g-dev \
+		firefox-esr xfce4-terminal \
+		autoconf automake libtool apt-utils \
+		openssh-server
+
+	ENV WORKDIR_FULL=${ROOT_DIR}/tools
+	ENV WORKDIR_ANON=${WORKDIR_FULL}/0_anon
+	ENV WORKDIR_RECON=${WORKDIR_FULL}/1_recon
+	ENV WORKDIR_WEAPON=${WORKDIR_FULL}/2_weapon
+	ENV WORKDIR_DELIVERY=${WORKDIR_FULL}/3_delivery
+	ENV WORKDIR_EXPLOITATION=${WORKDIR_FULL}/4_exploitation
+	ENV WORKDIR_ESCALATION=${WORKDIR_FULL}/5_escalation
+	ENV WORKDIR_CANDC=${WORKDIR_FULL}/6_command_and_control
+	ENV WORKDIR_INTERNALRECON=${WORKDIR_FULL}/7_internalrecon
+	ENV WORKDIR_LATERALMOVEMENTS=${WORKDIR_FULL}/8_lateralmovements
+	ENV WORKDIR_EXFILTRATION=${WORKDIR_FULL}/9_exfiltration
+
+	########################################
+	#	GLOBAL VARIABLES FROM ANON IMAGE
+	########################################
+	ARG TOR_LATEST_VERSION=0.4.2.7
+	ARG ANON_TOR_SOURCE=True
+	ARG ANON_TOR_APT=False	
+	ARG ANON_TORBROWSER=True
+	ARG ANON_TORSOCKS=True
+	ARG ANON_PROXYCHAINS=True
+
+	ENV TOR_LATEST_VERSION $TOR_LATEST_VERSION
+	ENV ANON_TOR_SOURCE $ANON_TOR_SOURCE
+	ENV ANON_TOR_APT $ANON_TOR_APT	
+	ENV ANON_TORBROWSER $ANON_TORBROWSER
+	ENV ANON_TORSOCKS $ANON_TORSOCKS
+	ENV ANON_PROXYCHAINS $ANON_PROXYCHAINS
+
+	########################################
+	#	GLOBAL VARIABLES FROM RECON IMAGE
+	########################################
+	ARG RECON_RECONNG=True
+	ARG RECON_PHOTON=True
+	ARG RECON_THEHARVESTER=True
+	ARG RECON_SKIPTRACER=True
+	ARG RECON_METAGOOFIL=True
+	ARG RECON_JUSTMETADATA=True
+	ARG RECON_SPIDERFOOT=True
+	ARG RECON_MALTEGO=False
+	ARG RECON_PHONEINFOGA=True
+
+	ENV RECON_RECONNG $RECON_RECONNG
+	ENV RECON_PHOTON $RECON_PHOTON
+	ENV RECON_THEHARVESTER $RECON_THEHARVESTER
+	ENV RECON_SKIPTRACER $RECON_SKIPTRACER
+	ENV RECON_METAGOOFIL $RECON_METAGOOFIL
+	ENV RECON_JUSTMETADATA $RECON_JUSTMETADATA
+	ENV RECON_SPIDERFOOT $RECON_SPIDERFOOT
+	ENV RECON_MALTEGO $RECON_MALTEGO
+	ENV RECON_PHONEINFOGA $RECON_PHONEINFOGA
+
+	########################################
+	#	GLOBAL VARIABLES FROM WEAPON IMAGE
+	########################################
+	ARG WEAPON_CVE2018_20250=True
+	ARG WEAPON_CVE2017_8759=True
+	ARG WEAPON_CVE2017_8570=True
+	ARG WEAPON_CVE2017_0199=True
+	ARG WEAPON_DEMIGUISE=True
+	ARG WEAPON_MALICIOUSMACROGENERATOR=True
+	ARG WEAPON_OFFICEDDEPAYLOADS=True
+	ARG WEAPON_DONTKILLMYCAT=True
+	ARG WEAPON_EMBEDINHTML=True
+
+	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
+	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
+	ENV WEAPON_CVE2017_8570 $WEAPON_CVE2017_8570
+	ENV WEAPON_CVE2017_0199 $WEAPON_CVE2017_0199
+	ENV WEAPON_DEMIGUISE $WEAPON_DEMIGUISE
+	ENV WEAPON_MALICIOUSMACROGENERATOR $WEAPON_MALICIOUSMACROGENERATOR
+	ENV WEAPON_OFFICEDDEPAYLOADS $WEAPON_OFFICEDDEPAYLOADS
+	ENV WEAPON_DONTKILLMYCAT $WEAPON_DONTKILLMYCAT
+	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
+
+###################################################################################################################
+# ANON IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Anonymity stage.						 								  
+# TOOLS:
+#	[^] TOR
+#	[^] TorBrowser
+#	[^] Torsocks
+#	[^] Proxychains
+#	[^] Listado de ONION sites.
+###################################################################################################################
+FROM base AS reddocker-anon
+	LABEL author="Adastra"
+	LABEL description="Layer for anon stage."
+	WORKDIR ${WORKDIR_ANON}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to ANON directory.
+	COPY data/onionsites.txt ${WORKDIR_ANON}
+	COPY data/README-anon.txt ${WORKDIR_ANON}
+
+	# Installation for TOR-Browser: https://torproject.org
+	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz && tar -xvf tor-browser-linux64-9.0.9_en-US.tar.xz && rm -rf tor-browser-linux64-9.0.9_en-US.tar.xz; fi ; \
+		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
+
+###################################################################################################################
+# RECON IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Intelligence gathering stage.						 								  
+# TOOLS:																										  
+#	[*]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
+#	[*] Photon: https://github.com/s0md3v/Photon  																  
+#	[*] skiptracer: https://github.com/xillwillx/skiptracer	        											  
+#	[*] theHarvester: https://github.com/laramies/theHarvester 													  
+#	[*] metagoofil: https://github.com/laramies/metagoofil 														  
+#	[*] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
+#	[*] Maltego: https://www.paterva.com/web7/downloads.php 														  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-recon
+	LABEL author="Adastra"
+	LABEL description="Layer for recon stage."
+	ENV ROOT_DIR /redteam
+	WORKDIR ${WORKDIR_RECON}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to RECON directory.
+	COPY data/README-recon.txt ${WORKDIR_RECON}
+
+	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/lanmaster53/recon-ng.git ; fi ; \
+		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON} &&  git clone https://github.com/s0md3v/Photon ; fi ; \
+		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/theHarvester ; fi ; \
+		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/xillwillx/skiptracer.git ; fi ; \
+		if [ "$RECON_METAGOOFIL" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/metagoofil ; fi ; \
+		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
+		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
+		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
+		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi
+
+###################################################################################################################
+# WEAPON IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Weaponization stage.						 								  
+# TOOLS:
+#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
+#	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
+#	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
+#	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
+#	[^] Demiguise: https://github.com/nccgroup/demiguise
+#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+###################################################################################################################
+FROM base AS reddocker-weapon
+	LABEL author="Adastra"
+	LABEL description="Layer for weapon stage."
+	WORKDIR ${WORKDIR_WEAPON}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to RECON directory.
+	COPY data/README-weapon.txt ${WORKDIR_WEAPON}
+
+
+	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
+		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
+		if [ "$WEAPON_CVE2017_8570" = "True" ] ; then git clone https://github.com/rxwx/CVE-2017-8570 CVE2017_8570; fi ; \
+		if [ "$WEAPON_CVE2017_0199" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-0199 CVE2017_0199; fi ; \
+		if [ "$WEAPON_DEMIGUISE" = "True" ] ; then git clone https://github.com/nccgroup/demiguise; fi ; \
+		if [ "$WEAPON_MALICIOUSMACROGENERATOR" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator; fi ; \
+		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
+		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
+		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then git clone https://github.com/Arno0x/EmbedInHTML; fi
+
+###################################################################################################################
+# DELIVERY IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Delivery stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-delivery
+	LABEL author="Adastra"
+	LABEL description="Layer for Delivery stage."
+	WORKDIR ${WORKDIR_DELIVERY}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to DELIVERY directory.
+	COPY data/README-delivery.txt ${WORKDIR_DELIVERY}
+
+###################################################################################################################
+# COMPROMISE IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the compromise stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-exploitation
+	LABEL author="Adastra"
+	LABEL description="Layer for exploitation stage."
+	WORKDIR ${WORKDIR_EXPLOITATION}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to EXPLOITATION directory.
+	COPY data/README-exploitation.txt ${WORKDIR_EXPLOITATION}
+
+###################################################################################################################
+# ESCALATE PRIVILEGES 																							          
+# DESCRIPTION:																									  
+# Include the tools for the escalate privileges stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-escalation
+	LABEL author="Adastra"
+	LABEL description="Layer for escalation stage."
+	WORKDIR ${WORKDIR_ESCALATION}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to ESCALATION directory.
+	COPY data/README-escalation.txt ${WORKDIR_ESCALATION}
+
+
+###################################################################################################################
+# COMMAND AND CONTROL IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the C&C stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-commandcontrol
+	LABEL author="Adastra"
+	LABEL description="Layer for command and control stage."
+	WORKDIR ${WORKDIR_CANDC}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to COMMANDANDCONTROL directory.
+	COPY data/README-commandandcontrol.txt ${WORKDIR_CANDC}
+
+
+###################################################################################################################
+# INTERNAL RECONNAISSANCE IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the INTERNAL RECON stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-internalrecon
+	LABEL author="Adastra"
+	LABEL description="Layer for internal recon stage."
+	WORKDIR ${WORKDIR_INTERNALRECON}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to INTERNALRECON directory.
+	COPY data/README-internalrecon.txt ${WORKDIR_INTERNALRECON}
+
+###################################################################################################################
+# MOVE LATERALLY IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the lateral movements stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-movelaterally
+	LABEL author="Adastra"
+	LABEL description="Layer for lateral movements stage."
+	WORKDIR ${WORKDIR_LATERALMOVEMENTS}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to MOVELATERALLY directory.
+	COPY data/README-movelaterally.txt ${WORKDIR_LATERALMOVEMENTS}
+
+###################################################################################################################
+# EXFILTRATION 																							          
+# DESCRIPTION:																									  
+# Include the tools for the exfiltration stage.						 								  
+# TOOLS:																										  
+#	[*] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+###################################################################################################################
+FROM base AS reddocker-exfiltration
+	LABEL author="Adastra"
+	LABEL description="Layer for exfiltration stage."
+	WORKDIR ${WORKDIR_EXFILTRATION}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to EXFILTRATION directory.
+	COPY data/README-exfiltration.txt ${WORKDIR_EXFILTRATION}	
+
+
+###################################################################################################################
+# COMPOSITION LAYER 																							          
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM base as reddocker-composition
+	LABEL author="Adastra"
+	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
+	WORKDIR ${WORKDIR_FULL}
+	RUN mkdir ${WORKDIR_ANON} && mkdir ${WORKDIR_RECON} && \
+		mkdir ${WORKDIR_WEAPON} && mkdir ${WORKDIR_DELIVERY} && \
+		mkdir ${WORKDIR_EXPLOITATION} && mkdir ${WORKDIR_CANDC} && \
+		mkdir ${WORKDIR_INTERNALRECON} && mkdir ${WORKDIR_LATERALMOVEMENTS} && \
+		mkdir ${WORKDIR_ESCALATION} && mkdir ${WORKDIR_EXFILTRATION}  
+
+	COPY --from=reddocker-anon 				${WORKDIR_ANON} ${WORKDIR_ANON}
+	COPY --from=reddocker-recon 			${WORKDIR_RECON} ${WORKDIR_RECON}
+	COPY --from=reddocker-weapon			${WORKDIR_WEAPON} ${WORKDIR_WEAPON}
+	COPY --from=reddocker-delivery			${WORKDIR_DELIVERY} ${WORKDIR_DELIVERY}
+	COPY --from=reddocker-exploitation		${WORKDIR_EXPLOITATION} ${WORKDIR_EXPLOITATION}
+	COPY --from=reddocker-escalation		${WORKDIR_ESCALATION} ${WORKDIR_ESCALATION}
+	COPY --from=reddocker-commandcontrol	${WORKDIR_CANDC} ${WORKDIR_CANDC}
+	COPY --from=reddocker-internalrecon		${WORKDIR_INTERNALRECON} ${WORKDIR_INTERNALRECON}
+	COPY --from=reddocker-movelaterally		${WORKDIR_LATERALMOVEMENTS} ${WORKDIR_LATERALMOVEMENTS}
+	COPY --from=reddocker-exfiltration		${WORKDIR_EXFILTRATION} ${WORKDIR_EXFILTRATION}
+
+	#Programs and dependencies for ANON.
+	RUN if [ "$ANON_TOR_SOURCE" = "True" ] ; then cd ${WORKDIR_ANON}/tor-latest && ./configure && make; fi ; \
+		if [ "$ANON_TOR_APT" = "True" ] ; then apt-get -y install tor; fi ; \
+		if [ "$ANON_TORSOCKS" = "True" ] ; then apt-get -y install torsocks; fi ; \
+		if [ "$ANON_PROXYCHAINS" = "True" ] ; then apt-get -y install proxychains; fi
+
+	#Programs and dependencies for RECON.
+	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON}/recon-ng && pip3 install -r REQUIREMENTS; fi ; \
+		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
+		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
+		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
+		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip3 install -r requirements.txt ; fi ; \
+		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ;
+
+	#Programs and dependencies for WEAPON.
+	#Programs and dependencies for DELIVERY.
+	#Programs and dependencies for EXPLOITATION.
+	#Programs and dependencies for ESCALATION.
+	#Programs and dependencies for COMMANDANDCONTROL.
+	#Programs and dependencies for INTERNALRECON.
+	#Programs and dependencies for LATERALMOVEMENTS.
+	#Programs and dependencies for EXFILTRATION.
+FROM reddocker-composition
+	RUN apt-get update && apt-get -y install sudo
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	RUN useradd -m reddocker && echo "reddocker:reddocker" | chpasswd && adduser reddocker sudo
+	RUN chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL}
+	USER reddocker
+	EXPOSE 22
+	CMD tail -f /dev/null

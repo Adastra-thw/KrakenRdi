@@ -1,0 +1,160 @@
+# Dockerfile base for all images in RedDocker.
+# Author: Adastra.
+# Website: http://thehackerway.com 
+# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Simple command to generate a new image using this Dockerfile
+# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+
+
+###################################################################################################################
+# This Dockerfile uses multi-stage build patterns to include multiple configurations and inhereit common features 
+# For more information about multi-stage buildings in Docker, please read the official documentation.             
+# https://docs.docker.com/develop/develop-images/multistage-build/ 												  
+###################################################################################################################
+
+# Declaration of arguments to control the building flow and create images dynamically. 
+ARG VERSION=latest
+
+###################################################################################################################
+# BASE IMAGE 																							          
+# DESCRIPTION:																									  
+# This will be the base image, the parent of every image declared in the project. 								  
+# This will include the needed software to install the tools of every stage smothly.							  
+###################################################################################################################
+FROM debian:${VERSION} AS base
+	LABEL author="Adastra"
+	LABEL description="Layer with the needed libraries and software."
+
+	########################################
+	#	SYSTEM VARIABLES
+	########################################
+	ARG USERNAME=reddocker
+	ARG PASSWORD=reddocker
+	ARG RUBY_VERSION=2.6.6
+	ARG RVM_DIR=/usr/local/rvm/
+	ARG RVM_LOADER=/etc/profile.d/rvm.sh
+
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
+	ENV RUBY_VERSION $RUBY_VERSION
+	ENV RVM_DIR $RVM_DIR
+	ENV RVM_LOADER $RVM_LOADER	
+	ENV ROOT_DIR /redteam
+	ENV WORKDIR_FULL=${ROOT_DIR}/tools
+	ENV WORKDIR_COMMON=${WORKDIR_FULL}/common
+
+
+	########################################
+	#	GLOBAL VARIABLES FROM TRANSVERSAL IMAGE
+	########################################
+	ARG COMMON_THC_HYDRA=True
+	ARG COMMON_CWEL=True
+	ARG COMMON_POSTMAN=True
+	ARG COMMON_FUZZDB=True
+	ARG COMMON_DIRBUSTER=True
+
+	ENV COMMON_THC_HYDRA $COMMON_THC_HYDRA
+	ENV COMMON_CWEL $COMMON_CWEL
+	ENV COMMON_POSTMAN $COMMON_POSTMAN
+	ENV COMMON_FUZZDB $COMMON_FUZZDB
+	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
+
+	#Installing all the common software and dependencies that could be shared between the tools.
+	SHELL ["/bin/bash", "-c"]
+	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
+		python3 python3-dev python3-pip \
+		python python-dev python-pip \
+		unzip wget curl git gcc libc-dev libxslt-dev \
+		openjdk-11-jre openjdk-11-jdk \
+		libevent-dev libssl-dev zlib1g zlib1g-dev \
+		firefox-esr xfce4-terminal \
+		autoconf automake libtool apt-utils \
+		openssh-server openssl \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		software-properties-common sudo locate \
+		&& useradd -m reddocker \
+		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
+		&& adduser ${USERNAME} sudo
+
+	#Installation for RVM 
+	RUN	curl -sSL https://get.rvm.io | bash \
+		&& source ${RVM_LOADER} \
+		&& rvm install ${RUBY_VERSION} \
+		&& usermod -a -G rvm ${USERNAME} \
+		&& newgrp rvm \
+		&& source ${RVM_LOADER}
+
+	#Installation of dependencies for THW Hydra.
+	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then \
+			apt-get update && apt-get -y install libssh-dev libidn11-dev libpcre3-dev \
+                 libgtk2.0-dev libmariadb-dev-compat libmariadb-dev libsvn-dev \
+                 firebird-dev libmemcached-dev libgpg-error-dev \
+                 libgcrypt20-dev; fi
+
+###################################################################################################################
+# TRANSVERSAL IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Weaponization stage.						 								  
+# TOOLS:
+#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
+#	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
+#	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
+#	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
+#	[^] Demiguise: https://github.com/nccgroup/demiguise
+#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+###################################################################################################################
+FROM base AS reddocker-transversal
+	LABEL author="Adastra"
+	LABEL description="Layer for transversal stage."
+	WORKDIR ${WORKDIR_COMMON}
+	SHELL ["/bin/bash", "-c"]
+
+	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then \
+			cd ${WORKDIR_COMMON} && git clone https://github.com/vanhauser-thc/thc-hydra.git && \
+			cd thc-hydra && ./configure && make; \
+		fi ; \
+		if [ "$COMMON_CWEL" = "True" ] ; then \
+			cd ${WORKDIR_COMMON} && git clone https://github.com/digininja/CeWL.git cewl; \
+		fi ; \
+		if [ "$COMMON_POSTMAN" = "True" ] ; then \
+			cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && \
+			tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; \
+		fi ; \
+		if [ "$COMMON_FUZZDB" = "True" ] ; then \
+			cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; \
+		fi ; \
+		if [ "$COMMON_DIRBUSTER" = "True" ] ; then \
+			cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0.git DirBuster && \
+			cd DirBuster && tar -xvf DirBuster.tar.bz2 && rm -rf DirBuster.tar.bz2 ; \
+		fi ;
+
+###################################################################################################################
+# COMPOSITION LAYER
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM base as reddocker-composition
+	LABEL author="Adastra"
+	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
+	WORKDIR ${WORKDIR_COMMON}
+	COPY --from=reddocker-transversal ${WORKDIR_COMMON} ${WORKDIR_COMMON}
+	RUN	if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && \
+			source ${RVM_LOADER} && rvm use ${RUBY_VERSION} && \
+			cd ${WORKDIR_COMMON}/cewl && gem install bundle && bundle install; \
+		fi ; 
+
+###################################################################################################################
+# COMPOSITION LAYER 																							          
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM reddocker-composition
+	USER root
+	SHELL ["/bin/bash", "-c"]
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+		chmod 700 -R ${WORKDIR_FULL} && chown reddocker:reddocker -R ${WORKDIR_FULL} && \
+		/etc/init.d/postgresql start
+	EXPOSE 22 80 443 5432 8080 8081 8000
+	USER reddocker
+	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
+	CMD tail -f /dev/null

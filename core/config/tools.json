@@ -1,0 +1,28 @@
+{
+	"recon": {
+				"Recon-ng" : ["", true],
+				"Photon" : ["", true], 
+				"social_mapper" : ["", true], 
+				"skiptracer" : ["", true], 
+				"theHarvester" : ["", true], 
+				"metagoofil" : ["", true], 
+				"JustMetadata" : ["", true],
+				"GitHarvester" : ["", true],
+				"CrossLinked" : ["", true],
+				"Maltego" : ["", true],
+				"Spiderfoot" : ["", true]
+			}, 
+	"weaponization" : {
+				"CVE-2018-20250" : ["WinRAR RCE","https://github.com/WyAtu/CVE-2018-20250", true],
+				"CVE-2017-8759" : [".NET RCE","https://github.com/bhdresh/CVE-2017-8759", true], 
+				"CVE-2017-8570" : ["Composite Moniker", "https://github.com/rxwx/CVE-2017-8570"]
+
+			}, 
+	"delivery": {}, 
+	"exploitation" : {},
+	"persistence": {} , 
+	"commandcontrol": {},
+	"interalrecon": {}, 
+	"movelaterally": {},
+	"exfiltrate": {}
+}

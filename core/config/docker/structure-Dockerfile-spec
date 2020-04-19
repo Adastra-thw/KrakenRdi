@@ -1,0 +1,89 @@
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
+# Author: Adastra.
+# Website: http://thehackerway.com 
+# Github: https://github.com/Adastra-thw/docker-for-redteam  
+# Simple command to generate a new image using this Dockerfile
+# docker build -t adastra/docker-for-redteam:recon -f Dockerfile-recon .
+
+
+###################################################################################################################
+# This Dockerfile uses multi-stage build patterns to include multiple configurations and inhereit common features 
+# For more information about multi-stage buildings in Docker, please read the official documentation.             
+# https://docs.docker.com/develop/develop-images/multistage-build/ 												  
+###################################################################################################################
+
+# Declaration of arguments to control the building flow and create images dynamically. 
+ARG ....
+
+###################################################################################################################
+# BASE IMAGE 																							          
+# DESCRIPTION:																									  
+# This will be the base image, the parent of every image declared in the project. 								  
+# This will include the needed software to install the tools of every stage smothly.							  
+###################################################################################################################
+FROM debian:${VERSION} AS base
+	LABEL author="Adastra"
+	LABEL description="Layer with the needed libraries and software."
+	ENV ROOT_DIR /redteam
+
+	#RUN instrucction for the base packages and dependencies. Needed to install another tools
+
+	#WORKDIRS for every layer
+
+	########################################
+	#	GLOBAL VARIABLES FROM WEAPON IMAGE
+	########################################
+
+	# Arguments with ARGS instructions. The values in every ARG will be setted in the ENVs
+	# This arguments will be used to control which software install, parameters like usernames
+	# and passwords, versions for some tools, etc. Anything needed to compile or install tools.  
+
+	# Environment variables with ARGS. All of this variables will recibe the values from 
+	# the ARG represented with the same name. For example:
+	# ARG USERNAME=Adastra.
+	# ENV USERNAME $USERNAME
+
+
+###################################################################################################################
+# <NAME OF LAYER> IMAGE 																							          
+# DESCRIPTION:																									  
+# Very short description.						 								  
+# TOOLS:
+#	[^] INSTALLED TOOL: URL
+#	[^] INSTALLED TOOL: URL
+#	[^] .....
+###################################################################################################################
+FROM base AS <NAME OF LAYER>
+	LABEL author="Adastra"
+	LABEL description="Layer for weapon stage."
+	WORKDIR <WORKDIR DEFINED IN THE ENV VARIABLE>
+	SHELL ["/bin/bash", "-c"]
+	# Instructions to install software. For example, cloning repositories or download software.
+	# This is justa intermediate layer, so here we can't install software with APT-GET, RVM, PIP 
+	# or equivalent tools. That kind of installations should be performed in "composition" layer. 
+
+###################################################################################################################
+# COMPOSITION LAYER 																							          
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM base as reddocker-composition
+	LABEL author="Adastra"
+	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
+	WORKDIR <WORKDIR DEFINED IN THE ENV VARIABLE FOR CURRENT LAYER>
+	COPY --from=<NAME OF LAYER> ${WORKDIR DEFINED IN THE ENV VARIABLE} ${WORKDIR DEFINED IN THE ENV VARIABLE}
+	# Installation of any required dependency or library for every layer.
+
+###################################################################################################################
+# OUTPUT LAYER 																							          
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM reddocker-output
+	RUN apt-get update && apt-get -y install sudo && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+		useradd -m ${USERNAME} && echo "${USERNAME}:${PASSWORD}" | chpasswd && adduser ${USERNAME} sudo && \
+		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+	USER ${USERNAME}
+	EXPOSE $EXPOSE_PORTS
+	CMD tail -f /dev/null

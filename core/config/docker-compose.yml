@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  anon:
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile-anon
+      args:
+        VERSION: 'latest'
+      shm_size: '2gb'
+    image: adastra/reddocker:anon
+    container_name: reddocker-anon
+    hostname: reddocker
+    networks:
+      - bridge
+    environment:
+      DISPLAY: "$DISPLAY"
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+
+  recon:
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile-recon
+      args:
+        VERSION: 'latest'
+      shm_size: '2gb'
+    image: adastra/reddocker:recon
+    container_name: reddocker-recon
+    hostname: reddocker
+    networks:
+      - bridge
+    environment:
+      DISPLAY: "$DISPLAY"
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+
+networks:
+  bridge:    

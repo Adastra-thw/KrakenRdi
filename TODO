@@ -1,0 +1,8 @@
+[] Install and test tools in host machine.
+[] Declare Dockerfiles with ARGS and parametrized.
+[] Create the containers from Python and allow remote access via RDP and SSH.
+[] Create Rest API and EndPoints.
+[] Validate JSON structures with jsonschema
+[] Test every endpoint.
+[] Think about the name of the project
+[] Personalization with logo and artworks
