@@ -1,4 +1,4 @@
-#RECON CONFIG
+ç#RECON CONFIG
 BASE_IMAGE=debian
 BASE_IMAGE_TAG=latest
 REDTEAM_IMAGE_NAME="adastra/reddocker"

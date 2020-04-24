@@ -57,6 +57,7 @@ FROM debian:${VERSION} AS base
 	ARG WEAPON_OFFICEDDEPAYLOADS=True
 	ARG WEAPON_DONTKILLMYCAT=True
 	ARG WEAPON_EMBEDINHTML=True
+	ARG WEAPON_MACRO_PACK=True
 
 	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
 	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
@@ -67,6 +68,7 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_OFFICEDDEPAYLOADS $WEAPON_OFFICEDDEPAYLOADS
 	ENV WEAPON_DONTKILLMYCAT $WEAPON_DONTKILLMYCAT
 	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
+	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -104,15 +106,16 @@ FROM base AS kraken-weapon
 	WORKDIR ${WORKDIR_WEAPON}
 	SHELL ["/bin/bash", "-c"]
 
-	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
-		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
-		if [ "$WEAPON_CVE2017_8570" = "True" ] ; then git clone https://github.com/rxwx/CVE-2017-8570 CVE2017_8570; fi ; \
-		if [ "$WEAPON_CVE2017_0199" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-0199 CVE2017_0199; fi ; \
-		if [ "$WEAPON_DEMIGUISE" = "True" ] ; then git clone https://github.com/nccgroup/demiguise; fi ; \
-		if [ "$WEAPON_MALICIOUSMACROGENERATOR" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator; fi ; \
-		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
-		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
-		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then git clone https://github.com/Arno0x/EmbedInHTML; fi
+	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
+		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
+		if [ "$WEAPON_CVE2017_8570" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/rxwx/CVE-2017-8570 CVE2017_8570; fi ; \
+		if [ "$WEAPON_CVE2017_0199" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/bhdresh/CVE-2017-0199 CVE2017_0199; fi ; \
+		if [ "$WEAPON_DEMIGUISE" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/nccgroup/demiguise; fi ; \
+		if [ "$WEAPON_MALICIOUSMACROGENERATOR" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator; fi ; \
+		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
+		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
+		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
+		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          

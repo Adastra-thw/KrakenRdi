@@ -128,6 +128,7 @@ FROM debian:${VERSION} AS base
 	ARG WEAPON_OFFICEDDEPAYLOADS=True
 	ARG WEAPON_DONTKILLMYCAT=True
 	ARG WEAPON_EMBEDINHTML=True
+	ARG WEAPON_MACRO_PACK=True
 
 	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
 	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
@@ -138,6 +139,7 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_OFFICEDDEPAYLOADS $WEAPON_OFFICEDDEPAYLOADS
 	ENV WEAPON_DONTKILLMYCAT $WEAPON_DONTKILLMYCAT
 	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
+	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
 
 	########################################
 	#	GLOBAL VARIABLES FROM FRAMEWORK IMAGE
@@ -273,7 +275,8 @@ FROM base AS kraken-recon
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
-		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi
+		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi \
+		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
 
 ###################################################################################################################
 # WEAPON IMAGE 																							          
@@ -293,15 +296,16 @@ FROM base AS kraken-weapon
 	WORKDIR ${WORKDIR_WEAPON}
 	SHELL ["/bin/bash", "-c"]
 
-	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
-		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
-		if [ "$WEAPON_CVE2017_8570" = "True" ] ; then git clone https://github.com/rxwx/CVE-2017-8570 CVE2017_8570; fi ; \
-		if [ "$WEAPON_CVE2017_0199" = "True" ] ; then git clone https://github.com/bhdresh/CVE-2017-0199 CVE2017_0199; fi ; \
-		if [ "$WEAPON_DEMIGUISE" = "True" ] ; then git clone https://github.com/nccgroup/demiguise; fi ; \
-		if [ "$WEAPON_MALICIOUSMACROGENERATOR" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator; fi ; \
-		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
-		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
-		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then git clone https://github.com/Arno0x/EmbedInHTML; fi
+	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
+		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
+		if [ "$WEAPON_CVE2017_8570" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/rxwx/CVE-2017-8570 CVE2017_8570; fi ; \
+		if [ "$WEAPON_CVE2017_0199" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/bhdresh/CVE-2017-0199 CVE2017_0199; fi ; \
+		if [ "$WEAPON_DEMIGUISE" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/nccgroup/demiguise; fi ; \
+		if [ "$WEAPON_MALICIOUSMACROGENERATOR" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator; fi ; \
+		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
+		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
+		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
+		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi
 
 ###################################################################################################################
 # DELIVERY IMAGE 																							          
@@ -422,7 +426,7 @@ FROM base AS kraken-exfiltration
 #	[^] Demiguise: https://github.com/nccgroup/demiguise
 #	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
 ###################################################################################################################
-FROM base AS kreaken-framework
+FROM base AS kraken-framework
 	LABEL author="Adastra"
 	LABEL description="Layer for framework stage."
 	WORKDIR ${WORKDIR_FRAMEWORK}
@@ -482,7 +486,7 @@ FROM base as kraken-composition
 	COPY --from=kraken-internalrecon	${WORKDIR_INTERNALRECON} ${WORKDIR_INTERNALRECON}
 	COPY --from=kraken-movelaterally	${WORKDIR_LATERALMOVEMENTS} ${WORKDIR_LATERALMOVEMENTS}
 	COPY --from=kraken-exfiltration		${WORKDIR_EXFILTRATION} ${WORKDIR_EXFILTRATION}
-	COPY --from=kreaken-framework		${WORKDIR_FRAMEWORK} ${WORKDIR_FRAMEWORK}
+	COPY --from=kraken-framework		${WORKDIR_FRAMEWORK} ${WORKDIR_FRAMEWORK}
 	COPY --from=kraken-common			${WORKDIR_COMMON} ${WORKDIR_COMMON}
 
 	#Programs and dependencies for ANON.
@@ -496,8 +500,9 @@ FROM base as kraken-composition
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip3 install -r requirements.txt ; fi ; \
-		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ;
+		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
+		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
+		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make; fi
 
 	#Programs and dependencies for WEAPON.
 	#Programs and dependencies for DELIVERY.
@@ -541,6 +546,10 @@ FROM kraken-composition
 	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
 	EXPOSE $EXPOSE_PORTS
+	ENV NOTVISIBLE "in users profile"
+	RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
+		echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
+	COPY data/banner /etc/issue.net
 	USER ${USERNAME}
-	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
-	CMD tail -f /dev/null
+	#Have to start some services: SSHD and Postgresql.
+	CMD tail -f /dev/null 

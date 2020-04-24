@@ -118,7 +118,8 @@ FROM base AS kraken-recon
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
-		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi
+		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
+		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
@@ -136,8 +137,9 @@ FROM base as kraken-composition
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip3 install -r requirements.txt ; fi ; \
-		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ;
+		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
+		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
+		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make; fi
 
 ###################################################################################################################
 # OUTPUT LAYER 																							          
