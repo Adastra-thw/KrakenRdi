@@ -32,7 +32,7 @@ FROM debian:${VERSION} AS base
 	#	WORKING DIRS FROM <LAYER> IMAGE
 	########################################
 	ENV WORKDIR_FULL=${ROOT_DIR}/tools
-	ENV WORKDIR_RECON=${WORKDIR_FULL}/recon
+	ENV WORKDIR_FRAMEWORK=${WORKDIR_FULL}/frameworks
 
 	########################################
 	#	CONFIGURATION AND SYSTEM VARIABLES
@@ -40,35 +40,31 @@ FROM debian:${VERSION} AS base
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
+	ARG RUBY_VERSION=2.6.6
+	ARG RVM_DIR=/usr/local/rvm/
+	ARG RVM_LOADER=/etc/profile.d/rvm.sh
+	ARG POSTGRES_PASSWORD=postgres
+	ARG POSTGRES_DB_NAME=database_pg
+	ARG POSTGRES_DB_USERNAME=userdb
+	ARG POSTGRES_DB_PASSWORD=password
 
 	ENV USERNAME $USERNAME
 	ENV PASSWORD $PASSWORD
 	ENV EXPOSE_PORTS $EXPOSE_PORTS
+	ENV RUBY_VERSION $RUBY_VERSION
+	ENV RVM_DIR $RVM_DIR
+	ENV RVM_LOADER $RVM_LOADER
 
 	########################################
-	#	GLOBAL VARIABLES FROM RECON IMAGE
+	#	GLOBAL VARIABLES FROM FRAMEWORK IMAGE
 	########################################
-	ARG RECON_RECONNG=True
-	ARG RECON_PHOTON=True
-	ARG RECON_THEHARVESTER=True
-	ARG RECON_SKIPTRACER=True
-	ARG RECON_METAGOOFIL=True
-	ARG RECON_JUSTMETADATA=True
-	ARG RECON_SPIDERFOOT=True
-	ARG RECON_MALTEGO=False
-	ARG RECON_PHONEINFOGA=True
-	ARG RECON_NMAP=True
+	ARG FRAMEWORK_METASPLOIT=True
+	ARG FRAMEWORK_BEEF=True
+	ARG FRAMEWORK_BETTERCAP=True
 
-	ENV RECON_RECONNG $RECON_RECONNG
-	ENV RECON_PHOTON $RECON_PHOTON
-	ENV RECON_THEHARVESTER $RECON_THEHARVESTER
-	ENV RECON_SKIPTRACER $RECON_SKIPTRACER
-	ENV RECON_METAGOOFIL $RECON_METAGOOFIL
-	ENV RECON_JUSTMETADATA $RECON_JUSTMETADATA
-	ENV RECON_SPIDERFOOT $RECON_SPIDERFOOT
-	ENV RECON_MALTEGO $RECON_MALTEGO
-	ENV RECON_PHONEINFOGA $RECON_PHONEINFOGA
-	ENV RECON_NMAP $RECON_NMAP
+	ENV FRAMEWORK_METASPLOIT $FRAMEWORK_METASPLOIT
+	ENV FRAMEWORK_BEEF $FRAMEWORK_BEEF
+	ENV FRAMEWORK_BETTERCAP $FRAMEWORK_BETTERCAP
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -88,38 +84,58 @@ FROM debian:${VERSION} AS base
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
 		&& adduser ${USERNAME} sudo
 
-###################################################################################################################
-# RECON IMAGE 																							          
-# DESCRIPTION:																									  
-# Include the tools for the Intelligence gathering stage.						 								  
-# TOOLS:																										  
-#	[^]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
-#	[^] Photon: https://github.com/s0md3v/Photon  																  
-#	[^] skiptracer: https://github.com/xillwillx/skiptracer	        											  
-#	[^] theHarvester: https://github.com/laramies/theHarvester 													  
-#	[^] metagoofil: https://github.com/laramies/metagoofil 														  
-#	[^] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
-#	[^] Maltego: https://www.paterva.com/web7/downloads.php 														  
-#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot														  
-###################################################################################################################
-FROM base AS kraken-recon
-	LABEL author="Adastra"
-	LABEL description="Layer for recon stage."
-	ENV ROOT_DIR /redteam
-	WORKDIR ${WORKDIR_RECON}
-	SHELL ["/bin/bash", "-c"]
-	COPY data/README-recon.txt ${WORKDIR_RECON}
+	#######################################################
+	#	DEPENDENCIES AND SOFTWARE FOR FRAMEWORKS IMAGE
+	#######################################################
 
-	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/lanmaster53/recon-ng.git ; fi ; \
-		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON} &&  git clone https://github.com/s0md3v/Photon ; fi ; \
-		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/theHarvester ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/xillwillx/skiptracer.git ; fi ; \
-		if [ "$RECON_METAGOOFIL" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/metagoofil ; fi ; \
-		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
-		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
-		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
-		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
+	#Installation for RVM 
+	RUN	curl -sSL https://get.rvm.io | bash \
+		&& source ${RVM_LOADER} \
+		&& rvm install ${RUBY_VERSION} \
+		&& usermod -a -G rvm ${USERNAME} \
+		&& newgrp rvm \
+		&& source ${RVM_LOADER}
+
+	#Installation for PostgreSQL.
+	RUN apt-get -y install postgresql postgresql-client postgresql-contrib postgresql-common
+	USER postgres
+	RUN	/etc/init.d/postgresql start && \
+		psql --command "CREATE USER ${POSTGRES_DB_USERNAME} WITH SUPERUSER PASSWORD '${POSTGRES_DB_PASSWORD}';" && \
+		createdb -O ${POSTGRES_DB_USERNAME} ${POSTGRES_DB_NAME}
+	USER root
+
+	#Installation of dependencies for Beef.
+	RUN if [ "$FRAMEWORK_BEEF" = "True" ] ; then \
+			apt-get -y install build-essential libreadline6-dev libyaml-dev sqlite3 \
+			libxml2-dev libxslt1-dev libc6-dev libncurses5-dev bison nodejs ruby-dev \
+			libcurl4-openssl-dev; fi
+
+	#Installation of dependencies for Bettercap.
+	RUN if [ "$FRAMEWORK_BETTERCAP" = "True" ] ; then \
+			apt-get -y install libusb-1.0-0-dev libnetfilter-queue-dev golang; fi
+
+###################################################################################################################
+# FRAMEWORK IMAGE 																							          
+# DESCRIPTION:																									  
+# Include the tools for the Weaponization stage.						 								  
+# TOOLS:
+#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
+#	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
+#	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
+#	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
+#	[^] Demiguise: https://github.com/nccgroup/demiguise
+#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+###################################################################################################################
+FROM base AS kraken-framework
+	LABEL author="Adastra"
+	LABEL description="Layer for framework stage."
+	WORKDIR ${WORKDIR_FRAMEWORK}
+	SHELL ["/bin/bash", "-c"]
+	COPY data/README-frameworks.txt ${WORKDIR_RECON}
+
+	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/rapid7/metasploit-framework.git && chmod -R 777 metasploit-framework; fi ; \
+		if [ "$FRAMEWORK_BEEF" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/beefproject/beef && chmod -R 777 beef; fi ; \
+		if [ "$FRAMEWORK_BETTERCAP" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/bettercap/bettercap.git && cd bettercap && make build; fi
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
@@ -129,17 +145,22 @@ FROM base AS kraken-recon
 FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
-	WORKDIR ${WORKDIR_RECON}
-	COPY --from=kraken-recon ${WORKDIR_RECON} ${WORKDIR_RECON}
+	WORKDIR ${WORKDIR_FRAMEWORK}
+	COPY --from=kraken-framework ${WORKDIR_FRAMEWORK} ${WORKDIR_FRAMEWORK}
 
-	#Programs and dependencies for RECON.
-	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON}/recon-ng && pip3 install -r REQUIREMENTS; fi ; \
-		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
-		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
-		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
-		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
-		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make; fi
+	#Programs and dependencies for FRAMEWORKS.
+	USER ${USERNAME}
+	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then \
+			source ${RVM_LOADER} \
+			&& rvm use ${RUBY_VERSION} \
+			&& cd ${WORKDIR_FRAMEWORK}/metasploit-framework \
+			&& gem install bundle && bundle install; fi ; \
+		if [ "$FRAMEWORK_BEEF" = "True" ] ; then \
+			source ${RVM_LOADER} \
+			&& rvm use ${RUBY_VERSION} \
+			&& cd ${WORKDIR_FRAMEWORK}/beef \
+			&& bundle install; fi 
+	USER root
 
 ###################################################################################################################
 # OUTPUT LAYER 																							          
@@ -154,4 +175,5 @@ FROM kraken-composition
 		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
 	EXPOSE $EXPOSE_PORTS
 	USER ${USERNAME}
+	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
 	CMD tail -f /dev/null

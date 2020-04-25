@@ -1,83 +1,40 @@
-from flask import Flask, jsonify
-from flask import abort
-from flask import make_response
-from flask import request
 import json
-import os
+import os,sys
 import jsonschema
 
-app = Flask(__name__)
+from core.krakenrdi.build.controller import BuildController
+from core.krakenrdi.build.view import BuildView
+from core.krakenrdi.server import Server
 
-'''
-Available endpoints:
-/config/docker				Configuration for Docker daemon
-
-/recon/list					List of tools available.
-/recon/enable				Selection of enabled tools.
-/recon/generate				Generate image.
-/recon/settings				Set configuration options: General and tools specific.
-/recon/container/create
-/recon/container/status
-/recon/container/stop
-/recon/container/remove
-/recon/container/prune
-'''
-
-'''
-Stages:	"recon", "weaponization", "delivery", "exploitation", 
-		"persistence", "commandcontrol", "interalrecon", "movelaterally", "exfiltrate"
-
-{"stage":"recon"}
-
-'''
-@app.route('/recon/list', methods=["GET","POST"])
-def listTools():
-	if request.is_json is False:
-		abort(400)
-	if not request.json or not 'stage' in request.json:
-		abort(400)
-	stage = request.json['stage']
-	stages = {}
-	tools = {}
-	with open("config/tools.json", "r") as fdTools:
-		stages = json.loads(fdTools.read())
-
-	if stage in stages.keys():
+class KrakenRDI():
+	
+	def startup(self):
+		self.configuration = {}
+		self.tools = {}
+		self.arguments = {}
 		try:
-			tools = stages[stage]
+			with open('config/config.json') as configFile:
+				self.configuration = json.load(configFile)
 		except:
-			abort(500)
-	else:
-		abort(404)
-	return jsonify(tools)
+			print("Failed reading configuration from <KRAKENRID_DIR>/config/config.json")
+			sys.exit(1)
 
-@app.route('/recon/enable', methods=["GET","POST"])
-def enableTools():
-    return 'Hello, World!'
+		try:
+			with open('config/tools.json') as toolsFile:
+				self.tools = json.load(toolsFile)
+		except:
+			print("Failed reading configuration from <KRAKENRID_DIR>/config/tools.json")
+			sys.exit(1)
 
-@app.route('/recon/settings', methods=["GET","POST"])
-def settings():
-    return 'Hello, World!'
-
-@app.route('/recon/generate', methods=["GET","POST"])
-def generateImage():
-    return 'Hello, World!'
-
-
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    return make_response(jsonify({'message': 'Internal server error processing the request.'}), 500)
-
-@app.errorhandler(400)
-def bad_request(error):
-    return make_response(jsonify({'message': 'Invalid request. Read the docs.'}), 400)
-
-@app.errorhandler(404)
-def bad_request(error):
-    return make_response(jsonify({'message': 'Resource not found'}), 404)
-
+		try:
+			with open('config/arguments.json') as argumentsFile:
+				self.arguments = json.load(argumentsFile)
+		except:
+			print("Failed reading configuration from <KRAKENRID_DIR>/config/arguments.json")
+			sys.exit(1)
+		Server.init(self.configuration, self.tools, self.arguments)
+		Server.startServer()
 
 if __name__ == '__main__':
-    app.run()
+	kraken = KrakenRDI()
+	kraken.startup()

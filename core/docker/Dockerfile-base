@@ -245,6 +245,7 @@ FROM base AS kraken-anon
 	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz && tar -xvf tor-browser-linux64-9.0.9_en-US.tar.xz && rm -rf tor-browser-linux64-9.0.9_en-US.tar.xz; fi ; \
 		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
 
+
 ###################################################################################################################
 # RECON IMAGE 																							          
 # DESCRIPTION:																									  
@@ -257,7 +258,8 @@ FROM base AS kraken-anon
 #	[^] metagoofil: https://github.com/laramies/metagoofil 														  
 #	[^] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
 #	[^] Maltego: https://www.paterva.com/web7/downloads.php 														  
-#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot														  
+#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot
+#	[^] Nmap: https://github.com/nmap/nmap.git								  
 ###################################################################################################################
 FROM base AS kraken-recon
 	LABEL author="Adastra"
@@ -275,7 +277,7 @@ FROM base AS kraken-recon
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
-		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi \
+		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
 
 ###################################################################################################################
@@ -431,6 +433,7 @@ FROM base AS kraken-framework
 	LABEL description="Layer for framework stage."
 	WORKDIR ${WORKDIR_FRAMEWORK}
 	SHELL ["/bin/bash", "-c"]
+	COPY data/README-frameworks.txt ${WORKDIR_RECON}
 
 	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/rapid7/metasploit-framework.git && chmod -R 777 metasploit-framework; fi ; \
 		if [ "$FRAMEWORK_BEEF" = "True" ] ; then cd ${WORKDIR_FRAMEWORK} && git clone https://github.com/beefproject/beef && chmod -R 777 beef; fi ; \
@@ -502,7 +505,7 @@ FROM base as kraken-composition
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
-		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make; fi
+		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make && make install; fi
 
 	#Programs and dependencies for WEAPON.
 	#Programs and dependencies for DELIVERY.
@@ -524,7 +527,6 @@ FROM base as kraken-composition
 			&& rvm use ${RUBY_VERSION} \
 			&& cd ${WORKDIR_FRAMEWORK}/beef \
 			&& bundle install; fi 
-	USER root
 
 	#Programs and dependencies for COMMON.
 	USER ${USERNAME}
@@ -547,9 +549,8 @@ FROM kraken-composition
 		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
 	EXPOSE $EXPOSE_PORTS
 	ENV NOTVISIBLE "in users profile"
-	RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
-		echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
+	RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd 
 	COPY data/banner /etc/issue.net
 	USER ${USERNAME}
-	#Have to start some services: SSHD and Postgresql.
-	CMD tail -f /dev/null 
+	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
+	CMD tail -f /dev/null

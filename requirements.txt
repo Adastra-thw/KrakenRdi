@@ -1,3 +1,5 @@
 flask
 requests
 jsonschema
+pymongo
+Flask-PyMongo
