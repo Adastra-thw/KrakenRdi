@@ -170,7 +170,7 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	BASE SOFTWARE INSTALLATION
 	########################################
-	RUN apt-get update && apt-get -y install net-tools netcat nano locate \
+	RUN apt-get update && apt-get -y install net-tools netcat socat nano locate \
 		python3 python3-dev python3-pip \
 		python python-dev python-pip \
 		unzip wget curl git gcc libc-dev libxslt-dev \

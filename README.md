@@ -45,6 +45,13 @@ K(Exfiltration Image) -- INCLUDES --> K1(Recon-ng, SpiderFoot, TheHarvester, etc
 ## Toolbox:
 
 ## Installation
+On Debian-based systems:
+
+apt update
+apt-get -y install python3 python3-dev redis-server
+
+Also, you need to install MongoDB:
+And off course, Docker-CE: 
 
 ## Contact
 If you find any problem let try to discover the root cause and open an issue. For any other matter you can contact contact with me at adastra@thehackerway.com

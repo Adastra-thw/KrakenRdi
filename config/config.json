@@ -1,6 +1,8 @@
 {
 	"config": {
 		"databaseName": "krakenrdi",
-		"databaseURI": "mongodb://localhost:27017/krakenrdi"
+		"databaseURI": "mongodb://localhost:27017/krakenrdi",
+		"celeryBrokerUrl": "redis://localhost:6379/0",
+		"celeryResultBackend": "redis://localhost:6379/0"
 	}
 } 

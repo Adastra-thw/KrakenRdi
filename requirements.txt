@@ -3,3 +3,5 @@ requests
 jsonschema
 pymongo
 Flask-PyMongo
+celery
+plumbum

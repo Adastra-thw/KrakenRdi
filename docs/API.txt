@@ -80,7 +80,7 @@ Builds endpoints
 					]
 				}
 
-/build/details:
+/build/detail:
 			Methods: POST
 			Request;
 				{

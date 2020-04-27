@@ -1,125 +1,264 @@
-{
-	"globalOptions": {
-		"USERNAME": "krakenrdi",
-		"PASSWORD": "krakenrdi",
-		"EXPOSE_PORTS": "22 80 443 3306 5432 8080 8081 8000",
-		"RUBY_VERSION": "2.6.6",
-		"RVM_DIR": "/usr/local/rvm/",
-		"RVM_LOADER": "/etc/profile.d/rvm.sh",
-		"POSTGRES_PASSWORD": "postgres",
-		"POSTGRES_DB_NAME": "database_pg",
-		"POSTGRES_DB_USERNAME": "userdb",
-		"POSTGRES_DB_PASSWORD": "password"
+[
+	{
+		"name":	"USERNAME",
+		"value": "krakenrdi",
+		"type": "globalOptions"
 	},
-	"common": {
-		"defaultOptions": {
-			"COMMON_THC_HYDRA": { "value": "True", 
-									"description": "Install THC Hydra from GitHub repository"},
-			"COMMON_CWEL": { "value": "True", 
-							   "description": "Install CWEL from GitHub repository"}, 
-			"COMMON_POSTMAN": { "value":"True", 
-							   		 "description": "Install Postman from GitHub repository"},
-			"COMMON_FUZZDB": { "value": "True", 
-							   "description": "Install FuzzDB from GitHub repository"}, 
-			"COMMON_DIRBUSTER": { "value":"True", 
-							   		 "description": "Install DirBuster from GitHub repository"}
-		}
+	{
+		"name":	"PASSWORD",
+		"value": "krakenrdi",
+		"type": "globalOptions"
 	},
-
-	"frameworks": {
-		"defaultOptions": {
-			"FRAMEWORK_METASPLOIT": { "value": "True",
-							    "description": "Install Metasploit Framework from GitHub repository"}, 
-			"FRAMEWORK_BEEF": { "value": "True", 
-							   "description": "Install BeEF from GitHub repository"}, 
-			"FRAMEWORK_BETTERCAP": { "value":"True", 
-							   		 "description": "Install BetterCap from GitHub repository"}
-		}
+	{
+		"name":	"EXPOSE_PORTS",
+		"value": "22 80 443 3306 5432 8080 8081 8000",
+		"type": "globalOptions"
 	},
-	"anon": {
-		"defaultOptions": {
-			"TOR_LATEST_VERSION": { "value": "0.4.2.7",
-									 "description": "Download this version of TOR Software"},
-			"ANON_TOR_SOURCE": { "value": "True", 
-								  "description": "Install TOR from source (recommended)"}, 
-			"ANON_TOR_APT": { "value":"False", 
-							   "description": "Install TOR from Debian repository (apt-get)"},	
-			"ANON_TORBROWSER": { "value":"True", 
-								  "description": "Install the latest version of TorBrowser"},
-			"ANON_TORSOCKS": {	"value":"True", 
-								"description": "Install the latest version of TorSocks from Debian repository (apt-get)"},
-			"ANON_PROXYCHAINS": { "value": "True", 
-								   "description": "Install ProxyChains from Debian repository (apt-get)"}
-		}
+	{
+		"name":	"RUBY_VERSION",
+		"value": "2.6.6",
+		"type": "globalOptions"
 	},
-	"recon": {
-		"defaultOptions": {
-			"RECON_RECONNG": { "value": "True",
-							    "description": "Install Recon-NG from GitHub repository"}, 
-			"RECON_PHOTON": { "value": "True", 
-							   "description": "Install Photon from GitHub repository"}, 
-			"RECON_THEHARVESTER": { "value":"True", 
-							   		 "description": "Install theHarvester from GitHub repository"},	
-			"RECON_SKIPTRACER": { "value":"True", 
-								   "description": "Install SkipTracer from GitHub repository"},
-			"RECON_METAGOOFIL": { "value":"True", 
-							 	   "description": "Install Metagoofil from GitHub repository"},
-			"RECON_JUSTMETADATA": { "value": "True", 
-								     "description": "Install JustMetaData from GitHub repository"},
-			"RECON_SPIDERFOOT": { "value": "True", 
-								     "description": "Install SpiderFoot from GitHub repository"},
-			"RECON_MALTEGO": { "value": "False", 
-								 "description": "Install Maltego from official website"},
-			"RECON_PHONEINFOGA": { "value": "True", 
-								     "description": "Install PhoneInfoga from GitHub repository"},
-			"RECON_NMAP": { "value": "True", 
-								     "description": "Install Nmap from GitHub repository"}
-		}
+	{
+		"name":	"RVM_DIR",
+		"value": "/usr/local/rvm/",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"RVM_LOADER",
+		"value": "/etc/profile.d/rvm.sh",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"POSTGRES_PASSWORD",
+		"value": "postgres",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"POSTGRES_DB_NAME",
+		"value": "database_pg",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"POSTGRES_DB_USERNAME",
+		"value": "userdb",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"POSTGRES_DB_PASSWORD",
+		"value": "password",
+		"type": "globalOptions"
+	},
+	{
+		"name":	"COMMON_THC_HYDRA",
+		"value": "True",
+		"type": "common"
+	},
+	{
+		"name":	"COMMON_CWEL",
+		"value": "True",
+		"type": "common"
+	},
+	{
+		"name":	"COMMON_POSTMAN",
+		"value": "True",
+		"type": "common"
+	},
+	{
+		"name":	"COMMON_FUZZDB",
+		"value": "True",
+		"type": "common"
+	},
+	{
+		"name":	"COMMON_DIRBUSTER",
+		"value": "True",
+		"type": "common"
+	},
+	{
+		"name":	"FRAMEWORK_METASPLOIT",
+		"value": "True",
+		"type": "frameworks"
+	},
+	{
+		"name":	"FRAMEWORK_BEEF",
+		"value": "True",
+		"type": "frameworks"
+	},
+	{
+		"name":	"FRAMEWORK_BETTERCAP",
+		"value": "True",
+		"type": "frameworks"
+	},
+	{
+		"name":	"TOR_LATEST_VERSION",
+		"value": "0.4.2.7",
+		"type": "anon"
+	},
+	{
+		"name":	"ANON_TOR_SOURCE",
+		"value": "True",
+		"type": "anon"
+	},
+	{
+		"name":	"ANON_TOR_APT",
+		"value": "False",
+		"type": "anon"
+	},
+	{
+		"name":	"ANON_TORBROWSER",
+		"value": "True",
+		"type": "anon"
+	},
+	{
+		"name":	"ANON_TORSOCKS",
+		"value": "True",
+		"type": "anon"
+	},
+	{
+		"name":	"ANON_PROXYCHAINS",
+		"value": "True",
+		"type": "anon"
+	},
+	{
+		"name":	"RECON_RECONNG",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_PHOTON",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_THEHARVESTER",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_SKIPTRACER",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_METAGOOFIL",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_JUSTMETADATA",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_SPIDERFOOT",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_MALTEGO",
+		"value": "False",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_PHONEINFOGA",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"RECON_NMAP",
+		"value": "True",
+		"type": "recon"
+	},
+	{
+		"name":	"WEAPON_CVE2018_20250",
+		"value": "True",
+		"type": "weaponization"
+	},
+	{
+		"name":	"WEAPON_CVE2017_8759",
+		"value": "True",
+		"type": "weaponization"
+	},
+	{
+		"name":	"WEAPON_CVE2017_8570",
+		"value": "True",
+		"type": "weaponization"
+	},
+	{
+		"name":	"WEAPON_CVE2017_0199",
+		"value": "True",
+		"type": "weaponization"
+	},	
+	{
+		"name":	"WEAPON_DEMIGUISE",
+		"value": "True",
+		"type": "weaponization"
+	},	
+	{
+		"name":	"WEAPON_MALICIOUSMACROGENERATOR",
+		"value": "True",
+		"type": "weaponization"
+	},
+	{
+		"name":	"WEAPON_OFFICEDDEPAYLOADS",
+		"value": "True",
+		"type": "weaponization"
+	},	
+	{
+		"name":	"WEAPON_DONTKILLMYCAT",
+		"value": "True",
+		"type": "weaponization"
+	},	
+	{
+		"name":	"WEAPON_EMBEDINHTML",
+		"value": "True",
+		"type": "weaponization"
+	},		
+	{
+		"name":	"WEAPON_MACRO_PACK",
+		"value": "True",
+		"type": "weaponization"
+	},			
+	{
+		"name":	"",
+		"value": "True",
+		"type": "delivery"
+		
 	}, 
-
-	"weaponization": {
-		"defaultOptions": {
-			"WEAPON_CVE2018_20250": { "value": "True", 
-								     "description": "Install CVE2018_20250 from GitHub repository"},
-			"WEAPON_CVE2017_8759": { "value": "True", 
-								     "description": "Install CVE2017_8759 from GitHub repository"},
-			"WEAPON_CVE2017_8570": { "value": "True", 
-								     "description": "Install CVE2017_8570 from GitHub repository"},
-			"WEAPON_CVE2017_0199": { "value": "True", 
-								     "description": "Install CVE2017_0199 from GitHub repository"},
-			"WEAPON_DEMIGUISE": { "value": "True", 
-								     "description": "Install EMIGUISE from GitHub repository"},
-			"WEAPON_MALICIOUSMACROGENERATOR": { "value": "True", 
-								     "description": "Install MALICIOUSMACROGENERATOR from GitHub repository"},
-			"WEAPON_OFFICEDDEPAYLOADS": { "value": "True", 
-								     "description": "Install OFFICEDDEPAYLOADS from GitHub repository"},
-			"WEAPON_DONTKILLMYCAT": { "value": "True", 
-								     "description": "Install DONTKILLMYCAT from GitHub repository"},
-			"WEAPON_EMBEDINHTML": { "value": "True", 
-								     "description": "Install EMBEDINHTML from GitHub repository"},
-			"WEAPON_MACRO_PACK": { "value": "True", 
-								     "description": "Install MACRO_PACK from GitHub repository"}
-		}
+	{
+		"name":	"",
+		"value": "True",
+		"type": "exploitation"
+		
 	}, 
-	"delivery": {
-		"defaultOptions": {}		
+	{
+		"name":	"",
+		"value": "True",
+		"type": "persistence"
+		
 	}, 
-	"exploitation": {
-		"defaultOptions": {}		
-	},
-	"persistence": {
-		"defaultOptions": {}		
-	} , 
-	"commandcontrol": {
-		"defaultOptions": {}
-	},
-	"interalrecon": {
-		"defaultOptions": {}
+	{
+		"name":	"",
+		"value": "True",
+		"type": "commandcontrol"
+		
 	}, 
-	"movelaterally": {
-		"defaultOptions": {}
+	{
+		"name":	"",
+		"value": "True",
+		"type": "interalrecon"
+		
 	},
-	"exfiltrate": {
-		"defaultOptions": {}		
+	{
+		"name":	"",
+		"value": "True",
+		"type": "movelaterally"
+		
+	},
+	{
+		"name":	"",
+		"value": "True",
+		"type": "exfiltrate"
+		
 	}
-}
+]
