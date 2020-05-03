@@ -4,5 +4,6 @@
 [] Create Rest API and EndPoints.
 [] Validate JSON structures with jsonschema
 [] Test every endpoint.
-[] Think about the name of the project
+[^] Think about the name of the project
 [] Personalization with logo and artworks
+[] Check the config file before run the server or worker. If it's not ok, show a message and don't start.

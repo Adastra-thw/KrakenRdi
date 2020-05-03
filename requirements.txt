@@ -5,3 +5,4 @@ pymongo
 Flask-PyMongo
 celery
 plumbum
+jsonpickle

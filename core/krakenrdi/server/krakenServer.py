@@ -5,48 +5,63 @@ from flask import request
 from flask_pymongo import PyMongo
 from celery import Celery, task
 import sys
+from core.krakenrdi.server.CoreObjects import KrakenConfiguration
+from core.krakenrdi.backend.ServiceManager import KrakenManager
 
 class KrakenServer():
-	restApi = Flask(__name__)
-	#
-	# Initialize Celery
-	taskEngine = Celery(restApi.name, 
-						backend='redis://localhost:6379/0', 
-						broker='redis://localhost:6379/0',
-						include=['core.krakenrdi.build'])
-	taskEngine.conf.update(restApi.config)
-	database = None
 	
+	buildService = None
+	containerService = None
+	toolService = None
+	'''
+	Create singletons for the managers of the application.
+	'''
+	@staticmethod
+	def configureServices():
+		coreManager = KrakenManager(database=KrakenConfiguration.database, 
+									configuration=KrakenConfiguration.configuration)
+		KrakenServer.buildService=coreManager.getBuildService()
+		KrakenServer.containerService=coreManager.getContainerService()
+		KrakenServer.toolService=coreManager.getToolService()
+
+
 	@staticmethod
 	def init(configuration, tools, arguments):
-		KrakenServer.restApi.config['DEBUG'] = True
+		KrakenConfiguration.configuration = configuration
+		KrakenConfiguration.restApi.config['DEBUG'] = True
 		#Database initialization
-		KrakenServer.restApi.config['MONGO_DBNAME'] = configuration['config']['databaseName']
-		KrakenServer.restApi.config['MONGO_URI'] = configuration['config']['databaseURI']
+		KrakenConfiguration.restApi.config['MONGO_DBNAME'] = configuration['config']['databaseName']
+		KrakenConfiguration.restApi.config['MONGO_URI'] = configuration['config']['databaseURI']
 		# Celery configuration
-		KrakenServer.restApi.config['CELERY_BROKER_URL'] = configuration['config']['celeryBrokerUrl']
-		KrakenServer.restApi.config['CELERY_RESULT_BACKEND'] = configuration['config']['celeryResultBackend']
-
+		KrakenConfiguration.restApi.config['CELERY_BROKER_URL'] = configuration['config']['celeryBrokerUrl']
+		KrakenConfiguration.restApi.config['CELERY_RESULT_BACKEND'] = configuration['config']['celeryResultBackend']
+		KrakenConfiguration.restApi.config['CELERY_TRACK_STARTED'] = True
+		KrakenConfiguration.restApi.config['CELERY_SEND_EVENTS'] = True
+		KrakenConfiguration.taskEngine.conf.update(KrakenConfiguration.restApi.config)
+		
 		try:
 			#Connect with MongoKrakenServer.
-			dbConnection = PyMongo(KrakenServer.restApi)
-			KrakenServer.database = dbConnection.db
-			if "arguments" not in KrakenServer.database.list_collection_names():
-				KrakenServer.database.arguments.insert(arguments)
-			if "tools" not in KrakenServer.database.list_collection_names():
-				KrakenServer.database.tools.insert(tools)
+			dbConnection = PyMongo(KrakenConfiguration.restApi)
+			KrakenConfiguration.database = dbConnection.db
+			if "arguments" not in KrakenConfiguration.database.list_collection_names():
+				KrakenConfiguration.database.arguments.insert(arguments)
+			if "tools" not in KrakenConfiguration.database.list_collection_names():
+				KrakenConfiguration.database.tools.insert(tools)
 		except:
 			print("Error in initialization of database. Check that your Mongo server is running at "+configuration['config']['databaseURI'])
 			sys.exit(1)
+		#KrakenServer.manager = KrakenManager(database=KrakenServer.database, 
+        #									 configuration=KrakenServer.configuration)
 
-	@restApi.errorhandler(500)
+
+	@KrakenConfiguration.restApi.errorhandler(500)
 	def internal_error(error):
 		return make_response(jsonify({'message': str(error)}), 500)
 
-	@restApi.errorhandler(400)
+	@KrakenConfiguration.restApi.errorhandler(400)
 	def bad_request(error):
 		return make_response(jsonify({'message': str(error)}), 400)
 
-	@restApi.errorhandler(404)
+	@KrakenConfiguration.restApi.errorhandler(404)
 	def bad_request(error):
 		return make_response(jsonify({'message': 'Resource not found'}), 404)

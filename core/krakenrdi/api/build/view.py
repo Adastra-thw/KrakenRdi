@@ -1,12 +1,16 @@
+from core.krakenrdi.server.CoreObjects import KrakenConfiguration
 from core.krakenrdi.server.krakenServer import KrakenServer
-from flask import Flask, jsonify
+
+from flask import jsonify
 from flask import request, abort
 from flask import make_response
 import json, os, jsonschema
-from core.krakenrdi.common.buildValidation import validateCreateBuild
-from core.krakenrdi.build.tasks import createBuild, duplicateBuild
+from core.krakenrdi.api.common.validations import validateCreateBuild
+from jsonpickle import encode
+from flask import jsonify
 
 class BuildView():
+
 
 	'''
 	/build/list:
@@ -14,11 +18,11 @@ class BuildView():
 				Request: {}
 				Description: List every build created.
 	'''
-	@KrakenServer.restApi.route('/build/list', methods=["GET","POST"])
+	@KrakenConfiguration.restApi.route('/build/list', methods=["GET","POST"])
 	def listBuilds():
-		#tools = validateJson(request, abort)
-		return jsonify(tools)
-
+		response = KrakenServer.buildService.list()
+		return jsonify(response)
+	
 	'''
 	/build/create:
 			Response:
@@ -26,17 +30,12 @@ class BuildView():
 				"message" : "Request for build creation received."			
 			}
 	'''
-	@KrakenServer.restApi.route('/build/create', methods=["PUT","POST"])
+	@KrakenConfiguration.restApi.route('/build/create', methods=["PUT","POST"])
 	def createBuild():
-		build = {}
+		response = {}
 		if validateCreateBuild(request, abort):
-			#The JSON structure is valid, but before to save in database it's needed to send the task to Docker.
-			celeryCreateBuildTask = createBuild.delay(request.json)
-			print(celeryCreateBuildTask)
-			#Create the build in database.
-			print("create db")
-			KrakenServer.database.builds.insert(request.json)
-		return jsonify(build)
+			response = KrakenServer.buildService.build(request.json)
+		return response
 
 	'''
 			{	
@@ -57,7 +56,7 @@ class BuildView():
 								}]
 			}, 
 	'''
-	@KrakenServer.restApi.route('/build/detail', methods=["POST"])
+	@KrakenConfiguration.restApi.route('/build/detail', methods=["POST"])
 	def detailBuild():
 		build = {}
 		return jsonify(build)
@@ -81,17 +80,17 @@ class BuildView():
 								}]
 			}, 
 	'''
-	@KrakenServer.restApi.route('/build/delete', methods=["POST", "DELETE"])
+	@KrakenConfiguration.restApi.route('/build/delete', methods=["POST", "DELETE"])
 	def deleteBuild():
 		build = {}
 		return jsonify(build)
 
-	@KrakenServer.restApi.route('/build/filter', methods=["POST"])
+	@KrakenConfiguration.restApi.route('/build/filter', methods=["POST"])
 	def filterBuild():
 		build = {}
 		return jsonify(build)
 
-	@KrakenServer.restApi.route('/build/status', methods=["POST"])
+	@KrakenConfiguration.restApi.route('/build/status', methods=["POST"])
 	def statusBuild():
 		build = {}
 		return jsonify(build)

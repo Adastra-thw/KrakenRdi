@@ -9,7 +9,8 @@ createBuildSchema = {
     "type": "object",
     "properties": {
         "buildName": {  "type": "string",  
-                        "maxLength": 20},
+                        "maxLength": 20, 
+                        "minLength": 2},
         "buildScope": { "type": "array", 
                         "minItems": 1, 
                         "items": {"enum": ["common", "frameworks", "anon", "recon", 
@@ -35,6 +36,11 @@ createBuildSchema = {
                                                  "maxLength": 20},
                                     "PASSWORD": {"type": "string", 
                                                  "maxLength": 20},
+                                    "EXPOSE_PORTS": {"type": "array", 
+                                                     "minItems": 1,
+                                                     "uniqueItems": True,
+                                                     "items": {
+                                                     "type": "number"}},
                                     "RUBY_VERSION": {"type": "string", 
                                                  "maxLength": 10},
                                     "RVM_DIR": {"type": "string", 
@@ -50,11 +56,12 @@ createBuildSchema = {
                                     "POSTGRES_DB_PASSWORD": {"type": "string", 
                                                  "maxLength": 20},
 
+
                                 },
                                 "additionalProperties": False},
         "startSSH": {"type": "boolean"},
         "startPostgres": {"type": "boolean"},
-        "exposedPorts": {"type": "array", "uniqueItems": True},
+        "additionalProperties": False,
     },
     "required": ["buildName", "buildScope", "tools"]
 }

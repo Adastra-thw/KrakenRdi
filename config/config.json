@@ -3,6 +3,13 @@
 		"databaseName": "krakenrdi",
 		"databaseURI": "mongodb://localhost:27017/krakenrdi",
 		"celeryBrokerUrl": "redis://localhost:6379/0",
-		"celeryResultBackend": "redis://localhost:6379/0"
+		"celeryResultBackend": "redis://localhost:6379/0",
+		"pathDockerImages": "/core/docker",
+		"dockerImages": {"BASE": "Dockerfile-base", 
+						"COMMON":  "Dockerfile-common",
+						"FRAMEWORKS":  "Dockerfile-frameworks",
+						"RECON":  "Dockerfile-recon",
+						"WEAPON":  "Dockerfile-weapon"}, 
+		"imageBase": "adastra/krakenrdi"	
 	}
 } 

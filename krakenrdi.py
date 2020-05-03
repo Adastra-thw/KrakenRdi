@@ -1,12 +1,9 @@
 import json
 import os,sys
 from plumbum import cli
-from core.krakenrdi.build.view import BuildView
+from core.krakenrdi.server.CoreObjects import KrakenConfiguration
 from core.krakenrdi.server.krakenServer import KrakenServer
-
-
-
-
+from core.krakenrdi.api.build.view import BuildView
 
 class KrakenRDI(cli.Application):
 	restApiCli = cli.Flag(["-r", "--start-restapi"], help = "Start Rest API.")
@@ -40,6 +37,10 @@ class KrakenRDI(cli.Application):
 				sys.exit(1)
 			KrakenServer.init(self.configuration, self.tools, self.arguments)
 			print("Configuration established.")
+			KrakenServer.configureServices()
+			print("Core services for the Rest API configured.")
+			
+
 
 		if self.restApiCli:
 			print("Starting webserver and Rest API...")
@@ -49,7 +50,7 @@ class KrakenRDI(cli.Application):
 			self.startWorker()
 
 	def startRestApi(self):
-		KrakenServer.restApi.run()
+		KrakenConfiguration.restApi.run()
 
 	def startWorker(self):
 		from celery import Celery, task
@@ -59,14 +60,13 @@ class KrakenRDI(cli.Application):
 		
 		application = current_app._get_current_object()
 		worker = worker.worker(app=application)
-		print(KrakenServer.restApi.config['CELERY_BROKER_URL'])
 		options = {
-			'broker': KrakenServer.restApi.config['CELERY_BROKER_URL'],
+			'broker': KrakenConfiguration.restApi.config['CELERY_BROKER_URL'],
 			'loglevel': 'INFO',
 			'traceback': True,
 		}
 		worker.run(**options)
-		print("Worker started successfully. Now, from other terminal start the Rest Api to complete the Kraken startup...")
+		#print("Worker started successfully. Now, from other terminal start the Rest Api to complete the Kraken startup...")
 
 		
 
