@@ -11,7 +11,6 @@ from core.krakenrdi.backend.connector.builder import DockerManagerConnection
 '''
 @KrakenConfiguration.taskEngine.task(bind=True)
 def createBuild(self, imageJson):
-
 	buildStored = KrakenConfiguration.database.builds.find_one({"taskId": self.request.id})
 	try:
 		dockerManager = DockerManagerConnection()

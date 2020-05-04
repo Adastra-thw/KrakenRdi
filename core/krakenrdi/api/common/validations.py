@@ -59,21 +59,117 @@ createBuildSchema = {
 
                                 },
                                 "additionalProperties": False},
-        "startSSH": {"type": "boolean"},
-        "startPostgres": {"type": "boolean"},
+        "startSSH": {"type": "boolean", 
+                     "default": False},
+        "startPostgres": {"type": "boolean", 
+                          "default": True},
         "additionalProperties": False,
     },
     "required": ["buildName", "buildScope", "tools"]
 }
 
 '''
+JSON Schema used to create a container. 
+'''
+createContainerSchema = {
+    "type": "object",
+    "properties": {
+        "buildName": {  "type": "string",  
+                        "maxLength": 20, 
+                        "minLength": 2},
+        "containerName": {  "type": "string",  
+                        "maxLength": 20, 
+                        "minLength": 2},
+        "autoRemove": {"type": "boolean", 
+                        "default": True},
+        "capAdd": {"type": "array", 
+                    "minItems": 1,
+                    "uniqueItems": True,
+                    "items": {"type": "string"}
+                    }, 
+        "capDrop": {"type": "array", 
+                    "minItems": 1,
+                    "uniqueItems": True,
+                    "items": {"type": "string"}
+                    }, 
+        "hostname":  {  "type": "string",  
+                        "maxLength": 20, 
+                        "minLength": 2},
+        "memoryLimit": {
+                        "type": "string",  
+                        "maxLength": 20, 
+                        "minLength": 2 },
+        "networkMode": {
+                        "type": "string",  
+                        "maxLength": 20, 
+                        "minLength": 2,
+                        "enum": ["host", "bridge", "none"]
+                        },
+        "networkDisabled": {
+                        "type": "boolean",  
+                        "default": False},
+        "readOnly": {
+                        "type": "boolean",  
+                        "default": False},
+        "removeOnFinish": {
+                        "type": "boolean",  
+                        "default": False},
+        "ports": {"type": "array",
+                  "items": { 
+                        "type": "object",  
+                        "properties": {
+                            "containerPort": {"type": "object":{
+                                                "properties": {
+                                                    "protocol": {"type": "string", "maxLength": 3, 
+                                                                "enum": ["tcp","udp"]}, 
+                                                    "port": {"type": "number"},
+                                                }
+                                             }
+                                             }, 
+                            "hostPort": {"type": "object":{
+                                                "properties": {
+                                                    "protocol": {"type": "string", "maxLength": 3},
+                                                                "enum": ["tcp","udp"] 
+                                                    "port": {"type": "number"},
+                                                    "interface": {"type": "string"},
+                                                },
+                                             },
+                                        },
+                            },
+                        },
+                },
+        "volumes": {
+                        "type": "array", 
+                        "minItems": 1,
+                        "uniqueItems": True,
+                        "items": {  "type": "object",
+                                    "properties": {
+                                        "hostVolume": { "type:" "string"},
+                                        "containerOptions": {
+                                                         "type": "object", 
+                                                            "properties":
+                                                                "containerVolume":  { "type": "string"},  
+                                                                "modeVolume": { "type": "string",
+                                                                                "maxLength": 3, 
+                                                                                "enum": ["rw","ro"]},
+                                                        }, 
+                                    },
+                        },                       
+                    },
+    }
+    "required": ["buildName", "containerName"]
+}
+
+'''
 Validation of the JSON structure using the JSON Schema to create builds.
 '''
-def validateCreateBuild(request, abort):
+def validate(request, abort, schema):
+    schemas = {"createBuild": createBuildSchema, 
+               "createContainer": createContainerSchema}
     if request.is_json is False:
         abort(400)
     try:
-        validate(instance=request.json, schema=createBuildSchema)
+        validate(instance=request.json, schema=schemas[schema])
     except jsonschema.exceptions.ValidationError as err:
         #print(err._word_for_schema_in_error_message)
         abort(400, err.message)

@@ -4,6 +4,7 @@ from plumbum import cli
 from core.krakenrdi.server.CoreObjects import KrakenConfiguration
 from core.krakenrdi.server.krakenServer import KrakenServer
 from core.krakenrdi.api.build.view import BuildView
+from core.krakenrdi.api.container.view import ContainerView
 
 class KrakenRDI(cli.Application):
 	restApiCli = cli.Flag(["-r", "--start-restapi"], help = "Start Rest API.")

@@ -33,7 +33,7 @@ class BuildView():
 	@KrakenConfiguration.restApi.route('/build/create', methods=["PUT","POST"])
 	def createBuild():
 		response = {}
-		if validateCreateBuild(request, abort):
+		if validateCreateBuild(request, abort, schema="createBuild"):
 			response = KrakenServer.buildService.build(request.json)
 		return response
 
