@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "krakenrdi.py",
             "console": "integratedTerminal",
-            "args": ["-r", "-c"]
+            "args": ["-r"]
         },
         {
             "name": "CELERY WORKER",

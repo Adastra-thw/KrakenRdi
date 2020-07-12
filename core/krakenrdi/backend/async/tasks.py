@@ -39,9 +39,3 @@ def createBuild(self, imageJson):
 	buildStored["taskState"] = {'status':'FINISHED', 'message': 'Task finished.'}
 	KrakenConfiguration.database.builds.update_one({'_id':buildStored["_id"]}, 
 											{"$set": buildStored}, upsert=False)
-'''
-	Duplicate an existing build
-'''
-@KrakenConfiguration.taskEngine.task()
-def duplicateBuild(buildJson):
-	print(222)

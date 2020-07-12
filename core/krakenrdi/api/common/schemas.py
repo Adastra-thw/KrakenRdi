@@ -141,11 +141,11 @@ createContainerSchema = {
                         "type": "object",
                         "properties": {
                                 "protocolHost": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"]}, 
-                                "portHost": {"type": "number"},                                              
-                                "protocolContainer": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"]}, 
+                                "portHost": {"type": "number"},
+                                "protocolContainer": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"] }, 
                                 "portContainer": {"type": "number"}
-                            },
                         },
+                    },
                 },
         "volumes": {
                         "type": "array", 
@@ -158,7 +158,7 @@ createContainerSchema = {
                                                          "type": "object", 
                                                             "properties": {
                                                                 "containerVolume":  {"type": "string"},  
-                                                                "modeVolume": { "type": "string",
+                                                                "modeVolume": { "type": "array",
                                                                                 "maxLength": 3, 
                                                                                 "enum": ["rw","ro"]},
                                                             }
@@ -166,7 +166,8 @@ createContainerSchema = {
                                     },
                         },                       
                     },
-    "required": ["buildName"]
+    },
+    "required": ["buildName"],
 }
 
 infoToolSchema= { "type": "object",
@@ -202,8 +203,8 @@ defaultsContainer={
                 "readOnly": False,
                 "networkDisabled": False,
                 "networkMode": "host",
-                "capDrop": None,
-                "capAdd": "ALL",
+                "capDrop": [],
+                "capAdd": ["ALL"],
                 "autoRemove": True,
                 "hostname": "krakenrdi",
                 "memoryLimit": "32g"

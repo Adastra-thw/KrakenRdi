@@ -10,7 +10,7 @@ from core.krakenrdi.server.krakenServer import KrakenServer
 class KrakenRDI(cli.Application):
 	restApiCli = cli.Flag(["-r", "--start-restapi"], help = "Start Rest API.")
 	workerCli = cli.Flag(["-w" , "--start-worker"], help = "Start Celery worker.")
-	cleanDatabase = cli.Flag(["-c" , "--clean-database"], help = "Restore the database with default values and cleans the current data.")
+	cleanDatabase = cli.Flag(["-c" , "--clean-database"], help = "Restore the database with default values and cleans the current data.", default=False)
 
 	def main(self):
 		if self.restApiCli or self.workerCli:

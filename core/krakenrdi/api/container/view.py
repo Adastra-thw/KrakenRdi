@@ -5,7 +5,7 @@ from flask import jsonify
 from flask import request, abort
 from flask import make_response
 import json, os, jsonschema
-from core.krakenrdi.api.common.validations import validateApiRequest
+from core.krakenrdi.api.common.validations import validateApiRequest, setDefaultsContainer
 from jsonpickle import encode
 from flask import jsonify
 
@@ -33,5 +33,6 @@ class ContainerView():
 	def createContainer():
 		response = {}
 		if validateApiRequest(request, abort, schema="createContainer"):
+			structure = setDefaultsContainer(request.json)
 			response = KrakenServer.containerService.create(request.json)
 		return jsonify(response)
