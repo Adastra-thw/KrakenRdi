@@ -5,7 +5,7 @@ from flask import jsonify
 from flask import request, abort
 from flask import make_response
 import json, os, jsonschema
-from core.krakenrdi.api.common.validations import validateCreateBuild
+from core.krakenrdi.api.common.validations import validateApiRequest, setDefaultsBuild
 from jsonpickle import encode
 from flask import jsonify
 
@@ -33,9 +33,10 @@ class BuildView():
 	@KrakenConfiguration.restApi.route('/build/create', methods=["PUT","POST"])
 	def createBuild():
 		response = {}
-		if validateCreateBuild(request, abort, schema="createBuild"):
-			response = KrakenServer.buildService.build(request.json)
-		return response
+		if validateApiRequest(request, abort, schema="createBuild"):
+			structure = setDefaultsBuild(request.json)
+			response = KrakenServer.buildService.build(structure)
+		return jsonify(response)
 
 	'''
 			{	
@@ -58,8 +59,11 @@ class BuildView():
 	'''
 	@KrakenConfiguration.restApi.route('/build/detail', methods=["POST"])
 	def detailBuild():
-		build = {}
-		return jsonify(build)
+		response = {}
+		if validateApiRequest(request, abort, schema="detailBuild"):
+			structure = setDefaultsBuild(request.json)
+			response = KrakenServer.buildService.detail(structure)
+		return jsonify(response)
 
 	'''
 			{	
@@ -80,16 +84,40 @@ class BuildView():
 								}]
 			}, 
 	'''
+
+	'''
+	Destroy the related build. Restrictions:
+		1. If the task is PENDING, it can't be removed.
+		2. If the parameter "force" is set to "True" it should remove the build from database no matter if is PENDING.
+		3. Before remove.
+			1- It should check the restrictions above.
+			2- Call a Celery task to check if the image still exists in docker. 
+				If it exists, try to remove it. If not, continue to the next step.
+			3- Remove the image from the Docker daemon.
+		4. If the image could be removed from the Docker daemon, let remove it from database.
+			it should remove the image from the collection "builds"
+	'''
 	@KrakenConfiguration.restApi.route('/build/delete', methods=["POST", "DELETE"])
 	def deleteBuild():
-		build = {}
-		return jsonify(build)
+		response = {}
+		if validateApiRequest(request, abort, schema="deleteBuild"):
+			structure = setDefaultsBuild(request.json)
+			response = KrakenServer.buildService.delete(structure)
+		return jsonify(response)
 
 	@KrakenConfiguration.restApi.route('/build/filter', methods=["POST"])
 	def filterBuild():
 		build = {}
 		return jsonify(build)
 
+	'''
+		This should check 2 things.
+			1. The state in database
+			2. The state in docker daemon.
+		The reponse to the client includes the state in database and the state in Docker daemon.
+		if the image don't exists in Docker enginee but is PENDING in database, probable the task
+		has failed.
+	'''
 	@KrakenConfiguration.restApi.route('/build/status', methods=["POST"])
 	def statusBuild():
 		build = {}

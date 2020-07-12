@@ -276,11 +276,76 @@
 		"PT": false,
 		"stage": "weaponization"
 	},
-	{"delivery": ""}, 
-	{"exploitation": ""},
-	{"persistence": ""}, 
-	{"commandcontrol": ""},
-	{"interalrecon": ""}, 
-	{"movelaterally": ""},
-	{"exfiltrate": ""}
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "delivery"
+	},
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "exploitation"
+	},
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "escalation"
+	},	
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "persistence"
+	},
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "commandcontrol"
+	},	
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "interalrecon"
+	},	
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "movelaterally"
+	},	
+	{
+		"name": "TEST",
+		"description": "TEST.",
+		"url": "https://github.com/sevagas/macro_pack",
+		"propertyEnabled": "TEST",
+		"RT": true,
+		"PT": false,
+		"stage": "exfiltration"
+	}
 ]

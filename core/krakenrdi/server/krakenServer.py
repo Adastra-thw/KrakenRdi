@@ -26,7 +26,7 @@ class KrakenServer():
 
 
 	@staticmethod
-	def init(configuration, tools, arguments):
+	def init(configuration, tools, arguments, cleanDB):
 		KrakenConfiguration.configuration = configuration
 		KrakenConfiguration.restApi.config['DEBUG'] = True
 		#Database initialization
@@ -43,6 +43,9 @@ class KrakenServer():
 			#Connect with MongoKrakenServer.
 			dbConnection = PyMongo(KrakenConfiguration.restApi)
 			KrakenConfiguration.database = dbConnection.db
+			if cleanDB:
+				for collectionDB in KrakenConfiguration.database.list_collection_names():
+					KrakenConfiguration.database.drop_collection(collectionDB)
 			if "arguments" not in KrakenConfiguration.database.list_collection_names():
 				KrakenConfiguration.database.arguments.insert(arguments)
 			if "tools" not in KrakenConfiguration.database.list_collection_names():
@@ -63,5 +66,5 @@ class KrakenServer():
 		return make_response(jsonify({'message': str(error)}), 400)
 
 	@KrakenConfiguration.restApi.errorhandler(404)
-	def bad_request(error):
+	def not_found_request(error):
 		return make_response(jsonify({'message': 'Resource not found'}), 404)

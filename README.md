@@ -3,7 +3,7 @@ KrakenRDI is a project to easily deploy Docker containers with a full toolbox fo
 
 # Welcome to Kraken: Rapid Deployment Infrastructure for Red Teaming and Penetration Testing (KrakenRDI)
 
-**KrakenRDI** is a project to easily deploy Docker containers with a full toolbox for RedTeaming and Penetration Testing. With KrakenRDI you don't need to waste time creating and setting up the environment for you and/or your team. Using KrakenRDI there's more than 100 tools and you can choose which ones should be installed or not in your environment. Now you don't need to strunggle with Kali, ParrotOS or similar to get working your environment, stop to waste the valueable resourses of your own system with heavy virtual machines. Just use containers and work alone or in team.
+**KrakenRDI** is a project to easily deploy Docker containers with a full toolbox for RedTeaming and Penetration Testing. With KrakenRDI you don't need to waste time creating and setting up the environment for you and/or your team. Using KrakenRDI there's more than 100 tools and you can choose which ones should be installed or not in your environment. Now you don't need to strunggle with Kali, ParrotOS or similar distributions to get working your environment, stop to waste the valueable resourses of your own system with heavy virtual machines. Just use containers and work alone or in team.
 
 
 
@@ -18,7 +18,7 @@ KrakenRDI is a project to easily deploy Docker containers with a full toolbox fo
  -  
 
 ## Architecture:
-The base architecture is composed by a full set of images for every stage in a Red Teaming campaign. Every image or layer, have a lot of tools tested and widely used in this kind of tasks. 
+The base architecture is composed by a full set of images for every stage in a Red Teaming campaign following the standard methodology. Every image or layer, have a lot of tools tested and widely used in this kind of tasks. 
 ```mermaid
 graph LR
 A[Base image] -- Used by --> B(Anon Image)

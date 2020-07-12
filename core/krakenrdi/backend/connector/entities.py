@@ -11,9 +11,19 @@ class Image():
 class Container():
 	def __init__(self):
 		self.buildName=None
-		self.buildTag=None
-		self.buildDate=None
-		self.buildScope=None
+		self.containerName=None
+		self.autoRemove=False
+		self.capAdd=["ALL"]
+		self.capDrop=[""]
+		self.hostname=None
+		self.memoryLimit=None
+		self.networkMode= "host"
+		self.networkDisabled=False
+		self.readOnly=False
+		self.ports={}
+		self.volumes=[]
+		self.tty=True
+
 
 class Tool():
 	def __init__(self):

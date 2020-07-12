@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "6d1144d4-4644-4423-8ed4-c850aa5d7c00",
+		"name": "KrakenRDI",
+		"description": "Requests to test the KrakenRDI Rest API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Builds",
+			"item": [
+				{
+					"name": "build/list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/build/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"build",
+								"list"
+							]
+						},
+						"description": "List of tools"
+					},
+					"response": []
+				},
+				{
+					"name": "build/list",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/build/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"build",
+								"list"
+							]
+						},
+						"description": "List of tools"
+					},
+					"response": []
+				},
+				{
+					"name": "build/create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"buildName\": \"krakenService\",\n\t\"buildScope\": [\"anon\",\"recon\",\"weaponization\",\"frameworks\"],\n\t\"tools\": [\"TORSocks\", \"Nmap\"],\n\t\"containerProperties\": {\n\t\t\t\"USERNAME\": \"kraken2\", \n\t\t\t\"PASSWORD\": \"kraken2\",\n\t\t\t\"EXPOSE_PORTS\": [22, 110, 2323]\n \t},\n \t\"startSSH\": true,\n \t\"startPostgres\": true\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/build/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"build",
+								"create"
+							]
+						},
+						"description": "Create a new build"
+					},
+					"response": []
+				},
+				{
+					"name": "build/detail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"buildName\": \"testing7\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/build/detail",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"build",
+								"detail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "build/delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"buildName\": \"testing7\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/build/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"build",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints to manage Builds in KrakenRDI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a470fb0e-6382-4a6a-9b7b-1cafdeaeddab",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "02166856-2c31-469e-aca6-61595f225b22",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Containers",
+			"item": [
+				{
+					"name": "container/create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{       \n\t\"buildName\": \"testing7\",\n    \"containerName\": \"redteamAdastra\",\n    \"autoRemove\": True,\n    \"capAdd\": [\"ALL\"] \n    \"capDrop\": [\"CAP_BLOCK_SUSPEND\"], \n    \"hostname\":  \"TestingContainer\"\n    \"memoryLimit\": \"8g\",\n\t\"networkMode\": \"host\",\n    \"networkDisabled\": False,\n\t\"readOnly\": False,\n\t\"removeOnFinish\": True,\n    \"ports\": [ {\"containerPort\": { \"protocol\": \"tcp\", \"port\": 22},\n    \t\t\t\"hostPort\": { \"protocol\": \"tcp\", \"port\": 22}\n    \t\t\t}, \n    \t\t   {\"containerPort\": { \"protocol\": \"udp\", \"port\": 53},\n    \t\t\t\"hostPort\": { \"protocol\": \"udp\", \"port\": 53}\n    \t\t\t} ],\n     \"volumes\": [ {\"hostVolume\": \"/home/adastra\", \n    \t\t\t   \"containerOptions\": {\"containerVolume\": \"/var/container\", \n    \t\t\t\t\t\t\t\t\t\"modeVolume\": \"rw\"},\n    \t\t\t   } ],\n    \"required\": [\"buildName\", \"containerName\"]\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/container/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"container",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints to manage Containers in KrakenRDI",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tools",
+			"item": [
+				{
+					"name": "tools/list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/tools/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tools",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tools/filter",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"toolName\" : \"nmap\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/tools/filter",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tools",
+								"filter"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints to manage Tools in KrakenRDI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "679d0258-8a15-4d70-b9d1-6599f5e3eddb",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "12b7d836-324a-45fc-8485-b436035377c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

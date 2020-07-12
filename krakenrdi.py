@@ -1,14 +1,16 @@
 import json
 import os,sys
 from plumbum import cli
-from core.krakenrdi.server.CoreObjects import KrakenConfiguration
-from core.krakenrdi.server.krakenServer import KrakenServer
 from core.krakenrdi.api.build.view import BuildView
 from core.krakenrdi.api.container.view import ContainerView
+from core.krakenrdi.api.tool.view import ToolView
+from core.krakenrdi.server.CoreObjects import KrakenConfiguration
+from core.krakenrdi.server.krakenServer import KrakenServer
 
 class KrakenRDI(cli.Application):
 	restApiCli = cli.Flag(["-r", "--start-restapi"], help = "Start Rest API.")
 	workerCli = cli.Flag(["-w" , "--start-worker"], help = "Start Celery worker.")
+	cleanDatabase = cli.Flag(["-c" , "--clean-database"], help = "Restore the database with default values and cleans the current data.")
 
 	def main(self):
 		if self.restApiCli or self.workerCli:
@@ -36,13 +38,11 @@ class KrakenRDI(cli.Application):
 			except:
 				print("Failed reading configuration from <KRAKENRID_DIR>/config/arguments.json")
 				sys.exit(1)
-			KrakenServer.init(self.configuration, self.tools, self.arguments)
+			KrakenServer.init(self.configuration, self.tools, self.arguments, self.cleanDatabase)
 			print("Configuration established.")
 			KrakenServer.configureServices()
 			print("Core services for the Rest API configured.")
 			
-
-
 		if self.restApiCli:
 			print("Starting webserver and Rest API...")
 			self.startRestApi()
@@ -56,8 +56,7 @@ class KrakenRDI(cli.Application):
 	def startWorker(self):
 		from celery import Celery, task
 		from celery import current_app
-		from celery.bin import worker
-
+		from celery.bin import worker 
 		
 		application = current_app._get_current_object()
 		worker = worker.worker(app=application)
@@ -68,9 +67,6 @@ class KrakenRDI(cli.Application):
 		}
 		worker.run(**options)
 		#print("Worker started successfully. Now, from other terminal start the Rest Api to complete the Kraken startup...")
-
-		
-
 
 if __name__ == '__main__':
 	KrakenRDI.run()

@@ -1,5 +1,6 @@
 from core.krakenrdi.backend.async.tasks import createBuild
 from core.krakenrdi.backend.connector.entities import Image, Container, Tool
+from core.krakenrdi.backend.connector.builder import DockerManagerConnection
 import json
 from jsonpickle import encode
 
@@ -13,6 +14,8 @@ class KrakenManager():
 		self.buildService = None
 		self.containerService = None
 		self.toolService = None
+		self.dockerManager = DockerManagerConnection()
+
 	
 	def getBuildService(self):
 		if self.buildService is None:
@@ -35,7 +38,28 @@ class BuildService():
 	def __init__(self, manager):
 		self.manager = manager
 
+	def __getBuilds(self, buildsStored):
+		response = []
+		for build in buildsStored:
+			response.append({'buildName': build['buildName'], 
+						 'buildScope': build['buildScope'], 
+						 'tools': build['tools'],
+						 'containerProperties': build['buildArgs'], 
+						 'startSSH': build['startSSH'],
+						 'startPostgres': build['startPostgres'], 
+						 'taskState': build['taskState'], 
+						 'memoryLimit': build['memoryLimit']})
+		return response
+
+
 	def build(self, request):
+		#Before to begin, check the name of the image. If it already exists shoud avoid to continue, 
+		# except if the parameter "overwrite" is "True"
+		result={}
+		build = self.manager.database.builds.find({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
+		if len(list(build)) > 0 and request["overwrite"] is False:
+			return {"message": "The name of the image already used. Choose another one or if you want to overwrite that image, send 'overwrite' parameter in the JSON structure."}
+
 		#The JSON structure is valid, but before to save in database it's needed to send the task to Docker.
 		toolsEnabled = self.manager.database.tools.find({'name': {'$in': request['tools']} })
 		toolsDisabled = self.manager.database.tools.find({'name': {'$nin': request['tools']} })
@@ -60,9 +84,7 @@ class BuildService():
 			for containerProperty in request['containerProperties'].keys():
 				if "EXPOSE_PORTS" in containerProperty:
 					ports=""
-					print(request['containerProperties']["EXPOSE_PORTS"])
 					ports = ' '.join(map(str, request['containerProperties']["EXPOSE_PORTS"]))
-					print(ports)
 					imageCreate.buildArgs[containerProperty] = ports
 				else:
 					imageCreate.buildArgs[containerProperty] = request['containerProperties'][containerProperty]
@@ -82,25 +104,18 @@ class BuildService():
 		#Create the build in database.
 		self.manager.database.builds.insert(result)
 		#Run celery task with apply_async
-		celeryCreateBuildTask = createBuild.apply_async((encode(imageCreate),), 
-														task_id=taskId)
+		createBuild.apply_async((encode(imageCreate),), task_id=taskId)
 		del(result["_id"])
 		return result
 		
 
 	def list(self):
 		buildsStored = self.manager.database.builds.find({})
-		response = []
-		for build in buildsStored:
-			response.append({'buildName': build['buildName'], 
-						 'buildScope': build['buildScope'], 
-						 'tools': build['tools'],
-						 'containerProperties': build['buildArgs'], 
-						 'startSSH': build['startSSH'],
-						 'startPostgres': build['startPostgres'], 
-						 'taskState': build['taskState'], 
-						 'memoryLimit': build['memoryLimit']})
-		return response
+		return self.__getBuilds(buildsStored)
+
+	def detail(self, request):
+		buildsStored = self.manager.database.builds.find({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
+		return self.__getBuilds(buildsStored)
 
 	def filter(self):
 		pass
@@ -109,8 +124,37 @@ class ContainerService():
 	def __init__(self, manager):
 		self.manager = manager
 
-	def create(self):
-		pass
+	def create(self, request):
+		#Before to begin, check the name of the image. If it doesn't exists shoud avoid to continue.
+		result={}
+		if "buildName" in request:
+			build = self.manager.database.builds.find({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
+			if len(list(build)) == 0:
+				result = {"message": "The specified image "+request['buildName']+" doesn't exists" }
+			else:
+				stateBuild = self.manager.database.builds.find({'taskState': {'$in': ["READY", "SAVED", "FINISHED"] } } )
+				if len(list(stateBuild) > 0):
+					container = Container()
+					container.buildName=request["buildName"]
+					container.containerName=request["containerName"]
+					container.capAdd=request["capAdd"]
+					container.capDrop=request["capDrop"]
+					container.hostname=request["hostname"]
+					container.memoryLimit=request["memoryLimit"]
+					container.networkMode=request["networkMode"]
+					container.networkDisabled=request["networkDisabled"]
+					container.readOnly=request["readOnly"]
+					container.ports=request["ports"]
+					container.volumes=request["volumes"]
+					#Create the container in Docker.
+					self.manager.dockerManager.containerBuilder.create(container)
+					#Register the container in database if it was sucessfully created in Docker.
+				else:
+					result = {"message": "The image "+request['buildName']+" is not ready yet. The image is still in creation process."}
+		else:
+			result = {"message": "You have to specify the field 'buildName' with the name of the image that will be used to create the container."}
+		return result
+
 	def execute(self):
 		pass
 	def destroy(self):
@@ -120,4 +164,24 @@ class ToolService():
 	def __init__(self, manager):
 		self.manager = manager
 
-	pass
+	def __getTools(self, toolsStored):
+		response = []
+		for tool in toolsStored:
+			response.append({'toolName': tool['name'], 
+						'toolDescription': tool['description'],
+						'toolURL': tool['url'],
+						'toolScope': {"RT": tool['RT'], "PT": tool['PT']} 
+						})
+		return response
+
+
+	def list(self):
+		toolsStored = self.manager.database.tools.find({})
+		return self.__getTools(toolsStored)
+
+	def filter(self, request):
+		toolsStored = self.manager.database.tools.find( {'name': {'$regex': request['toolName'], "$options": "-i"} })
+		return self.__getTools(toolsStored)
+
+	def info(self):
+		pass
