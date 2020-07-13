@@ -133,7 +133,7 @@ class ContainerService():
 				result = {"message": "The specified image "+request['buildName']+" doesn't exists" }
 			else:
 				stateBuild = self.manager.database.builds.find({'taskState.status': {'$in': ["READY", "SAVED", "FINISHED"] } } )
-				if len(list(stateBuild) > 0):
+				if len(list(stateBuild)) > 0:
 					container = Container()
 					container.buildName=request["buildName"]
 					container.containerName=request["containerName"]

@@ -147,22 +147,13 @@ createContainerSchema = {
                         },
                     },
                 },
-        "volumes": {
-                        "type": "array", 
-                        "minItems": 1,
-                        "uniqueItems": True,
+        "volumes": {"type": "array",
+                    "uniqueItems": True,
                         "items": {  "type": "object",
                                     "properties": {
-                                        "hostVolume": { "type:" "string"},
-                                        "containerOptions": {
-                                                         "type": "object", 
-                                                            "properties": {
-                                                                "containerVolume":  {"type": "string"},  
-                                                                "modeVolume": { "type": "array",
-                                                                                "maxLength": 3, 
-                                                                                "enum": ["rw","ro"]},
-                                                            }
-                                                        }, 
+                                        "hostVolume": { "type": "string"},
+                                        "containerVolume": {"type": "string"},
+                                        "modeVolume": {"type": "string", "enum":["ro","rw"]}
                                     },
                         },                       
                     },
