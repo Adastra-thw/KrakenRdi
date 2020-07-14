@@ -1,6 +1,7 @@
 from core.krakenrdi.backend.async.tasks import createBuild
 from core.krakenrdi.backend.connector.entities import Image, Container, Tool
 from core.krakenrdi.backend.connector.builder import DockerManagerConnection
+from core.krakenrdi.api.common.validations import BusinessValidations
 import json
 from jsonpickle import encode
 
@@ -15,6 +16,7 @@ class KrakenManager():
 		self.containerService = None
 		self.toolService = None
 		self.dockerManager = DockerManagerConnection()
+		self.businessValidations = BusinessValidations(self.dockerManager)
 
 	
 	def getBuildService(self):
@@ -134,18 +136,20 @@ class ContainerService():
 			else:
 				stateBuild = self.manager.database.builds.find({'taskState.status': {'$in': ["READY", "SAVED", "FINISHED"] } } )
 				if len(list(stateBuild)) > 0:
-					container = Container()
-					container.buildName=request["buildName"]
-					container.containerName=request["containerName"]
-					container.capAdd=request["capAdd"]
-					container.capDrop=request["capDrop"]
-					container.hostname=request["hostname"]
-					container.memoryLimit=request["memoryLimit"]
-					container.networkMode=request["networkMode"]
-					container.networkDisabled=request["networkDisabled"]
-					container.readOnly=request["readOnly"]
-					container.ports=request["ports"]
-					container.volumes=request["volumes"]
+					request['buildName']=self.manager.configuration['config']['imageBase']+":"+request['buildName']
+					containerStructure = self.manager.businessValidations.validateContainerStructure(request)
+					container = Container()					
+					container.buildName=containerStructure["buildName"]
+					container.containerName=containerStructure["containerName"]
+					container.capAdd=containerStructure["capAdd"]
+					container.capDrop=containerStructure["capDrop"]
+					container.hostname=containerStructure["hostname"]
+					container.memoryLimit=containerStructure["memoryLimit"]
+					container.networkMode=containerStructure["networkMode"]
+					container.networkDisabled=containerStructure["networkDisabled"]
+					container.readOnly=containerStructure["readOnly"]
+					container.ports=containerStructure["ports"]
+					container.volumes=containerStructure["volumes"]
 					#Create the container in Docker.
 					self.manager.dockerManager.containerBuilder.create(container)
 					#Register the container in database if it was sucessfully created in Docker.

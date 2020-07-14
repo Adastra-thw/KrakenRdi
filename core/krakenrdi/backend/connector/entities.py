@@ -23,6 +23,7 @@ class Container():
 		self.ports={}
 		self.volumes=[]
 		self.tty=True
+		self.privileged=False
 
 
 class Tool():

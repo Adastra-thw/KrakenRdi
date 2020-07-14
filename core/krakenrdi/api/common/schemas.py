@@ -103,15 +103,16 @@ createContainerSchema = {
         "capAdd": {"type": "array", 
                     "minItems": 1,
                     "uniqueItems": True,
-                    "items": {"type": "string"},
+                    "items": {"enum": ["ALL", "CAP_CHOWN", "CAP_DAC_OVERRIDE", "CAP_DAC_READ_SEARCH", "CAP_FOWNER", "CAP_FSETID", "CAP_KILL", "CAP_SETGID", "CAP_SETUID", "CAP_SETPCAP", "CAP_LINUX_IMMUTABLE", "CAP_NET_BIND_SERVICE", "CAP_NET_BROADCAST", "CAP_NET_ADMIN", "CAP_NET_RAW", "CAP_IPC_LOCK", "CAP_IPC_OWNER", "CAP_SYS_MODULE", "CAP_SYS_RAWIO", "CAP_SYS_CHROOT", "CAP_SYS_PTRACE", "CAP_SYS_PACCT", "CAP_SYS_ADMIN", "CAP_SYS_BOOT", "CAP_SYS_NICE","CAP_SYS_RESOURCE", "CAP_SYS_TIME", "CAP_SYS_TTY_CONFIG", "CAP_MKNOD", "CAP_LEASE", "CAP_AUDIT_WRITE", "CAP_AUDIT_CONTROL", "CAP_SETFCAP", "CAP_MAC_OVERRIDE", "CAP_MAC_ADMIN", "CAP_SYSLOG", "CAP_WAKE_ALARM", "CAP_BLOCK_SUSPEND",   "CAP_AUDIT_READ"] },
                     "default": ["ALL"]
                     }, 
         "capDrop": {"type": "array", 
                     "minItems": 1,
                     "uniqueItems": True,
-                    "items": {"type": "string"},
+                    "items": {"enum": ["ALL", "CAP_CHOWN", "CAP_DAC_OVERRIDE", "CAP_DAC_READ_SEARCH", "CAP_FOWNER", "CAP_FSETID", "CAP_KILL", "CAP_SETGID", "CAP_SETUID", "CAP_SETPCAP", "CAP_LINUX_IMMUTABLE", "CAP_NET_BIND_SERVICE", "CAP_NET_BROADCAST", "CAP_NET_ADMIN", "CAP_NET_RAW", "CAP_IPC_LOCK", "CAP_IPC_OWNER", "CAP_SYS_MODULE", "CAP_SYS_RAWIO", "CAP_SYS_CHROOT", "CAP_SYS_PTRACE", "CAP_SYS_PACCT", "CAP_SYS_ADMIN", "CAP_SYS_BOOT", "CAP_SYS_NICE","CAP_SYS_RESOURCE", "CAP_SYS_TIME", "CAP_SYS_TTY_CONFIG", "CAP_MKNOD", "CAP_LEASE", "CAP_AUDIT_WRITE", "CAP_AUDIT_CONTROL", "CAP_SETFCAP", "CAP_MAC_OVERRIDE", "CAP_MAC_ADMIN", "CAP_SYSLOG", "CAP_WAKE_ALARM", "CAP_BLOCK_SUSPEND",   "CAP_AUDIT_READ"] },
                     "default": [""]
                     }, 
+        "privileged": {"type": "boolean", "default": False },
         "hostname":  {  "type": "string",  
                         "maxLength": 20, 
                         "minLength": 2},
@@ -145,17 +146,23 @@ createContainerSchema = {
                                 "protocolContainer": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"] }, 
                                 "portContainer": {"type": "number"}
                         },
+                        "required": ["portHost", "portContainer"],
+                        "additionalProperties": False,
                     },
+                    "additionalProperties": False,
                 },
         "volumes": {"type": "array",
                     "uniqueItems": True,
-                        "items": {  "type": "object",
-                                    "properties": {
-                                        "hostVolume": { "type": "string"},
-                                        "containerVolume": {"type": "string"},
-                                        "modeVolume": {"type": "string", "enum":["ro","rw"]}
-                                    },
-                        },                       
+                    "items": {  "type": "object",
+                                "properties": {
+                                    "hostVolume": { "type": "string"},
+                                    "containerVolume": {"type": "string"},
+                                    "modeVolume": {"type": "string", "enum":["ro","rw"], "default": "rw"}
+                            },
+                            "required": ["hostVolume", "containerVolume"],
+                            "additionalProperties": False,
+                        },
+                    "additionalProperties": False,                       
                     },
     },
     "required": ["buildName"],
@@ -198,7 +205,8 @@ defaultsContainer={
                 "capAdd": ["ALL"],
                 "autoRemove": True,
                 "hostname": "krakenrdi",
-                "memoryLimit": "32g"
+                "memoryLimit": "32g",
+                "privileged": False
 }
 
 defaultsTool={

@@ -34,5 +34,5 @@ class ContainerView():
 		response = {}
 		if validateApiRequest(request, abort, schema="createContainer"):
 			structure = setDefaultsContainer(request.json)
-			response = KrakenServer.containerService.create(request.json)
+			response = KrakenServer.containerService.create(structure)
 		return jsonify(response)
