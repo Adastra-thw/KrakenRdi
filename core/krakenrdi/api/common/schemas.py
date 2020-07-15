@@ -164,6 +164,8 @@ createContainerSchema = {
                         },
                     "additionalProperties": False,                       
                     },
+        "removeIfExists": {"type": "boolean", "default": True}, 
+        "enableX11": {"type": "boolean", "default": True}
     },
     "required": ["buildName"],
 }
@@ -200,13 +202,14 @@ defaultsContainer={
                 "removeOnFinish": False,
                 "readOnly": False,
                 "networkDisabled": False,
-                "networkMode": "host",
+                "networkMode": "bridge",
                 "capDrop": [],
                 "capAdd": ["ALL"],
                 "autoRemove": True,
                 "hostname": "krakenrdi",
                 "memoryLimit": "32g",
-                "privileged": False
+                "privileged": False, 
+                "enableX11": True
 }
 
 defaultsTool={

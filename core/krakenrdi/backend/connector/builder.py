@@ -78,8 +78,7 @@ class ContainerBuilder():
 	Create and run the container specified by the user.
 	'''
 	def create(self, container):
-		print(container)
-		dockerContainer = self.containerDockerObject.create(
+		dockerContainer = self.containerDockerObject.run(
 			image=container.buildName,
 			auto_remove=container.autoRemove,
 			cap_add=container.capAdd,
@@ -92,10 +91,10 @@ class ContainerBuilder():
 			read_only=container.readOnly,
 			tty=container.tty,
 			volumes=container.volumes,
-			privileged=container.privileged
+			privileged=container.privileged, 
+			environment=container.environment
 		)
-		print(dockerContainer.status)
-		dockerContainer.start()
+		return dockerContainer
 
 
 	def checkStatus(self, container):

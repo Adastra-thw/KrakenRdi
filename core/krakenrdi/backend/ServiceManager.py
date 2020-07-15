@@ -134,10 +134,12 @@ class ContainerService():
 			if len(list(build)) == 0:
 				result = {"message": "The specified image "+request['buildName']+" doesn't exists" }
 			else:
-				stateBuild = self.manager.database.builds.find({'taskState.status': {'$in': ["READY", "SAVED", "FINISHED"] } } )
-				if len(list(stateBuild)) > 0:
+				stateBuild = self.manager.database.builds.find_one({'taskState.status': {'$in': ["READY", "SAVED", "FINISHED"] } } )
+				if stateBuild is not None:
 					request['buildName']=self.manager.configuration['config']['imageBase']+":"+request['buildName']
 					containerStructure = self.manager.businessValidations.validateContainerStructure(request)
+					if containerStructure["valid"] is False:
+						return containerStructure
 					container = Container()					
 					container.buildName=containerStructure["buildName"]
 					container.containerName=containerStructure["containerName"]
@@ -150,8 +152,17 @@ class ContainerService():
 					container.readOnly=containerStructure["readOnly"]
 					container.ports=containerStructure["ports"]
 					container.volumes=containerStructure["volumes"]
+					container.environment=containerStructure["environment"]
 					#Create the container in Docker.
-					self.manager.dockerManager.containerBuilder.create(container)
+					dockerContainer = self.manager.dockerManager.containerBuilder.create(container)
+					#The container instance will be useful to start sevices depending on the Image spec.
+
+					if stateBuild["startSSH"]:
+						dockerContainer.exec_run("/etc/init.d/ssh start", user="root")
+						dockerContainer.exec_run("bash -c 'env > /etc/environment'", user="root")
+					if stateBuild["startPostgres"]:
+						dockerContainer.exec_run("/etc/init.d/postgresql start", user="root")
+					
 					#Register the container in database if it was sucessfully created in Docker.
 				else:
 					result = {"message": "The image "+request['buildName']+" is not ready yet. The image is still in creation process."}

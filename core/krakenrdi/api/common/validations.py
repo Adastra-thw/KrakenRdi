@@ -57,25 +57,38 @@ class BusinessValidations:
 
     def validateContainerStructure(self, container):
         containerStructure = {}
+        containerStructure["valid"] = False
         #Validate build name. Check if the image exists in Docker service.
         try:
             self.dockerManager.imageBuilder.imageDockerObject.get(container["buildName"]) 
         except:
-            return{"message": "Image don't found"}
+            return {"message": "Image don't found"}
 
         containerStructure["buildName"]=container["buildName"]
-
-
         #Validate container name. Check if the container name is already Docker service.
+        if "containerName" in container:
+            containerStructure["containerName"]=container["containerName"]
+            containerFound=None
+            try:
+                containerFound = self.dockerManager.containerBuilder.containerDockerObject.get(container["containerName"]) 
+            except:
+                import traceback, sys
+                traceback.print_exc(file=sys.stdout)
+                traceback.print_exc(limit=1, file=sys.stdout)
+                #If the container is not found means that it could be created without problem.
+                #If there's no exception means the container already has beed created and should not continue with this process.
+                pass
 
-        containerStructure["containerName"]=container["containerName"]
-        try:
-            containerFound = self.dockerManager.containerBuilder.containerDockerObject.get(container["containerName"]) 
-            return{"message": "Container "+container["containerName"]+" already exists. Choose another name"}
-        except:
-            #If the container is not found means that it could be created without problem.
-            #If there's no exception means the container already has beed created and should not continue with this process.
-            pass
+            if "removeIfExists" in container and containerFound is not None:
+                containerFound.stop(timeout=30)
+                containerFound.remove()
+            elif containerFound is not None:
+                containerStructure["message"] = "Container "+container["containerName"]+" already exists. Choose another name or set the flag 'removeIfExists' to delete the container with that name and create yours."
+                return containerStructure
+
+        containerStructure["volumes"] = {}
+        containerStructure["ports"] = {}
+        containerStructure["environment"] = []
 
         #Validate and create the appropiate structure.
         if "ports" in container:
@@ -126,8 +139,13 @@ class BusinessValidations:
         if match:
             containerStructure["memoryLimit"]=container["memoryLimit"]
         else:
-            print("Límite de memoria invalido")
-        
+            return {"message": "Invalid memory limit: "+container["memoryLimit"]+". Valid examples could be: 100000b, 1000k, 128m, 1g, etc."}
+
+        #Verify if X11 should be enabled.
+        if "enableX11" in container:
+            from os import environ
+            containerStructure["environment"].extend(["DISPLAY="+environ["DISPLAY"]]),
+            containerStructure["volumes"].update({'/tmp/.X11-unix/': {'bind': '/tmp/.X11-unix/', 'mode': 'rw'}})
         #No special validations.
         containerStructure["autoRemove"]= container["autoRemove"]
         containerStructure["capAdd"]= container["capAdd"]
@@ -139,5 +157,5 @@ class BusinessValidations:
         containerStructure["networkDisabled"]=container["networkDisabled"]
         containerStructure["readOnly"]=container["readOnly"]
         containerStructure["removeOnFinish"]=container["removeOnFinish"]
-
+        containerStructure["valid"] = True
         return containerStructure
