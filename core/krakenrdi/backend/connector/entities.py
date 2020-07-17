@@ -24,6 +24,8 @@ class Container():
 		self.volumes=[]
 		self.tty=True
 		self.privileged=False
+		self.startSSH = False
+		self.startPostgres = False
 
 
 class Tool():

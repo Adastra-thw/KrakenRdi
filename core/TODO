@@ -1,0 +1,29 @@
+* Builds:
+    - When use "overwrite" in Rest API, it should find and later remove the build in Database.
+      Now it's creating a new document in database (duplication).
+    - Delete builds is broken. In any case, it should delete everything, including containers created
+    - To find a build it should receive the tagname, but when listing in DB it shows the full image name. It could be confusing.
+    - Clean code.
+    - If the user sends multiple times a request to create a image, what should be the behavior?
+    - Implement detail endpoint
+    - Implement delete endpoint
+* Container:
+    - Check the workflow for creation of containers.
+    - Implement delete endpoint
+    - Implement detail endpoint
+    - Implement list endpoint
+    - Implement execute endpoint
+    - Implement filter endpoint
+    - When connect via SSH, show as default shell /bin/bash
+* Tools:
+    - Implement list tools
+    - Implement filter tools
+* Misc:
+    - General configuration in YAML file located in <USER_HOME_DIR>/.krakenrdi
+    - Create a simple interpreter like MSFConsole.
+    - Artworks
+    - Documentation for users
+    - Record some videos with features of this tool.
+    - Test this tool from a clean Instalation of CentOS, Debian and Ubuntu.
+DONE
+    - In the creation of builds the API server should check if celery worker is running.

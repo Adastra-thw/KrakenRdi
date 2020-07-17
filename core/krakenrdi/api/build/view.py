@@ -33,9 +33,13 @@ class BuildView():
 	@KrakenConfiguration.restApi.route('/build/create', methods=["PUT","POST"])
 	def createBuild():
 		response = {}
-		if validateApiRequest(request, abort, schema="createBuild"):
-			structure = setDefaultsBuild(request.json)
-			response = KrakenServer.buildService.build(structure)
+		if KrakenConfiguration.taskEngine.control.inspect().active() is None:
+			#Celery worker is Down. It should avoid to continue and warn the client.
+			response = {"message": "Celery worker is down. Start the KrakenRDI worker using '-w' option"}
+		else:
+			if validateApiRequest(request, abort, schema="createBuild"):
+				structure = setDefaultsBuild(request.json)
+				response = KrakenServer.buildService.build(structure)
 		return jsonify(response)
 
 	'''

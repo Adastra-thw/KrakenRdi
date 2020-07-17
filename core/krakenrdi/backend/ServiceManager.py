@@ -4,6 +4,7 @@ from core.krakenrdi.backend.connector.builder import DockerManagerConnection
 from core.krakenrdi.api.common.validations import BusinessValidations
 import json
 from jsonpickle import encode
+from docker.errors import ImageNotFound
 
 class KrakenManager():
 
@@ -58,8 +59,10 @@ class BuildService():
 		#Before to begin, check the name of the image. If it already exists shoud avoid to continue, 
 		# except if the parameter "overwrite" is "True"
 		result={}
-		build = self.manager.database.builds.find({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
-		if len(list(build)) > 0 and request["overwrite"] is False:
+		buildName= self.manager.configuration['config']['imageBase']+":"+request['buildName']
+		buildFound = self.manager.database.builds.find({'buildName': buildName} )
+		numberBuilds = len(list(buildFound))
+		if numberBuilds > 0 and request["overwrite"] is False:
 			return {"message": "The name of the image already used. Choose another one or if you want to overwrite that image, send 'overwrite' parameter in the JSON structure."}
 
 		#The JSON structure is valid, but before to save in database it's needed to send the task to Docker.
@@ -104,6 +107,9 @@ class BuildService():
 		result["taskState"] = "CREATED"
 
 		#Create the build in database.
+		if numberBuilds > 0 and request["overwrite"] == True:
+			#The build exist in database and "overwrite" is True, it should be deleted from Database.
+			self.manager.database.builds.delete_one({'buildName': buildName})
 		self.manager.database.builds.insert(result)
 		#Run celery task with apply_async
 		createBuild.apply_async((encode(imageCreate),), task_id=taskId)
@@ -119,12 +125,45 @@ class BuildService():
 		buildsStored = self.manager.database.builds.find({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
 		return self.__getBuilds(buildsStored)
 
+	def delete(self, request):
+		#Before to remove from database, remove from Docker daemon.
+		try:
+			self.manager.dockerManager.imageBuilder.delete(self.manager.configuration['config']['imageBase']+":"+request['buildName'])
+		except ImageNotFound:
+			return {"message": "Image not found in Docker service. If it existed in database it was already deleted too"}
+		finally:
+			self.manager.database.builds.delete_one({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
+
+
 	def filter(self):
 		pass
 
 class ContainerService():
 	def __init__(self, manager):
 		self.manager = manager
+	
+	def list(self):
+		result={}
+		containers = self.manager.database.containers.find()
+		for container in containers:
+			result["buildName"] = container["buildName"] 
+			result["containerName"] = container["containerName"]
+			result["containerPorts"] = container["ports"]
+			result["containerVolumes"] = container["volumes"]
+			#Get the status for this container in Docker Daemon.
+			result["containerStatus"] = self.manager.dockerManager.containerBuilder.checkStatus(container["containerName"])
+		return result
+	
+	def get(self, request):
+		containerFound = self.manager.database.containers.find_one({"containerName": request["containerName"]})
+		if containerFound is not None:
+			del(containerFound["_id"])
+			return containerFound
+		else:
+			return {"message": "Container not found in database."}
+
+
+
 
 	def create(self, request):
 		#Before to begin, check the name of the image. If it doesn't exists shoud avoid to continue.
@@ -159,21 +198,65 @@ class ContainerService():
 
 					if stateBuild["startSSH"]:
 						dockerContainer.exec_run("/etc/init.d/ssh start", user="root")
-						dockerContainer.exec_run("bash -c 'env > /etc/environment'", user="root")
+						from os import environ
+						dockerContainer.exec_run("export DISPLAY="+environ["DISPLAY"])
+						container.startSSH = True
 					if stateBuild["startPostgres"]:
-						dockerContainer.exec_run("/etc/init.d/postgresql start", user="root")
+						dockerContainer.exec_run("/etc/init.d/postgresql start", user="root")				
+						container.startSSH = True
 					
 					#Register the container in database if it was sucessfully created in Docker.
+					result = {
+							"containerId": dockerContainer.id, 
+							"containerImage": dockerContainer.attrs, 
+							"containerName": dockerContainer.name, 
+							"containerStatus": dockerContainer.status}
+					
+					self.manager.database.containers.delete_one({'containerName': dockerContainer.name } )
+					containerJson = json.loads(encode(container).replace("\\","").replace(".",""))
+					containerJson.pop("py/object", None)
+					self.manager.database.containers.insert(containerJson)
+
 				else:
 					result = {"message": "The image "+request['buildName']+" is not ready yet. The image is still in creation process."}
 		else:
 			result = {"message": "You have to specify the field 'buildName' with the name of the image that will be used to create the container."}
 		return result
 
+	def delete(self, request):
+		result={}
+		rmDatabase=True
+		#Delete container from Database and later from docker engine.
+		try:	
+			self.manager.database.containers.delete_one({"containerName": request["containerName"]})
+		except:
+			rmDatabase = False
+		finally:
+			success = self.manager.dockerManager.containerBuilder.delete(request["containerName"])
+			if success and rmDatabase:
+				result["message"] = "Container removed from database and Docker engine."
+			elif success and rmDatabase is False:
+				result["message"] = "Container removed from Docker engine but it can't be removed from Database. Seems the document in database don't exists."
+			elif success is False and rmDatabase:
+				result["message"] = "Container removed from database but it can't be removed from Docker engine. Seems the docker is being used by other process or don't exists."
+			elif success is False and rmDatabase is False:
+				result["message"] = "Container can't be removed from Docker engine and database. Maybe the container's name specified is wrong."
+
+		return result
+		
+		containers = self.manager.database.containers.find()
+		for container in containers:
+			result["buildName"] = container["buildName"] 
+			result["containerName"] = container["containerName"]
+			result["containerPorts"] = container["ports"]
+			result["containerVolumes"] = container["volumes"]
+			#Get the status for this container in Docker Daemon.
+			result["containerStatus"] = self.manager.dockerManager.containerBuilder.checkStatus(container["containerName"])
+		return result
+
 	def execute(self):
 		pass
-	def destroy(self):
-		pass
+	
 
 class ToolService():
 	def __init__(self, manager):

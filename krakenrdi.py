@@ -54,7 +54,6 @@ class KrakenRDI(cli.Application):
 		KrakenConfiguration.restApi.run()
 
 	def startWorker(self):
-		from celery import Celery, task
 		from celery import current_app
 		from celery.bin import worker 
 		

@@ -2,6 +2,7 @@ from core.krakenrdi.server.CoreObjects import KrakenConfiguration
 import docker 
 from jsonpickle import decode
 import json
+from docker.errors import NotFound
 
 class DockerManagerConnection():
 
@@ -57,9 +58,10 @@ class ImageBuilder():
 	'''
 	Remove the image specified. In this case will remove the image identified with the tag sent by the user.
 	'''
-	def delete(self, image):
-		self.imageBuilder.delete(image)
-
+	def delete(self, imageName):
+		result = self.imageDockerObject.remove(image=imageName, force=True, noprune=False)
+		print(result)
+		return result
 
 class ContainerBuilder():
 	def __init__(self, containerDockerObject):
@@ -97,11 +99,20 @@ class ContainerBuilder():
 		return dockerContainer
 
 
-	def checkStatus(self, container):
-		self.containerDockerObject.inspect(container)
-
+	def checkStatus(self, containerName):
+		try:
+			container = self.containerDockerObject.get(containerName)
+			if container is not None:
+				return container.status
+		except NotFound:
+			return "NOT_FOUND"
+	
 	def stop(self, container):
 		pass
 
-	def destroy(self, container):
-		pass
+	def delete(self, containerName):
+		try:
+			self.containerDockerObject.remove(containerName, force=True)
+			return True
+		except:
+			return False

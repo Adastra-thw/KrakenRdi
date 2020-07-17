@@ -1,7 +1,7 @@
 import json
 from jsonschema.exceptions import ValidationError
 from jsonschema import validate
-from core.krakenrdi.api.common.schemas import createBuildSchema, deleteBuildSchema, detailBuildSchema, createContainerSchema, infoToolSchema, filterToolSchema
+from core.krakenrdi.api.common.schemas import createBuildSchema, deleteBuildSchema, detailBuildSchema, createContainerSchema, deleteContainerSchema, getContainerSchema, infoToolSchema, filterToolSchema
 from core.krakenrdi.api.common.schemas import defaultsBuild, defaultsContainer, defaultsTool              
 
 
@@ -33,7 +33,9 @@ def validateApiRequest(request, abort, schema):
     schemas = {"createBuild": createBuildSchema, 
                "detailBuild": detailBuildSchema, 
                "deleteBuild": deleteBuildSchema, 
-               "createContainer": createContainerSchema, 
+               "createContainer": createContainerSchema,
+               "deleteContainer": deleteContainerSchema,
+               "getContainer": getContainerSchema, 
                "infoToolSchema": infoToolSchema,
                "filterToolSchema": filterToolSchema 
                }
@@ -62,7 +64,8 @@ class BusinessValidations:
         try:
             self.dockerManager.imageBuilder.imageDockerObject.get(container["buildName"]) 
         except:
-            return {"message": "Image don't found"}
+            containerStructure["message"] = "Image don't found"
+            return containerStructure
 
         containerStructure["buildName"]=container["buildName"]
         #Validate container name. Check if the container name is already Docker service.
@@ -139,7 +142,7 @@ class BusinessValidations:
         if match:
             containerStructure["memoryLimit"]=container["memoryLimit"]
         else:
-            return {"message": "Invalid memory limit: "+container["memoryLimit"]+". Valid examples could be: 100000b, 1000k, 128m, 1g, etc."}
+            containerStructure["message"] =  "Invalid memory limit: "+container["memoryLimit"]+". Valid examples could be: 100000b, 1000k, 128m, 1g, etc."
 
         #Verify if X11 should be enabled.
         if "enableX11" in container:

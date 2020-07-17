@@ -18,7 +18,7 @@ createBuildSchema = {
                   "items": {"enum": ["THC_HYDRA", "CeWL", "Postman", "FuzzDB", 
                                     "DirBuster", "MetasploitFramework", "BeEF", 
                                     "Bettercap", "TOR - From Debian repository", 
-                                    "TOR - From source code.", "TORSocks", "ProxyChains-ng", 
+                                    "TOR - From source code", "TORSocks", "ProxyChains-ng", 
                                     "Recon-NG", "Photon", "theHarvester", 
                                     "SkipTracer", "Metagoofil", "JustMetadata", "SpiderFoot", 
                                     "Maltego", "Nmap", "CVE2018_20250", "CVE2017_8759", "CVE2017_8570", 
@@ -170,6 +170,20 @@ createContainerSchema = {
     "required": ["buildName"],
 }
 
+deleteContainerSchema =  { "type": "object",
+                        "properties": {
+                            "containerName": {
+                                "type": "string", "maxLength": 40, "minLength": 2
+                            }
+                        }
+                }
+getContainerSchema= { "type": "object",
+                        "properties": {
+                            "containerName": {
+                                "type": "string", "maxLength": 40, "minLength": 2
+                            }
+                        }
+                }
 infoToolSchema= { "type": "object",
                     "properties": {
                     "toolName": {  "type": "string",  
