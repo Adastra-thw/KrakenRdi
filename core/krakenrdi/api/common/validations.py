@@ -75,9 +75,6 @@ class BusinessValidations:
             try:
                 containerFound = self.dockerManager.containerBuilder.containerDockerObject.get(container["containerName"]) 
             except:
-                import traceback, sys
-                traceback.print_exc(file=sys.stdout)
-                traceback.print_exc(limit=1, file=sys.stdout)
                 #If the container is not found means that it could be created without problem.
                 #If there's no exception means the container already has beed created and should not continue with this process.
                 pass

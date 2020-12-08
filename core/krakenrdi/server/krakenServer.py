@@ -14,7 +14,7 @@ class KrakenServer():
 	containerService = None
 	toolService = None
 	'''
-	Create singletons for the managers of the application.
+	Create singletons for managers of the application.
 	'''
 	@staticmethod
 	def configureServices():

@@ -44,7 +44,12 @@ class BuildService():
 	def __getBuilds(self, buildsStored):
 		response = []
 		for build in buildsStored:
-			response.append({'buildName': build['buildName'], 
+			shortName = build['buildName']
+			if len(build['buildName'].split(':')) > 0:
+				shortName = build['buildName'].split(':')[1]
+			
+			response.append({'buildFullName': build['buildName'], 
+						 'buildName': shortName,
 						 'buildScope': build['buildScope'], 
 						 'tools': build['tools'],
 						 'containerProperties': build['buildArgs'], 

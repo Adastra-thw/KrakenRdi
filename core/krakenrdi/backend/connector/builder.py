@@ -9,9 +9,10 @@ class DockerManagerConnection():
 	'''
 	Creates a connection with the Docker deamon depending on the parameter dockerUrl. 
 	If this value is "None" it means that the Docker deamon should be running in the local host, 
-	son in that case the system will use the environment variables to read the configuration 
-	to create a connection with Docker deamon. If this parameter is not "None" means that 
-	the Docker deamon is running in a remote host and the system should try to connect.   
+	so in that case the system will use the environment variables to read the configuration 
+	and create a connection with Docker deamon. If this parameter is not "None" means that 
+	the Docker deamon is running in a remote host and the system should try to connect. 
+	It could give errors if the client don't have rights to authenticate or fails the SSL connection.
 	'''
 	def __init__(self, dockerUrl=None):
 		dockerClient = None
@@ -23,13 +24,14 @@ class DockerManagerConnection():
 		if dockerClient is not None and dockerClient.ping():
 			containers = dockerClient.containers
 			images = dockerClient.images
-			self.imageBuilder = ImageBuilder(images)
+			self.imageBuilder = ImageBuilder(images, containers)
 			self.containerBuilder = ContainerBuilder(containers)
 
 
 class ImageBuilder():
-	def __init__(self, imageDockerObject):
+	def __init__(self, imageDockerObject, containerDockerObject):
 		self.imageDockerObject = imageDockerObject
+		self.containerDockerObject = containerDockerObject
 
 	'''
 	Building process for the image received by parameter.
@@ -59,9 +61,20 @@ class ImageBuilder():
 	Remove the image specified. In this case will remove the image identified with the tag sent by the user.
 	'''
 	def delete(self, imageName):
-		result = self.imageDockerObject.remove(image=imageName, force=True, noprune=False)
-		print(result)
-		return result
+		containersRunning = self.containerDockerObject.list(filters={"ancestor": imageName})
+		result = {}
+		try:
+			for container in containersRunning:
+				container.stop()
+				container.remove()
+		except:
+			result["message"] = "Error stopping or removing a running container that uses the specified image"
+			return result
+		try:
+			self.imageDockerObject.remove(image=imageName, force=True, noprune=False)
+		except:
+			result["message"] = "Error removing the specified image."
+			return result
 
 class ContainerBuilder():
 	def __init__(self, containerDockerObject):
