@@ -56,7 +56,6 @@ class KrakenServer():
 		#KrakenServer.manager = KrakenManager(database=KrakenServer.database, 
         #									 configuration=KrakenServer.configuration)
 
-
 	@KrakenConfiguration.restApi.errorhandler(500)
 	def internal_error(error):
 		return make_response(jsonify({'message': str(error)}), 500)

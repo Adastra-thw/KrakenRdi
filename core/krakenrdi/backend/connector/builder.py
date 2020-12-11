@@ -52,10 +52,19 @@ class ImageBuilder():
 		print("Finish to build image...")
 		print("Cleaning the dangling images from Docker service")
 		self.imageDockerObject.prune(filters={"dangling": True})
-		#print(buildLogs)
+		print(buildLogs)
+		print(type(buildLogs))
+		logs = []
+		for log in list(buildLogs):
+			for dictValue in log.values():
+				if str(dictValue) is not None and len(str(dictValue)) > 0:
+					logs.append(str(dictValue))
+
+
 		return json.dumps({	"imageId": imageBuilded.id, 
 							"imageLabels": imageBuilded.labels, 
-							"imageTags": imageBuilded.tags})
+							"imageTags": imageBuilded.tags, 
+							"imageLogs": logs })
 
 	'''
 	Remove the image specified. In this case will remove the image identified with the tag sent by the user.
@@ -72,8 +81,10 @@ class ImageBuilder():
 			return result
 		try:
 			self.imageDockerObject.remove(image=imageName, force=True, noprune=False)
+			result["message"] = "Image deleted from database and docker service."
+			return result
 		except:
-			result["message"] = "Error removing the specified image."
+			result["message"] = "Error removing the specified image. Maybe it doesn't exists in the Docker service."
 			return result
 
 class ContainerBuilder():
@@ -107,8 +118,7 @@ class ContainerBuilder():
 			tty=container.tty,
 			volumes=container.volumes,
 			privileged=container.privileged, 
-			environment=container.environment
-		)
+			environment=container.environment)
 		return dockerContainer
 
 

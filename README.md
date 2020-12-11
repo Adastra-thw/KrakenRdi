@@ -23,29 +23,6 @@ The base architecture is composed by a full set of images for every stage in a R
 
 ![Architecture](https://github.com/Adastra-thw/KrakenRdi/blob/master/docs/Architecture.png)
 
-```mermaid
-graph LR
-A[Base image] -- Used by --> B(Anon Image)
-A[Base image] -- Used by --> C(Recon Image)
-A[Base image] -- Used by --> D(Weapon Image)
-A[Base image] -- Used by --> E(Delivery Image)
-A[Base image] -- Used by --> F(Exploit Image)
-A[Base image] -- Used by --> G(C&C Image)
-A[Base image] -- Used by --> H(Internal Image)
-A[Base image] -- Used by --> I(Lateral Movements Image)
-A[Base image] -- Used by --> J(Escalation Image)
-A[Base image with needed dependencies] -- Used by --> K(Exfiltration Image)
-B(Anon Image) -- INCLUDES --> B1(Tor, torsocks, proxychains, etc.)
-C(Recon Image) -- INCLUDES --> C1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-D(Weapon Image) -- INCLUDES --> D1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-E(Delivery Image) -- INCLUDES --> E1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-F(Exploit Image) -- INCLUDES --> F1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-G(C&C Image) -- INCLUDES --> G1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-H(Internal Image) -- INCLUDES --> H1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-I(Lateral Movements Image) -- INCLUDES --> I1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-J(Escalation Image) -- INCLUDES --> J1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-K(Exfiltration Image) -- INCLUDES --> K1(Recon-ng, SpiderFoot, TheHarvester, etc.)
-```
 
 ## Installation
 
@@ -54,11 +31,12 @@ On Debian-based systems:
 `
 
 Also, you need to install MongoDB Community Edition: https://docs.mongodb.com/manual/installation/  
+
 And Docker-CE depending on your system: https://docs.docker.com/engine/install/  
 
 # Usage
 
-After install dependencies, you can use the images directly or use the Python application created:
+After install dependencies, you can use the images directly or use the Python application:
 
 ## Docker images
 
@@ -84,9 +62,25 @@ docker build -f Dockerfile-base -t adastraa/krakenrdi:base --build-arg RECON_NMA
 > **NOTE:**  The file **Dockerfile-base** could be useful to create a image with the specified tools. However, if you don't specify that tools it just create a Debian image as base **without any tool.**
 To see the full list of tools and the arg name, follow this link: <LINK>
 
-# Create containers in KrakenRDI
+### Create containers
 
-## Toolbox
+Just use the image created previously 
+
+## KrakenRDI Rest API and Platform Management
+
+You can use the Python application to manage everything in automatized way. You need 2 components: **KrakenRDI API Server** and **KrakenRDI Backend Server** if you want to use the full features of this software.
+**KrakenRDI API Server** starts the Rest API and enables the endpoints which allows to list, create and delete builds and containers. Every "build" just represents the image construction in the Docker service with the specified parameters (including tools available in the image and containers created from that image).
+To start the API Server you just need to run the main script with '-r' switch.
+
+`python3 krakenrdi.py -r`
+
+**KrakenRDI Backend Server** starts a background server which receives jobs from the API Server to build a new image in the Docker service. It's only needed to create images using the endpoint **/build/crete** avaible in the **KrakenRDI Api Server**. To start the Backend Server you just need to run the main script with '-w' switch.
+
+`python3 krakenrdi.py -w`
+
+# Toolbox
+
+# Demo videos.
 
 # Contact
 

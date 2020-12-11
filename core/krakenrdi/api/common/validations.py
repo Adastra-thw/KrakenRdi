@@ -125,7 +125,8 @@ class BusinessValidations:
             volumes={}
             for volume in container["volumes"]:
                 hostVolume = volume["hostVolume"]
-                containerVolume = {"bind": volume["containerVolume"], "mode": volume["modeVolume"]}
+                containerVolume = {"bind": volume["containerVolume"], 
+                                    "mode": volume["modeVolume"]}
                 volumes[hostVolume] = containerVolume
             
             #This could be, for example:
@@ -135,11 +136,12 @@ class BusinessValidations:
 
         #Validate the value of memory
         import re
-        match = re.compile('(\d*)(?:b|k|m|g|)').match(container["memoryLimit"])
-        if match:
-            containerStructure["memoryLimit"]=container["memoryLimit"]
-        else:
-            containerStructure["message"] =  "Invalid memory limit: "+container["memoryLimit"]+". Valid examples could be: 100000b, 1000k, 128m, 1g, etc."
+        if "memoryLimit" in container:
+            match = re.compile('(\d*)(?:b|k|m|g|)').match(container["memoryLimit"])
+            if match:
+                containerStructure["memoryLimit"]=container["memoryLimit"]
+            else:
+                containerStructure["message"] =  "Invalid memory limit: "+container["memoryLimit"]+". Valid examples could be: 100000b, 1000k, 128m, 1g, etc."
 
         #Verify if X11 should be enabled.
         if "enableX11" in container:

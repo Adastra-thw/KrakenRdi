@@ -132,12 +132,14 @@ class BuildService():
 
 	def delete(self, request):
 		#Before to remove from database, remove from Docker daemon.
+		result = {}
 		try:
-			self.manager.dockerManager.imageBuilder.delete(self.manager.configuration['config']['imageBase']+":"+request['buildName'])
+			result = self.manager.dockerManager.imageBuilder.delete(self.manager.configuration['config']['imageBase']+":"+request['buildName'])
 		except ImageNotFound:
 			return {"message": "Image not found in Docker service. If it existed in database it was already deleted too"}
 		finally:
 			self.manager.database.builds.delete_one({'buildName': self.manager.configuration['config']['imageBase']+":"+request['buildName']} )
+			return result
 
 
 	def filter(self):

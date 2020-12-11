@@ -325,7 +325,7 @@ FROM base AS kraken-delivery
 	COPY data/README-delivery.txt ${WORKDIR_DELIVERY}
 
 ###################################################################################################################
-# COMPROMISE IMAGE 																							          
+# EXPLOITATION IMAGE 																							          
 # DESCRIPTION:																									  
 # Include the tools for the compromise stage.						 								  
 # TOOLS:																										  
@@ -340,7 +340,7 @@ FROM base AS kraken-exploitation
 	COPY data/README-exploitation.txt ${WORKDIR_EXPLOITATION}
 
 ###################################################################################################################
-# ESCALATE PRIVILEGES 																							          
+# ESCALATION PRIVILEGES 																							          
 # DESCRIPTION:																									  
 # Include the tools for the escalate privileges stage.						 								  
 # TOOLS:																										  

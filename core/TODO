@@ -1,9 +1,6 @@
 * Builds:
-    - Delete builds is broken. In any case, it should delete everything, including containers created
     - Clean code.
-    - If the user sends multiple times a request to create a image, what should be the behavior?
-    - Implement detail endpoint
-    - Implement delete endpoint
+    - If user sends multiple times a request to create a image, what should be the behavior?
     - What about the logs in the "build" endpoint? Check builder.py -> ImageBuilder -> build()
 * Container:
     - Check the workflow for creation of containers.
@@ -16,6 +13,7 @@
 * Tools:
     - Implement list tools
     - Implement filter tools
+    - In list endpoint, include the directory where will be installed the tool in the container. 
 * Misc:
     - General configuration in YAML file located in <USER_HOME_DIR>/.krakenrdi
     - Create a simple interpreter like MSFConsole.
@@ -30,6 +28,9 @@ DONE
     - When use "overwrite" in Rest API, it should find and later remove the build in Database.
       Now it's creating a new document in database (duplication).
     - To find a build it should receive the tagname, but when listing in DB it shows the full image name. It could be confusing.
+    - Implement detail endpoint
+    - Implement delete endpoint
+    - Delete builds is broken. In any case, it should delete everything, including containers created
 
 * Container:
     - Implement list endpoint

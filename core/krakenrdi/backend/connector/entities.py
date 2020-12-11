@@ -17,7 +17,7 @@ class Container():
 		self.capDrop=[""]
 		self.hostname=None
 		self.memoryLimit=None
-		self.networkMode= "host"
+		self.networkMode= "bridge"
 		self.networkDisabled=False
 		self.readOnly=False
 		self.ports={}

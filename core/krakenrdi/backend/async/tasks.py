@@ -31,11 +31,13 @@ def createBuild(self, imageJson):
 		buildStored["taskState"] = {'status':'SAVED', 'message': 'Image logs saved successfully in database.'}
 		KrakenConfiguration.database.builds.update_one({'_id':buildStored["_id"]}, 
 												{"$set": buildStored}, upsert=False)
+
+
 	except Exception as e:
 		buildStored["taskState"] = {'status':'ERROR', 'message': 'There was an error running the image creation: '+str(e)}
 		KrakenConfiguration.database.builds.update_one({'_id':buildStored["_id"]}, 
 											{"$set": buildStored}, upsert=False)
-
-	buildStored["taskState"] = {'status':'FINISHED', 'message': 'Task finished.'}
-	KrakenConfiguration.database.builds.update_one({'_id':buildStored["_id"]}, 
+	else:
+		buildStored["taskState"] = {'status':'FINISHED', 'message': 'Task finished.'}
+		KrakenConfiguration.database.builds.update_one({'_id':buildStored["_id"]}, 
 											{"$set": buildStored}, upsert=False)

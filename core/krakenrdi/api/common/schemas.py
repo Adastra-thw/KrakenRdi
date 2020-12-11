@@ -141,12 +141,16 @@ createContainerSchema = {
                   "items": { 
                         "type": "object",
                         "properties": {
-                                "protocolHost": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"]}, 
+                                "protocolHost": {"type": "string", 
+                                                "maxLength": 3, 
+                                                "enum": ["tcp","udp"]}, 
                                 "portHost": {"type": "number"},
-                                "protocolContainer": {"type": "string", "maxLength": 3, "enum": ["tcp","udp"] }, 
+                                "protocolContainer": {"type": "string", 
+                                                "maxLength": 3, 
+                                                "enum": ["tcp","udp"] }, 
                                 "portContainer": {"type": "number"}
                         },
-                        "required": ["portHost", "portContainer"],
+                        "required": ["portContainer"],
                         "additionalProperties": False,
                     },
                     "additionalProperties": False,
