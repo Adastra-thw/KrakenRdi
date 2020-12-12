@@ -40,7 +40,7 @@ After install dependencies, you can use the images directly or use the Python ap
 
 ## Docker images
 
-You can build any of the Docker images created in KrakenRDI, using this repository and the Dockerfiles located in <KRAKENRDI_ROOT_DIR>/core/docker or the DockerHub images.
+You can build any of the Docker images created in KrakenRDI, using this repository and the Dockerfiles located in `<KRAKENRDI_ROOT_DIR>/core/docker` or the DockerHub images.
 
 ### Building Docker images
 
@@ -48,23 +48,23 @@ If you want to build an image downloaded from this repository:
 
 Build the image only with tools for anonimity.
 
-cd  <KRAKENRDI_ROOT_DIR>/core/docker 
-docker build -t adastra/KrakenRDI:anon -f Dockerfile-anon
+**`cd  <KRAKENRDI_ROOT_DIR>/core/docker`
+`docker build -t adastra/KrakenRDI:anon -f Dockerfile-anon`**
 
 Build the image only with tools for recon.
-cd  <KRAKENRDI_ROOT_DIR>/core/docker 
-docker build -t adastra/KrakenRDI:recon -f Dockerfile-recon
+**`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`
+`# docker build -t adastra/KrakenRDI:recon -f Dockerfile-recon`**
 
 Build the image with specified tools (all of them updated): NMAP, SpiderFoot, MaliciousMacroGenerator, Demiguise.
-cd  <KRAKENRDI_ROOT_DIR>/core/docker 
-docker build -f Dockerfile-base -t adastraa/krakenrdi:base --build-arg RECON_NMAP=True --build-arg RECON_SPIDERFOOT=True --build-arg WEAPON_MALICIOUSMACROGENERATOR=True --build-arg WEAPON_DEMIGUISE=True .
+**`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`
+`# docker build -f Dockerfile-base -t adastraa/krakenrdi:base --build-arg RECON_NMAP=True --build-arg RECON_SPIDERFOOT=True --build-arg WEAPON_MALICIOUSMACROGENERATOR=True --build-arg WEAPON_DEMIGUISE=True .`**
 
 > **NOTE:**  The file **Dockerfile-base** could be useful to create a image with the specified tools. However, if you don't specify that tools it just create a Debian image as base **without any tool.**
-To see the full list of tools and the arg name, follow this link: <LINK>
+To see the full list of tools and the arg name see **Toolbox**
 
 ### Create containers
 
-Just use the image created previously 
+Just use the image created previously
 
 ## KrakenRDI Rest API and Platform Management
 
@@ -80,7 +80,42 @@ To start the API Server you just need to run the main script with '-r' switch.
 
 # Toolbox
 
-# Demo videos.
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
+|THC Hydra|`https://github.com/vanhauser-thc/thc-hydra.git`            |THC_HYDRA            |common            |
+|CeWL|`https://github.com/digininja/CeWL`            |CeWL            |common            |
+|Postman|`https://dl.pstmn.io/download/latest/linux64`            |Postman            |common            |
+|FuzzDB|`https://github.com/fuzzdb-project/fuzzdb.git`            |FuzzDB            |common            |
+|DirBuster|`https://github.com/Adastra-thw/DirBuster-1.0`            |DirBuster            |common            |
+|Metasploit Framework|`https://github.com/rapid7/metasploit-framework`            |MetasploitFramework            |frameworks            |
+|BeEF Browser Exploitation Framework|`https://github.com/beefproject/beef`            |BeEF            |frameworks            |
+|Bettercap|`https://github.com/bettercap/bettercap`            |Bettercap            |frameworks            |
+|The Onion Router (from APT install)|`https://dist.torproject.org/`            |TOR - From Debian repository            |anon   |
+|The Onion Router (from source code install)|`https://dist.torproject.org/`            |TOR - From source code            |anon   |
+|TORSocks|`https://trac.torproject.org/projects/tor/wiki/doc/torsocks`            |TORSocks            |anon   |
+|ProxyChains|`https://github.com/rofl0r/proxychains-ng`            |ProxyChains-ng            |anon   |
+|Recon-NG|`https://github.com/lanmaster53/recon-ng`            |Recon-NG            |recon  |
+|Photon|`https://github.com/s0md3v/Photon`            |Photon            |recon  |
+|The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
+|SkipTracer|`https://github.com/xillwillx/skiptracer`            |SkipTracer            |recon  |
+|Metagoofil|`https://github.com/laramies/metagoofil`            |Metagoofil            |recon  |
+|JustMetadata|`https://github.com/FortyNorthSecurity/Just-Metadata`            |JustMetadata            |recon  |
+|SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
+|Maltego CE|`https://www.maltego.com`            |Maltego            |recon  |
+|Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |Nmap            |recon  |
+|CVE2018_20250|`https://github.com/WyAtu/CVE-2018-20250`            |CVE2018_20250            |weaponization  |
+|CVE2017_8759|`https://github.com/bhdresh/CVE-2017-8759`            |CVE2017_8759            |weaponization  |
+|CVE2017_8570|`https://github.com/rxwx/CVE-2017-8570`            |CVE2017_8570            |weaponization  |
+|CVE2017_0199|`https://github.com/bhdresh/CVE-2017-0199`            |CVE2017_0199            |weaponization  |
+|DEMIGUISE|`https://github.com/nccgroup/demiguise`            |DEMIGUISE            |weaponization  |
+|MALICIOUS MACRO GENERATOR|`https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator`            |MALICIOUSMACROGENERATOR            |weaponization  |
+|OFFICEDDEPAYLOADS|`https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads`            |OFFICEDDEPAYLOADS            |weaponization  |
+|DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |DONTKILLMYCAT(DKMC)            |weaponization  |
+|EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |EMBEDINHTML            |weaponization  |
+|MACRO PACK|`https://github.com/sevagas/macro_pack`            |MACRO_PACK            |weaponization  |
+
+# Demo videos
+
 
 # Contact
 
@@ -90,30 +125,6 @@ If you find any problem let try to discover the root cause and open an issue. Fo
 
 StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
 
-
-
-# SmartyPants
-
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                |ASCII                          |HTML                         |
-|----------------|-------------------------------|-----------------------------|
-|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
-
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
 
 
 ## UML diagrams
