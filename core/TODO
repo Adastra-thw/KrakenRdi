@@ -1,7 +1,5 @@
 * Builds:
-    - Clean code.
-    - If user sends multiple times a request to create a image, what should be the behavior?
-    - What about the logs in the "build" endpoint? Check builder.py -> ImageBuilder -> build()
+    - Parameter "memoryLimit" is not validated.
 * Container:
     - Check the workflow for creation of containers.
     - Implement delete endpoint
@@ -15,6 +13,8 @@
     - Implement filter tools
     - In list endpoint, include the directory where will be installed the tool in the container. 
 * Misc:
+    * Clean code.
+    * Implement Logging following the class structure and architecture. 
     - General configuration in YAML file located in <USER_HOME_DIR>/.krakenrdi
     - Create a simple interpreter like MSFConsole.
     - Artworks
@@ -31,6 +31,9 @@ DONE
     - Implement detail endpoint
     - Implement delete endpoint
     - Delete builds is broken. In any case, it should delete everything, including containers created
+    - Clean code.
+    - If user sends multiple times a request to create a image, what should be the behavior?
+    - What about the logs in the "build" endpoint? Check builder.py -> ImageBuilder -> build()
 
 * Container:
     - Implement list endpoint

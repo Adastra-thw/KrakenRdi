@@ -12,7 +12,7 @@ from flask import jsonify
 class ContainerView():
 
 	'''
-	/build/list:
+	/container/list:
 				Methods: GET, POST
 				Request: {}
 				Description: List every build created.
@@ -23,7 +23,7 @@ class ContainerView():
 		return jsonify(response)
 
 	'''
-	/build/list:
+	/container/get:
 				Methods: POST
 				Request: {"containerName": "<NAME_OF_CONTAINER>"}
 				Description: List every build created.
@@ -39,10 +39,31 @@ class ContainerView():
 
 	'''
 	/build/create:
-			Response:
-			{
-				"message" : "Request for build creation received."			
-			}
+				Methods: PUT, POST
+				Request:
+					{ 	"buildName": "<buildName>",
+    					"containerName": "<containerName>",
+    					"autoRemove": true|false,
+    					"capAdd": ["CAP1", "CAP2", "CAPN"],
+    					"capDrop": ["CAP1", "CAP2", "CAPN"], 
+					    "hostname":  "<hostname>",
+    					"memoryLimit": "<memoryLimit>",
+						"networkMode": "<networkMode>",
+    					"networkDisabled": true|false,
+						"readOnly": true|false,
+						"removeOnFinish": true|false,
+    					"removeIfExists": true|false,
+    					"ports": [ {"protocolHost": "tcp|udp",
+                						"portHost": <portHost>,
+                						"protocolContainer": "tcp|udp",
+                						"portContainer": <portContainer>
+                					}],
+    					"volumes": [{"hostVolume" : "<hostVolume>", 
+                    				 	"containerVolume" : "containerVolume",
+                    					"modeVolume" : "rw|ro" }]
+					}
+
+				Description: Creates a new container in Docker service and save it in database.
 	'''
 	@KrakenConfiguration.restApi.route('/container/create', methods=["PUT","POST"])
 	def createContainer():
@@ -53,11 +74,10 @@ class ContainerView():
 		return jsonify(response)
 
 	'''
-	/build/delete:
-			Response:
-			{
-				"message" : "Request for build creation received."			
-			}
+	/container/delete:
+				Methods: PUT, POST
+				Request: {"containerName": "<NAME_OF_CONTAINER>"}
+				Description: Deletes the specified container by name.
 	'''
 	@KrakenConfiguration.restApi.route('/container/delete', methods=["PUT","POST"])
 	def deleteContainer():
@@ -66,3 +86,17 @@ class ContainerView():
 			structure = setDefaultsContainer(request.json)
 			response = KrakenServer.containerService.delete(structure)
 		return jsonify(response)
+
+	'''
+	/container/stop:
+				Methods: PUT, POST
+				Request: {"containerName": "<NAME_OF_CONTAINER>"}
+				Description: Stops the specified container by name.
+	'''
+	@KrakenConfiguration.restApi.route('/container/stop', methods=["PUT","POST"])
+	def stopContainer():
+		response = {}
+		if validateApiRequest(request, abort, schema="stopContainer"):
+			structure = setDefaultsContainer(request.json)
+			response = KrakenServer.containerService.stop(structure)
+		return jsonify(response)		

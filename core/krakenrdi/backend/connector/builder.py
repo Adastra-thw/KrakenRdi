@@ -121,7 +121,9 @@ class ContainerBuilder():
 			environment=container.environment)
 		return dockerContainer
 
-
+	'''
+	Check status for the container name in the parameter. If the container don't exists in Docker service, it returns the message "NOT_FOUND".	
+	'''
 	def checkStatus(self, containerName):
 		try:
 			container = self.containerDockerObject.get(containerName)
@@ -130,9 +132,28 @@ class ContainerBuilder():
 		except NotFound:
 			return "NOT_FOUND"
 	
-	def stop(self, container):
-		pass
+	'''
+	Stops the specified container searching by name. 
+	'''
+	def stop(self, containerName):
+		container = None
+		try:
+			container = self.containerDockerObject.get(containerName)
+		except NotFound:
+			return "NOT_FOUND"
+		else:
+			if container is not None:
+				try:
+					container.stop()
+					return container.status
+				except:
+					return "ERROR_STOPPING"
+			else:
+				return "ERROR_GETTING_CONTAINER"
 
+	'''
+	Delete function to remove the container from Docker service. It will try to force the deletion from Docker service.
+	'''
 	def delete(self, containerName):
 		try:
 			self.containerDockerObject.remove(containerName, force=True)

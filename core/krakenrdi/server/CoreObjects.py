@@ -1,6 +1,6 @@
 from flask import Flask
 from celery import Celery
-
+import logging
 
 class KrakenConfiguration():
 	restApi = Flask(__name__)
@@ -13,4 +13,4 @@ class KrakenConfiguration():
 	taskEngine.conf.update(restApi.config)
 	database = None
 	configuration = {}
-
+	logging.basicConfig(filename='core/logs/krakenrdi.log', level=logging.DEBUG)

@@ -181,6 +181,15 @@ deleteContainerSchema =  { "type": "object",
                             }
                         }
                 }
+
+stopContainerSchema =  { "type": "object",
+                        "properties": {
+                            "containerName": {
+                                "type": "string", "maxLength": 40, "minLength": 2
+                            }
+                        }
+                }
+
 getContainerSchema= { "type": "object",
                         "properties": {
                             "containerName": {

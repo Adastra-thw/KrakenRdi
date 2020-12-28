@@ -160,7 +160,7 @@ class ContainerService():
 			#Get the status for this container in Docker Daemon.
 			result["containerStatus"] = self.manager.dockerManager.containerBuilder.checkStatus(container["containerName"])
 		return result
-	
+
 	def get(self, request):
 		containerFound = self.manager.database.containers.find_one({"containerName": request["containerName"]})
 		if containerFound is not None:
@@ -248,22 +248,26 @@ class ContainerService():
 				result["message"] = "Container removed from database but it can't be removed from Docker engine. Seems the docker is being used by other process or don't exists."
 			elif success is False and rmDatabase is False:
 				result["message"] = "Container can't be removed from Docker engine and database. Maybe the container's name specified is wrong."
-
-		return result
-		
-		containers = self.manager.database.containers.find()
-		for container in containers:
-			result["buildName"] = container["buildName"] 
-			result["containerName"] = container["containerName"]
-			result["containerPorts"] = container["ports"]
-			result["containerVolumes"] = container["volumes"]
-			#Get the status for this container in Docker Daemon.
-			result["containerStatus"] = self.manager.dockerManager.containerBuilder.checkStatus(container["containerName"])
 		return result
 
-	def execute(self):
-		pass
-	
+	def stop(self, request):
+		result={}
+		try:	
+			self.manager.database.containers.update_one({"containerName": request["containerName"]})
+		except:
+			rmDatabase = False
+		finally:
+			success = self.manager.dockerManager.containerBuilder.delete(request["containerName"])
+			if success and rmDatabase:
+				result["message"] = "Container removed from database and Docker engine."
+			elif success and rmDatabase is False:
+				result["message"] = "Container removed from Docker engine but it can't be removed from Database. Seems the document in database don't exists."
+			elif success is False and rmDatabase:
+				result["message"] = "Container removed from database but it can't be removed from Docker engine. Seems the docker is being used by other process or don't exists."
+			elif success is False and rmDatabase is False:
+				result["message"] = "Container can't be removed from Docker engine and database. Maybe the container's name specified is wrong."
+		return result
+
 
 class ToolService():
 	def __init__(self, manager):

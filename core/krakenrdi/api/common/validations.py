@@ -1,7 +1,7 @@
 import json
 from jsonschema.exceptions import ValidationError
 from jsonschema import validate
-from core.krakenrdi.api.common.schemas import createBuildSchema, deleteBuildSchema, detailBuildSchema, createContainerSchema, deleteContainerSchema, getContainerSchema, infoToolSchema, filterToolSchema
+from core.krakenrdi.api.common.schemas import createBuildSchema, deleteBuildSchema, detailBuildSchema, createContainerSchema, deleteContainerSchema, stopContainerSchema, getContainerSchema, infoToolSchema, filterToolSchema
 from core.krakenrdi.api.common.schemas import defaultsBuild, defaultsContainer, defaultsTool              
 
 
@@ -35,9 +35,10 @@ def validateApiRequest(request, abort, schema):
                "deleteBuild": deleteBuildSchema, 
                "createContainer": createContainerSchema,
                "deleteContainer": deleteContainerSchema,
+               "stopContainer": stopContainerSchema,
                "getContainer": getContainerSchema, 
                "infoToolSchema": infoToolSchema,
-               "filterToolSchema": filterToolSchema 
+               "filterToolSchema": filterToolSchema
                }
     if request.is_json is False:
         abort(400)

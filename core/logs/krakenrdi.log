@@ -1,0 +1,76 @@
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 813-596-448
+INFO:werkzeug:127.0.0.1 - - [12/Dec/2020 16:35:35] "[37mGET /build/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Dec/2020 17:14:40] "[37mGET /build/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Dec/2020 22:56:06] "[37mPOST /build/create HTTP/1.1[0m" 200 -
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 813-596-448
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 09:14:18] "[37mGET /tools/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 09:14:56] "[37mPOST /build/create HTTP/1.1[0m" 200 -
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/json?limit=-1&all=0&size=0&trunc_cmd=0&filters=%7B%22ancestor%22%3A+%5B%22adastra%2Fkrakenrdi%3Atesting%22%5D%7D HTTP/1.1" 200 3
+DEBUG:urllib3.connectionpool:http://localhost:None "DELETE /v1.35/images/adastra/krakenrdi:testing?force=True&noprune=False HTTP/1.1" 404 55
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 09:15:16] "[37mPOST /build/delete HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 09:15:23] "[37mPOST /build/create HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:05:34] "[37mGET /build/list HTTP/1.1[0m" 200 -
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/json?limit=-1&all=0&size=0&trunc_cmd=0&filters=%7B%22ancestor%22%3A+%5B%22adastra%2Fkrakenrdi%3Atesting2%22%5D%7D HTTP/1.1" 200 3
+DEBUG:urllib3.connectionpool:http://localhost:None "DELETE /v1.35/images/adastra/krakenrdi:testing2?force=True&noprune=False HTTP/1.1" 200 None
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:06:06] "[37mPOST /build/delete HTTP/1.1[0m" 200 -
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/json?limit=-1&all=0&size=0&trunc_cmd=0&filters=%7B%22ancestor%22%3A+%5B%22adastra%2Fkrakenrdi%3Atesting%22%5D%7D HTTP/1.1" 200 3
+DEBUG:urllib3.connectionpool:http://localhost:None "DELETE /v1.35/images/adastra/krakenrdi:testing?force=True&noprune=False HTTP/1.1" 200 None
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:06:35] "[37mPOST /build/delete HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:06:41] "[37mGET /build/list HTTP/1.1[0m" 200 -
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/json?limit=-1&all=0&size=0&trunc_cmd=0&filters=%7B%22ancestor%22%3A+%5B%22adastra%2Fkrakenrdi%3Afinaltest%22%5D%7D HTTP/1.1" 200 3
+DEBUG:urllib3.connectionpool:http://localhost:None "DELETE /v1.35/images/adastra/krakenrdi:finaltest?force=True&noprune=False HTTP/1.1" 404 57
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:06:50] "[37mPOST /build/delete HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:06:55] "[37mGET /build/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:07:13] "[37mPOST /build/create HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:22:55] "[37mGET /build/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:23:19] "[37mGET /container/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:27:07] "[33mPOST /container/create-full HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:27:46] "[37mGET /container/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:27:59] "[37mPOST /container/create HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:28:07] "[37mGET /build/list HTTP/1.1[0m" 200 -
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/images/adastra/krakenrdi:example1/json HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/krakenContainerFULL/json HTTP/1.1" 404 53
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/create?name=krakenContainerFULL HTTP/1.1" 201 201
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/78507e9bc6452c7389937054550b508d7ed0b5a0ad1dac1e214eb2a0b209f964/json HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/78507e9bc6452c7389937054550b508d7ed0b5a0ad1dac1e214eb2a0b209f964/start HTTP/1.1" 204 0
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/78507e9bc6452c7389937054550b508d7ed0b5a0ad1dac1e214eb2a0b209f964/exec HTTP/1.1" 201 74
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/exec/a17adfc7d62d66cdd94cecc4d60debd0b09824417a2d5e2f3567d95500544761/start HTTP/1.1" 101 0
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/exec/a17adfc7d62d66cdd94cecc4d60debd0b09824417a2d5e2f3567d95500544761/json HTTP/1.1" 200 400
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/78507e9bc6452c7389937054550b508d7ed0b5a0ad1dac1e214eb2a0b209f964/exec HTTP/1.1" 201 74
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/exec/d4df205a343147990298b18415c8b71077a95762b9c5b5973e118aab6ffb9683/start HTTP/1.1" 101 0
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/exec/d4df205a343147990298b18415c8b71077a95762b9c5b5973e118aab6ffb9683/json HTTP/1.1" 200 397
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/78507e9bc6452c7389937054550b508d7ed0b5a0ad1dac1e214eb2a0b209f964/exec HTTP/1.1" 201 74
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/exec/dbfe9de00a927e54e9da32a86b217fc919cb121304aa1bdd19a654b1d92242a5/start HTTP/1.1" 101 0
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/exec/dbfe9de00a927e54e9da32a86b217fc919cb121304aa1bdd19a654b1d92242a5/json HTTP/1.1" 200 407
+INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:28:24] "[37mPOST /container/create HTTP/1.1[0m" 200 -
