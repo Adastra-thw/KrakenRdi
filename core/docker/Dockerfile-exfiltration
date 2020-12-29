@@ -29,10 +29,9 @@ FROM debian:${VERSION} AS base
 	SHELL ["/bin/bash", "-c"]
 
 	########################################
-	#	WORKING DIRS FROM <LAYER> IMAGE
+	#	WORKING DIRS FROM EXFILTRATION IMAGE
 	########################################
-	ENV WORKDIR_FULL=${ROOT_DIR}/tools
-	ENV WORKDIR_COMMON=${WORKDIR_FULL}/common
+	ENV WORKDIR_EXFILTRATION=${WORKDIR_FULL}/9_exfiltration
 
 	########################################
 	#	CONFIGURATION AND SYSTEM VARIABLES
@@ -40,34 +39,18 @@ FROM debian:${VERSION} AS base
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
-	ARG RUBY_VERSION=2.6.6
-	ARG RVM_DIR=/usr/local/rvm/
-	ARG RVM_LOADER=/etc/profile.d/rvm.sh
 
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
 	ENV EXPOSE_PORTS $EXPOSE_PORTS
-	ENV RUBY_VERSION $RUBY_VERSION
-	ENV RVM_DIR $RVM_DIR
-	ENV RVM_LOADER $RVM_LOADER	
-
 
 	########################################
-	#	GLOBAL VARIABLES FROM COMMON IMAGE
+	#	GLOBAL VARIABLES FROM EXFILTRATION IMAGE
 	########################################
-	ARG COMMON_THC_HYDRA=True
-	ARG COMMON_CWEL=True
-	ARG COMMON_POSTMAN=True
-	ARG COMMON_FUZZDB=True
-	ARG COMMON_DIRBUSTER=True
-	ARG COMMON_HASHIDENTIFIER=True
-
-	ENV COMMON_THC_HYDRA $COMMON_THC_HYDRA
-	ENV COMMON_CWEL $COMMON_CWEL
-	ENV COMMON_POSTMAN $COMMON_POSTMAN
-	ENV COMMON_FUZZDB $COMMON_FUZZDB
-	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
-	ENV COMMON_HASHIDENTIFIER $COMMON_HASHIDENTIFIER
-
-
+	ARG EXFILTRATION_MISTICA=True
+	
+	ENV EXFILTRATION_MISTICA $EXFILTRATION_MISTICA
+	
 	########################################
 	#	BASE SOFTWARE INSTALLATION
 	########################################
@@ -86,47 +69,23 @@ FROM debian:${VERSION} AS base
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
 		&& adduser ${USERNAME} sudo
 
-	#######################################################
-	#	DEPENDENCIES AND SOFTWARE FOR COMMON IMAGE
-	#######################################################
-	#Installation for RVM 
-	RUN	curl -sSL https://get.rvm.io | bash \
-		&& source ${RVM_LOADER} \
-		&& rvm install ${RUBY_VERSION} \
-		&& usermod -a -G rvm ${USERNAME} \
-		&& newgrp rvm \
-		&& source ${RVM_LOADER}
-
-	#Installation of dependencies for THW Hydra.
-	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then \
-			apt-get update && apt-get -y install libssh-dev libidn11-dev libpcre3-dev \
-                 libgtk2.0-dev libmariadb-dev-compat libmariadb-dev libsvn-dev \
-                 firebird-dev libmemcached-dev libgpg-error-dev \
-                 libgcrypt20-dev; fi
-
 ###################################################################################################################
-# COMMON IMAGE 																							          
+# EXFILTRATION IMAGE 																							          
 # DESCRIPTION:																									  
-# Include the tools for the COMMON stage.						 								  
-# TOOLS:
-#	[^] THC-HYDRA: https://github.com/vanhauser-thc/thc-hydra
-#	[^] CEWL: https://github.com/digininja/CeWL 
-#	[^] POSTMAN: https://dl.pstmn.io/download/latest/linux64
-#	[^] FuzzDB: https://github.com/fuzzdb-project/fuzzdb
-#	[^] DirBuster: https://github.com/Adastra-thw/DirBuster-1.0
+# Include the tools for the exfiltration stage.						 								  
+# TOOLS:																										  
+#	[^] Mistica 
 ###################################################################################################################
-FROM base AS kraken-common
+FROM base AS kraken-exfiltration
 	LABEL author="Adastra"
-	LABEL description="Layer for transversal stage."
-	WORKDIR ${WORKDIR_COMMON}
+	LABEL description="Layer for exfiltration stage."
+	WORKDIR ${WORKDIR_EXFILTRATION}
 	SHELL ["/bin/bash", "-c"]
+	#Copy resources to EXFILTRATION directory.
+	COPY data/README-exfiltration.txt ${WORKDIR_EXFILTRATION}	
+	
+	RUN if [ "$EXFILTRATION_MISTICA" = "True" ] ; then cd ${WORKDIR_EXFILTRATION} && git clone https://github.com/IncideDigital/Mistica Mistica; fi
 
-	RUN if [ "$COMMON_THC_HYDRA" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/vanhauser-thc/thc-hydra.git && cd thc-hydra && ./configure && make; fi ; \
-		if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/digininja/CeWL.git cewl; fi ; \
-		if [ "$COMMON_POSTMAN" = "True" ] ; then cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; fi ; \
-		if [ "$COMMON_FUZZDB" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; fi ; \
-		if [ "$COMMON_DIRBUSTER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0 DirBuster && cd DirBuster && tar -xvf DirBuster-1.0-RC1.tar.bz2 && rm -rf DirBuster-1.0-RC1.tar.bz2 ; fi ; \
-		if [ "$COMMON_HASHIDENTIFIER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/blackploit/hash-identifier Hash-Identifier ; fi ;
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
@@ -136,16 +95,12 @@ FROM base AS kraken-common
 FROM base as kraken-composition
 	LABEL author="Adastra"
 	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
-	WORKDIR ${WORKDIR_COMMON}
-	COPY --from=kraken-common ${WORKDIR_COMMON} ${WORKDIR_COMMON}
+	WORKDIR ${WORKDIR_EXFILTRATION}
 
-	#Programs and dependencies for COMMON.
-	USER ${USERNAME}
-	RUN	if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && \
-			source ${RVM_LOADER} && rvm use ${RUBY_VERSION} && \
-			cd ${WORKDIR_COMMON}/cewl && gem install bundle && bundle install; \
-		fi ; 
-	USER root
+	COPY --from=kraken-exfiltration	${WORKDIR_EXFILTRATION} ${WORKDIR_EXFILTRATION}
+
+	#Programs and dependencies for EXFILTRATION.
+	RUN if [ "$EXFILTRATION_MISTICA" = "True" ] ; then cd ${WORKDIR_EXFILTRATION}/Mistica && pip3 install dnslib && python3 -m pip install pyinstaller && pyinstaller --onefile --hiddenimport overlay.client.io --hiddenimport overlay.client.shell --hiddenimport overlay.client.tcpconnect --hiddenimport overlay.client.tcplisten --hiddenimport wrapper.client.http --hiddenimport wrapper.client.dns --hiddenimport wrapper.client.icmp --hiddenimport overlay.server.io --hiddenimport overlay.server.shell --hiddenimport overlay.server.tcpconnect --hiddenimport overlay.server.tcplisten --hiddenimport wrapper.server.wrap_module.http --hiddenimport wrapper.server.wrap_module.dns --hiddenimport wrapper.server.wrap_module.icmp --hiddenimport wrapper.server.wrap_server.httpserver --hiddenimport wrapper.server.wrap_server.dnsserver --hiddenimport wrapper.server.wrap_server.icmpserver mc.py; fi
 
 ###################################################################################################################
 # OUTPUT LAYER 																							          
@@ -157,8 +112,7 @@ FROM kraken-composition
 	USER root
 	SHELL ["/bin/bash", "-c"]
 	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-		chmod 700 -R ${WORKDIR_FULL} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_FULL}
+		chmod 700 -R ${WORKDIR_EXFILTRATION} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_EXFILTRATION}
 	EXPOSE $EXPOSE_PORTS
 	USER ${USERNAME}
-	RUN echo "source ${RVM_LOADER}" >> ~/.bashrc && source ${RVM_LOADER} && rvm use ${RUBY_VERSION} 
 	CMD tail -f /dev/null

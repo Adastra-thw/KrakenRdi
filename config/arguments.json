@@ -75,6 +75,11 @@
 		"type": "common"
 	},
 	{
+		"name":	"COMMON_HASHIDENTIFIER",
+		"value": "True",
+		"type": "common"
+	},	
+	{
 		"name":	"FRAMEWORK_METASPLOIT",
 		"value": "True",
 		"type": "frameworks"
@@ -256,9 +261,9 @@
 		
 	},
 	{
-		"name":	"",
+		"name":	"EXFILTRATION_MISTICA",
 		"value": "True",
-		"type": "exfiltrate"
+		"type": "exfiltration"
 		
 	}
 ]

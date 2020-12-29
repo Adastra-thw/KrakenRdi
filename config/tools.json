@@ -43,6 +43,15 @@
 		"stage": "common"
 	},
 	{
+		"name": "Hash-Identifier",
+		"description": "Tool useful to identify a hash type.",
+		"url": "https://github.com/blackploit/hash-identifier",
+		"propertyEnabled": "COMMON_HASHIDENTIFIER",
+		"RT": true,
+		"PT": true,
+		"stage": "common"
+	},
+	{
 		"name": "MetasploitFramework",
 		"description": "Framework for exploitation and exploit development.",
 		"url": "https://github.com/rapid7/metasploit-framework",
@@ -340,10 +349,10 @@
 		"stage": "movelaterally"
 	},	
 	{
-		"name": "TEST",
-		"description": "TEST.",
-		"url": "https://github.com/sevagas/macro_pack",
-		"propertyEnabled": "TEST",
+		"name": "Mistica",
+		"description": "Mística is a tool that allows to embed data into application layer protocol fields, with the goal of establishing a bi-directional channel for arbitrary communications.",
+		"url": "https://github.com/IncideDigital/Mistica",
+		"propertyEnabled": "EXFILTRATION_MISTICA",
 		"RT": true,
 		"PT": false,
 		"stage": "exfiltration"

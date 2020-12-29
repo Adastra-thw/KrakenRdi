@@ -142,6 +142,42 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
 
 	########################################
+	#	GLOBAL VARIABLES FROM WEAPON IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM DELIVERY IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM EXPLOITATION IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM ESCALATION PRIVILEGES IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM COMMAND AND CONTROL IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM INTERNAL RECONNAISSANCE IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM MOVE LATERALLY IMAGE
+	########################################
+
+	########################################
+	#	GLOBAL VARIABLES FROM EXFILTRATION IMAGE
+	########################################
+	ARG EXFILTRATION_MISTICA=False
+	
+	ENV EXFILTRATION_MISTICA $EXFILTRATION_MISTICA
+	
+
+	########################################
 	#	GLOBAL VARIABLES FROM FRAMEWORK IMAGE
 	########################################
 	ARG FRAMEWORK_METASPLOIT=False
@@ -160,12 +196,14 @@ FROM debian:${VERSION} AS base
 	ARG COMMON_POSTMAN=False
 	ARG COMMON_FUZZDB=False
 	ARG COMMON_DIRBUSTER=False
+	ARG COMMON_HASHIDENTIFIER=False
 
 	ENV COMMON_THC_HYDRA $COMMON_THC_HYDRA
 	ENV COMMON_CWEL $COMMON_CWEL
 	ENV COMMON_POSTMAN $COMMON_POSTMAN
 	ENV COMMON_FUZZDB $COMMON_FUZZDB
 	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
+	ENV COMMON_HASHIDENTIFIER $COMMON_HASHIDENTIFIER
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -297,6 +335,8 @@ FROM base AS kraken-weapon
 	LABEL description="Layer for weapon stage."
 	WORKDIR ${WORKDIR_WEAPON}
 	SHELL ["/bin/bash", "-c"]
+	#Copy resources to WEAPON directory.
+	COPY data/README-weapon.txt ${WORKDIR_WEAPON}
 
 	RUN if [ "$WEAPON_CVE2018_20250" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/WyAtu/CVE-2018-20250 CVE2018_20250; fi ; \
 		if [ "$WEAPON_CVE2017_8759" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/bhdresh/CVE-2017-8759 CVE2017_8759; fi ; \
@@ -402,11 +442,11 @@ FROM base AS kraken-movelaterally
 	COPY data/README-movelaterally.txt ${WORKDIR_LATERALMOVEMENTS}
 
 ###################################################################################################################
-# EXFILTRATION 																							          
+# EXFILTRATION 	IMAGE																						          
 # DESCRIPTION:																									  
 # Include the tools for the exfiltration stage.						 								  
 # TOOLS:																										  
-#	[*] xxxx: 
+#	[^] Mistica 
 ###################################################################################################################
 FROM base AS kraken-exfiltration
 	LABEL author="Adastra"
@@ -415,6 +455,8 @@ FROM base AS kraken-exfiltration
 	SHELL ["/bin/bash", "-c"]
 	#Copy resources to EXFILTRATION directory.
 	COPY data/README-exfiltration.txt ${WORKDIR_EXFILTRATION}	
+	
+	RUN if [ "$EXFILTRATION_MISTICA" = "True" ] ; then cd ${WORKDIR_EXFILTRATION} && git clone https://github.com/IncideDigital/Mistica Mistica; fi
 
 ###################################################################################################################
 # FRAMEWORK IMAGE 																							          
@@ -449,6 +491,7 @@ FROM base AS kraken-framework
 #	[^] POSTMAN: https://dl.pstmn.io/download/latest/linux64
 #	[^] FuzzDB: https://github.com/fuzzdb-project/fuzzdb
 #	[^] DirBuster: https://github.com/Adastra-thw/DirBuster-1.0
+#	[^] Hash-Identifier: https://github.com/blackploit/hash-identifier
 ###################################################################################################################
 FROM base AS kraken-common
 	LABEL author="Adastra"
@@ -460,8 +503,8 @@ FROM base AS kraken-common
 		if [ "$COMMON_CWEL" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/digininja/CeWL.git cewl; fi ; \
 		if [ "$COMMON_POSTMAN" = "True" ] ; then cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; fi ; \
 		if [ "$COMMON_FUZZDB" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; fi ; \
-		if [ "$COMMON_DIRBUSTER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0 DirBuster && cd DirBuster && tar -xvf DirBuster-1.0-RC1.tar.bz2 && rm -rf DirBuster-1.0-RC1.tar.bz2 ; fi ;
-
+		if [ "$COMMON_DIRBUSTER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0 DirBuster && cd DirBuster && tar -xvf DirBuster-1.0-RC1.tar.bz2 && rm -rf DirBuster-1.0-RC1.tar.bz2 ; fi ; \
+		if [ "$COMMON_HASHIDENTIFIER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/blackploit/hash-identifier Hash-Identifier ; fi ;
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
@@ -515,6 +558,8 @@ FROM base as kraken-composition
 	#Programs and dependencies for INTERNALRECON.
 	#Programs and dependencies for LATERALMOVEMENTS.
 	#Programs and dependencies for EXFILTRATION.
+	RUN if [ "$EXFILTRATION_MISTICA" = "True" ] ; then cd ${WORKDIR_EXFILTRATION}/Mistica && pip3 install dnslib && python3 -m pip install pyinstaller && pyinstaller --onefile --hiddenimport overlay.client.io --hiddenimport overlay.client.shell --hiddenimport overlay.client.tcpconnect --hiddenimport overlay.client.tcplisten --hiddenimport wrapper.client.http --hiddenimport wrapper.client.dns --hiddenimport wrapper.client.icmp --hiddenimport overlay.server.io --hiddenimport overlay.server.shell --hiddenimport overlay.server.tcpconnect --hiddenimport overlay.server.tcplisten --hiddenimport wrapper.server.wrap_module.http --hiddenimport wrapper.server.wrap_module.dns --hiddenimport wrapper.server.wrap_module.icmp --hiddenimport wrapper.server.wrap_server.httpserver --hiddenimport wrapper.server.wrap_server.dnsserver --hiddenimport wrapper.server.wrap_server.icmpserver mc.py; fi
+
 	#Programs and dependencies for FRAMEWORKS.
 	USER ${USERNAME}
 	RUN if [ "$FRAMEWORK_METASPLOIT" = "True" ] ; then \

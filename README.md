@@ -46,12 +46,12 @@ If you want to build an image downloaded from this repository:
 Build the image only with tools for anonimity.
 
 **`cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
-**`docker build -t adastra/KrakenRDI:anon -f Dockerfile-anon`**
+**`docker build -t adastra/KrakenRDI:anon -f Dockerfile-anon .`**
 
 Build the image only with tools for recon.
 **`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
 
-**`# docker build -t adastra/KrakenRDI:recon -f Dockerfile-recon`**
+**`# docker build -t adastra/KrakenRDI:recon -f Dockerfile-recon .`**
 
 Build the image with specified tools (all of them updated): NMAP, SpiderFoot, MaliciousMacroGenerator, Demiguise.
 **`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
@@ -112,6 +112,7 @@ To start the API Server you just need to run the main script with '-r' switch.
 |DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |DONTKILLMYCAT(DKMC)            |weaponization  |
 |EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |EMBEDINHTML            |weaponization  |
 |MACRO PACK|`https://github.com/sevagas/macro_pack`            |MACRO_PACK            |weaponization  |
+|MISTICA|`https://github.com/IncideDigital/Mistica`            |MISTICA            |exfiltration  |
 
 # Demo videos
 
