@@ -237,6 +237,54 @@
 		
 	}, 
 	{
+		"name":	"ESCALATION_BEROOT",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 
+	{
+		"name":	"ESCALATION_LINENUM",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 	
+	{
+		"name":	"ESCALATION_LINUX_EXPLOIT_SUGGESTER",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 	
+	{
+		"name":	"ESCALATION_LINUX_PRIV_CHECKER",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 	
+	{
+		"name":	"ESCALATION_LINUX_SMART_ENUMERATION",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 
+	{
+		"name":	"ESCALATION_JAWS",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 
+	{
+		"name":	"ESCALATION_WESNG",
+		"value": "True",
+		"type": "escalation"
+		
+	}, 
+	{
+		"name":	"ESCALATION_WINDOWSENUM",
+		"value": "True",
+		"type": "escalation"
+		
+	},	
+	{
 		"name":	"",
 		"value": "True",
 		"type": "persistence"

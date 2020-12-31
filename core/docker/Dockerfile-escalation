@@ -1,0 +1,146 @@
+# Rapid Deployment Infrastructure for Red Teaming and Penetration Testing.
+# Kraken RDI 
+# Author: Adastra.
+# Website: http://thehackerway.com 
+# Github: https://github.com/Adastra-thw/KrakenRdi
+# Simple command to generate a new image using this Dockerfile
+# docker build -t adastra/KrakenRDI:<LAYER> -f Dockerfile-<LAYER> .
+
+
+###################################################################################################################
+# This Dockerfile uses multi-stage build patterns to include multiple configurations and inhereit common features 
+# For more information about multi-stage buildings in Docker, please read the official documentation.             
+# https://docs.docker.com/develop/develop-images/multistage-build/ 												  
+###################################################################################################################
+
+# Declaration of arguments to control the building flow and create images dynamically. 
+ARG VERSION=latest
+
+###################################################################################################################
+# BASE IMAGE 																							          
+# DESCRIPTION:																									  
+# This will be the base image, the parent of every image declared in the project. 								  
+# This will include the needed software to install the tools of every stage smothly.							  
+###################################################################################################################
+FROM debian:${VERSION} AS base
+	LABEL author="Adastra"
+	LABEL description="Layer with the needed libraries and software."
+	ENV ROOT_DIR /redteam
+	SHELL ["/bin/bash", "-c"]
+
+	########################################
+	#	WORKING DIRS FROM ESCALATION IMAGE
+	########################################
+	ENV WORKDIR_ESCALATION=${WORKDIR_FULL}/5_escalation
+
+	########################################
+	#	CONFIGURATION AND SYSTEM VARIABLES
+	########################################
+	ARG USERNAME=krakenrdi
+	ARG PASSWORD=krakenrdi
+	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
+
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
+	ENV EXPOSE_PORTS $EXPOSE_PORTS
+
+	########################################
+	#	GLOBAL VARIABLES FROM ESCALATION IMAGE
+	########################################
+	ARG ESCALATION_BEROOT=True
+	ARG ESCALATION_LINENUM=True
+	ARG ESCALATION_LINUX_EXPLOIT_SUGGESTER=True
+	ARG ESCALATION_LINUX_PRIV_CHECKER=True
+	ARG ESCALATION_LINUX_SMART_ENUMERATION=True
+	ARG ESCALATION_JAWS=True
+	ARG ESCALATION_WESNG=True
+	ARG ESCALATION_WINDOWSENUM=True
+
+	ENV ESCALATION_BEROOT $ESCALATION_BEROOT
+	ENV ESCALATION_LINENUM $ESCALATION_LINENUM
+	ENV ESCALATION_LINUX_EXPLOIT_SUGGESTER $ESCALATION_LINUX_EXPLOIT_SUGGESTER
+	ENV ESCALATION_LINUX_PRIV_CHECKER $ESCALATION_LINUX_PRIV_CHECKER 
+	ENV ESCALATION_LINUX_SMART_ENUMERATION $ESCALATION_LINUX_SMART_ENUMERATION
+	ENV ESCALATION_JAWS $ESCALATION_JAWS
+	ENV ESCALATION_WESNG $ESCALATION_WESNG
+	ENV ESCALATION_WINDOWSENUM $ESCALATION_WINDOWSENUM
+
+	
+	########################################
+	#	BASE SOFTWARE INSTALLATION
+	########################################
+	RUN apt-get update && apt-get -y install net-tools netcat socat nano locate \
+		python3 python3-dev python3-pip \
+		python python-dev python-pip \
+		unzip wget curl git gcc libc-dev libxslt-dev \
+		openjdk-11-jre openjdk-11-jdk \
+		libevent-dev libssl-dev zlib1g zlib1g-dev \
+		firefox-esr xfce4-terminal \
+		autoconf automake libtool apt-utils \
+		openssh-server openssl \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		software-properties-common sudo locate \
+		&& useradd -m ${USERNAME} \
+		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
+		&& adduser ${USERNAME} sudo
+
+###################################################################################################################
+# ESCALATION PRIVILEGES 																							          
+# DESCRIPTION:																									  
+# Include the tools for the escalate privileges stage.						 								  
+# TOOLS:																										  
+#	[^] BeRoot:  https://github.com/AlessandroZ/BeRoot.git
+#	[^] LinEnum: https://github.com/rebootuser/LinEnum
+#	[^] Linux_Exploit_Suggester: https://github.com/InteliSecureLabs/Linux_Exploit_Suggester
+#	[^] linuxprivchecker: https://github.com/sleventyeleven/linuxprivchecker
+#	[^] linux-smart-enumeration: https://github.com/diego-treitos/linux-smart-enumeration
+#	[^] JAWS: https://github.com/411Hall/JAWS
+#	[^] WESNG: https://github.com/bitsadmin/wesng
+#	[^] Windows-Enum:   https://github.com/absolomb/WindowsEnum 
+###################################################################################################################
+FROM base AS kraken-escalation
+	LABEL author="Adastra"
+	LABEL description="Layer for escalation stage."
+	WORKDIR ${WORKDIR_ESCALATION}
+	SHELL ["/bin/bash", "-c"]
+	#Copy resources to ESCALATION directory.
+	COPY data/README-escalation.txt ${WORKDIR_ESCALATION}
+
+	RUN if [ "$ESCALATION_BEROOT" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/AlessandroZ/BeRoot.git BeRoot; fi ; \
+		if [ "$ESCALATION_LINENUM" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/rebootuser/LinEnum LinEnum; fi ; \
+		if [ "$ESCALATION_LINUX_EXPLOIT_SUGGESTER" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/InteliSecureLabs/Linux_Exploit_Suggester Linux_Exploit_Suggester; fi ; \
+		if [ "$ESCALATION_LINUX_PRIV_CHECKER" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/sleventyeleven/linuxprivchecker linuxprivchecker; fi ; \
+		if [ "$ESCALATION_LINUX_SMART_ENUMERATION" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/diego-treitos/linux-smart-enumeration linux-smart-enumeration; fi ; \
+		if [ "$ESCALATION_JAWS" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/411Hall/JAWS JAWS; fi ; \
+		if [ "$ESCALATION_WESNG" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/bitsadmin/wesng wesng; fi ; \
+		if [ "$ESCALATION_WINDOWSENUM" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/absolomb/WindowsEnum; fi
+
+
+###################################################################################################################
+# COMPOSITION LAYER 																							          
+# DESCRIPTION:																									  
+# Include every layer of this Dockerfile to create the final composition										  
+###################################################################################################################
+FROM base as kraken-composition
+	LABEL author="Adastra"
+	LABEL description="Composition layer. Here everything gets prepared for the final image depending on the tools enabled."
+	WORKDIR ${WORKDIR_ESCALATION}
+
+	COPY --from=kraken-escalation	${WORKDIR_ESCALATION} ${WORKDIR_ESCALATION}
+
+	#Programs and dependencies for ESCALATION.
+
+###################################################################################################################
+# OUTPUT LAYER 																							          
+# DESCRIPTION:																									  
+# The final instructions before create the container. In this layer Docker will clean temporary files, 
+# change the user, expose the defined ports and keeps the container up and running.										  
+###################################################################################################################
+FROM kraken-composition
+	USER root
+	SHELL ["/bin/bash", "-c"]
+	RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+		chmod 700 -R ${WORKDIR_ESCALATION} && chown ${USERNAME}:${USERNAME} -R ${WORKDIR_ESCALATION}
+	EXPOSE $EXPOSE_PORTS
+	USER ${USERNAME}
+	CMD tail -f /dev/null

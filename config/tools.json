@@ -286,14 +286,77 @@
 		"stage": "weaponization"
 	},
 	{
-		"name": "TEST",
-		"description": "TEST.",
-		"url": "https://github.com/sevagas/macro_pack",
-		"propertyEnabled": "TEST",
+		"name": "BeRoot",
+		"description": "BeRoot Project is a post exploitation tool to check common misconfigurations to find a way to escalate our privilege.",
+		"url": "https://github.com/AlessandroZ/BeRoot.git",
+		"propertyEnabled": "ESCALATION_BEROOT",
 		"RT": true,
-		"PT": false,
-		"stage": "delivery"
+		"PT": true,
+		"stage": "escalation"
 	},
+	{
+		"name": "LinEnum",
+		"description": "BeRoot Project is a post exploitation tool to check common misconfigurations to find a way to escalate our privilege.",
+		"url": "Classic Linux enumeration",
+		"propertyEnabled": "ESCALATION_LINENUM",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},
+	{
+		"name": "Linux_Exploit_Suggester",
+		"description": "This program run without arguments will perform a 'uname -r' to grab the Linux Operating Systems release version, and return a suggestive list of possible exploits.",
+		"url": "https://github.com/InteliSecureLabs/Linux_Exploit_Suggester",
+		"propertyEnabled": "ESCALATION_LINUX_EXPLOIT_SUGGESTER",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},
+	{
+		"name": "linuxprivchecker",
+		"description": "This script is intended to be executed locally on a Linux box to enumerate basic system info and search for common privilege escalation vectors such as world writable files, misconfigurations, clear-text passwords and applicable exploits.",
+		"url": "https://github.com/sleventyeleven/linuxprivchecker",
+		"propertyEnabled": "ESCALATION_LINUX_PRIV_CHECKER",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},
+	{
+		"name": "linux-smart-enumeration",
+		"description": "Unlike LinEnum, lse tries to gradualy expose the information depending on its importance from a privesc point of view.",
+		"url": "https://github.com/diego-treitos/linux-smart-enumeration",
+		"propertyEnabled": "ESCALATION_LINUX_SMART_ENUMERATION",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},
+	{
+		"name": "JAWS",
+		"description": "JAWS is PowerShell script designed to help penetration testers (and CTFers) quickly identify potential privilege escalation vectors on Windows systems.",
+		"url": "https://github.com/411Hall/JAWS",
+		"propertyEnabled": "ESCALATION_JAWS",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},	
+	{
+		"name": "WESNG",
+		"description": "WES-NG is a tool based on the output of Windows' systeminfo utility which provides the list of vulnerabilities the OS is vulnerable to, including any exploits for these vulnerabilities.",
+		"url": "https://github.com/bitsadmin/wesng",
+		"propertyEnabled": "ESCALATION_WESNG",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},	
+	{
+		"name": "Windows-Enum",
+		"description": "A Powershell Privilege Escalation Enumeration Script.",
+		"url": "https://github.com/absolomb/WindowsEnum",
+		"propertyEnabled": "ESCALATION_WINDOWSENUM",
+		"RT": true,
+		"PT": true,
+		"stage": "escalation"
+	},										
 	{
 		"name": "TEST",
 		"description": "TEST.",

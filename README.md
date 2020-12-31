@@ -79,6 +79,10 @@ To start the API Server you just need to run the main script with '-r' switch.
 
 # Toolbox
 
+## Common
+
+Tools in this section can be applied for general purposes and can be very useful in aRT campaign or a pentest audit.
+
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
 |THC Hydra|`https://github.com/vanhauser-thc/thc-hydra.git`            |THC_HYDRA            |common            |
@@ -86,13 +90,34 @@ To start the API Server you just need to run the main script with '-r' switch.
 |Postman|`https://dl.pstmn.io/download/latest/linux64`            |Postman            |common            |
 |FuzzDB|`https://github.com/fuzzdb-project/fuzzdb.git`            |FuzzDB            |common            |
 |DirBuster|`https://github.com/Adastra-thw/DirBuster-1.0`            |DirBuster            |common            |
+
+## Frameworks
+
+Tools in this section include sets of modules that can be used in multiple stages of any RT campaign or a pentest audit.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
 |Metasploit Framework|`https://github.com/rapid7/metasploit-framework`            |MetasploitFramework            |frameworks            |
 |BeEF Browser Exploitation Framework|`https://github.com/beefproject/beef`            |BeEF            |frameworks            |
 |Bettercap|`https://github.com/bettercap/bettercap`            |Bettercap            |frameworks            |
+
+## Anon
+
+Tools in this section helps to anonymize the interaction between the attacker and victim. Useful especially in RT campaigns.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
 |The Onion Router (from APT install)|`https://dist.torproject.org/`            |TOR - From Debian repository            |anon   |
 |The Onion Router (from source code install)|`https://dist.torproject.org/`            |TOR - From source code            |anon   |
 |TORSocks|`https://trac.torproject.org/projects/tor/wiki/doc/torsocks`            |TORSocks            |anon   |
 |ProxyChains|`https://github.com/rofl0r/proxychains-ng`            |ProxyChains-ng            |anon   |
+
+## Recon
+
+Tools in this section helps in reconnaissance stage of a RT campaign or a pentest audit.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
 |Recon-NG|`https://github.com/lanmaster53/recon-ng`            |Recon-NG            |recon  |
 |Photon|`https://github.com/s0md3v/Photon`            |Photon            |recon  |
 |The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
@@ -102,6 +127,13 @@ To start the API Server you just need to run the main script with '-r' switch.
 |SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
 |Maltego CE|`https://www.maltego.com`            |Maltego            |recon  |
 |Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |Nmap            |recon  |
+
+## Weaponization
+
+Tools in this section helps in weaponization stage of a RT campaign.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
 |CVE2018_20250|`https://github.com/WyAtu/CVE-2018-20250`            |CVE2018_20250            |weaponization  |
 |CVE2017_8759|`https://github.com/bhdresh/CVE-2017-8759`            |CVE2017_8759            |weaponization  |
 |CVE2017_8570|`https://github.com/rxwx/CVE-2017-8570`            |CVE2017_8570            |weaponization  |
@@ -112,6 +144,28 @@ To start the API Server you just need to run the main script with '-r' switch.
 |DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |DONTKILLMYCAT(DKMC)            |weaponization  |
 |EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |EMBEDINHTML            |weaponization  |
 |MACRO PACK|`https://github.com/sevagas/macro_pack`            |MACRO_PACK            |weaponization  |
+
+## Privilege Escalation
+
+Tools in this section helps in privilege escalation stage of a RT campaign or a pentest audit. Some tools works for Windows and others for Linux.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
+|BeRoot|`https://github.com/AlessandroZ/BeRoot.git`            |BeRoot            |escalation  |
+|LinEnum|`https://github.com/rebootuser/LinEnum`            |LinEnum            |escalation  |
+|Linux_Exploit_Suggester|`https://github.com/InteliSecureLabs/Linux_Exploit_Suggester`            |Linux_Exploit_Suggester            |escalation  |
+|linuxprivchecker|`https://github.com/sleventyeleven/linuxprivchecker`            |linuxprivchecker            |escalation  |
+|linux-smart-enumeration|`https://github.com/diego-treitos/linux-smart-enumeration`            |linux-smart-enumeration            |escalation  |
+|JAWS|`https://github.com/411Hall/JAWS`            |JAWS            |escalation  |
+|WESNG|`https://github.com/bitsadmin/wesng`            |WESNG            |escalation  |
+|Windows-Enum|`https://github.com/absolomb/WindowsEnum`            |Windows-Enum            |escalation  |
+
+## Exfiltration
+
+Tools in this section helps in exfiltration stage of a RT campaign. Useful to get information from the victim using covert channels.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
 |MISTICA|`https://github.com/IncideDigital/Mistica`            |MISTICA            |exfiltration  |
 
 # Demo videos

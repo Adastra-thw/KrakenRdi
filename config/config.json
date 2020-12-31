@@ -9,7 +9,9 @@
 						"COMMON":  "Dockerfile-common",
 						"FRAMEWORKS":  "Dockerfile-frameworks",
 						"RECON":  "Dockerfile-recon",
-						"WEAPON":  "Dockerfile-weapon"}, 
+						"WEAPON":  "Dockerfile-weapon",
+						"ESCALATION":  "Dockerfile-escalation",
+						"EXFILTRATION":  "Dockerfile-exfiltration"}, 
 		"imageBase": "adastra/krakenrdi"	
 	}
 } 

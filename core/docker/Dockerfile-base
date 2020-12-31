@@ -156,6 +156,23 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	GLOBAL VARIABLES FROM ESCALATION PRIVILEGES IMAGE
 	########################################
+	ARG ESCALATION_BEROOT=False
+	ARG ESCALATION_LINENUM=False
+	ARG ESCALATION_LINUX_EXPLOIT_SUGGESTER=False
+	ARG ESCALATION_LINUX_PRIV_CHECKER=False
+	ARG ESCALATION_LINUX_SMART_ENUMERATION=False
+	ARG ESCALATION_JAWS=False
+	ARG ESCALATION_WESNG=False
+	ARG ESCALATION_WINDOWSENUM=False
+
+	ENV ESCALATION_BEROOT $ESCALATION_BEROOT
+	ENV ESCALATION_LINENUM $ESCALATION_LINENUM
+	ENV ESCALATION_LINUX_EXPLOIT_SUGGESTER $ESCALATION_LINUX_EXPLOIT_SUGGESTER
+	ENV ESCALATION_LINUX_PRIV_CHECKER $ESCALATION_LINUX_PRIV_CHECKER 
+	ENV ESCALATION_LINUX_SMART_ENUMERATION $ESCALATION_LINUX_SMART_ENUMERATION
+	ENV ESCALATION_JAWS $ESCALATION_JAWS
+	ENV ESCALATION_WESNG $ESCALATION_WESNG
+	ENV ESCALATION_WINDOWSENUM $ESCALATION_WINDOWSENUM
 
 	########################################
 	#	GLOBAL VARIABLES FROM COMMAND AND CONTROL IMAGE
@@ -384,7 +401,14 @@ FROM base AS kraken-exploitation
 # DESCRIPTION:																									  
 # Include the tools for the escalate privileges stage.						 								  
 # TOOLS:																										  
-#	[^] xxxx: 
+#	[^] BeRoot:  https://github.com/AlessandroZ/BeRoot.git
+#	[^] LinEnum: https://github.com/rebootuser/LinEnum
+#	[^] Linux_Exploit_Suggester: https://github.com/InteliSecureLabs/Linux_Exploit_Suggester
+#	[^] linuxprivchecker: https://github.com/sleventyeleven/linuxprivchecker
+#	[^] linux-smart-enumeration: https://github.com/diego-treitos/linux-smart-enumeration
+#	[^] JAWS: https://github.com/411Hall/JAWS
+#	[^] WESNG: https://github.com/bitsadmin/wesng
+#	[^] Windows-Enum:   https://github.com/absolomb/WindowsEnum 
 ###################################################################################################################
 FROM base AS kraken-escalation
 	LABEL author="Adastra"
@@ -393,6 +417,15 @@ FROM base AS kraken-escalation
 	SHELL ["/bin/bash", "-c"]
 	#Copy resources to ESCALATION directory.
 	COPY data/README-escalation.txt ${WORKDIR_ESCALATION}
+
+	RUN if [ "$ESCALATION_BEROOT" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/AlessandroZ/BeRoot.git BeRoot; fi ; \
+		if [ "$ESCALATION_LINENUM" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/rebootuser/LinEnum LinEnum; fi ; \
+		if [ "$ESCALATION_LINUX_EXPLOIT_SUGGESTER" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/InteliSecureLabs/Linux_Exploit_Suggester Linux_Exploit_Suggester; fi ; \
+		if [ "$ESCALATION_LINUX_PRIV_CHECKER" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/sleventyeleven/linuxprivchecker linuxprivchecker; fi ; \
+		if [ "$ESCALATION_LINUX_SMART_ENUMERATION" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/diego-treitos/linux-smart-enumeration linux-smart-enumeration; fi ; \
+		if [ "$ESCALATION_JAWS" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/411Hall/JAWS JAWS; fi ; \
+		if [ "$ESCALATION_WESNG" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/bitsadmin/wesng wesng && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
+		if [ "$ESCALATION_WINDOWSENUM" = "True" ] ; then cd ${WORKDIR_ESCALATION} && git clone https://github.com/absolomb/WindowsEnum && cd DKMC && mkdir output; fi
 
 
 ###################################################################################################################
