@@ -145,6 +145,18 @@ Tools in this section helps in weaponization stage of a RT campaign.
 |EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |EMBEDINHTML            |weaponization  |
 |MACRO PACK|`https://github.com/sevagas/macro_pack`            |MACRO_PACK            |weaponization  |
 
+## Exploitation
+
+Tools in this section helps in exploitation stage of a RT campaign or a pentest audit.
+
+|Tool name                |Website                          |KrakenRDI name|Scope 
+|----------------|-------------------------------|-----------------------------|----------------------------|
+|Burp|`https://portswigger.net/burp`            |Burp            |exploitation  |
+|ZAP|`https://github.com/zaproxy/zaproxy`            |ZAP            |exploitation  |
+|CrackMapExec (CME) |`https://github.com/byt3bl33d3r/CrackMapExec`            |CrackMapExec            |exploitation  |
+|Impacket|`https://github.com/SecureAuthCorp/impacket/`            |Impacket            |exploitation  |
+|Powershell|`https://github.com/PowerShell/PowerShell/releases`            |Powershell            |exploitation  |
+
 ## Privilege Escalation
 
 Tools in this section helps in privilege escalation stage of a RT campaign or a pentest audit. Some tools works for Windows and others for Linux.

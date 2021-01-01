@@ -277,13 +277,49 @@
 		"stage": "weaponization"	
 	},
 	{
-		"name": "MACRO_PACK",
-		"description": "macro_pack will simplify antimalware solutions bypass and automatize the process from vb source to final Office document or other payload type.",
-		"url": "https://github.com/sevagas/macro_pack",
-		"propertyEnabled": "WEAPON_MACRO_PACK",
+		"name": "Burp",
+		"description": "Intercept Web Requests for pentesting. Product from PortSwigger.",
+		"url": "https://portswigger.net/burp",
+		"propertyEnabled": "EXPLOITATION_BURP",
 		"RT": true,
-		"PT": false,
-		"stage": "weaponization"
+		"PT": true,
+		"stage": "exploitation"
+	},
+	{
+		"name": "ZAP",
+		"description": "Intercept Web Requests for pentesting. Product from OWASP.",
+		"url": "https://github.com/zaproxy/zaproxy",
+		"propertyEnabled": "EXPLOITATION_ZAP",
+		"RT": true,
+		"PT": true,
+		"stage": "exploitation"
+	},
+	{
+		"name": "CrackMapExec",
+		"description": "CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks. Built with stealth in mind, CME follows the concept of 'Living off the Land': abusing built-in Active Directory features/protocols to achieve it's functionality and allowing it to evade most endpoint protection/IDS/IPS solutions.",
+		"url": "https://github.com/byt3bl33d3r/CrackMapExec",
+		"propertyEnabled": "EXPLOITATION_CRACKMAPEXEC",
+		"RT": true,
+		"PT": true,
+		"stage": "exploitation"
+	},
+	{
+		"name": "Impacket",
+		"description": "Impacket is a collection of Python classes for working with network protocols. Impacket is focused on providing low-level programmatic access to the packets and for some protocols (e.g. SMB1-3 and MSRPC) the protocol implementation itself.",
+		"url": "https://github.com/SecureAuthCorp/impacket/",
+		"propertyEnabled": "EXPLOITATION_IMPACKET",
+		"RT": true,
+		"PT": true,
+		"stage": "exploitation"
+	},
+	{
+		"name": "Powershell",
+		"description": "PowerShell Core is a cross-platform (Windows, Linux, and macOS) automation and configuration tool/framework that works well with your existing tools and is optimized for dealing with structured data (e.g. JSON, CSV, XML, etc.), REST APIs, and object models. It includes a command-line shell, an associated scripting language and a framework for processing cmdlets.",
+		"url": "https://github.com/PowerShell/PowerShell/releases/",
+		"propertyEnabled": "EXPLOITATION_POWERSHELL",
+		"RT": true,
+		"PT": true,
+		"stage": "exploitation"
 	},
 	{
 		"name": "BeRoot",

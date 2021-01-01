@@ -152,6 +152,18 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	GLOBAL VARIABLES FROM EXPLOITATION IMAGE
 	########################################
+	ARG EXPLOITATION_BURP=False
+	ARG EXPLOITATION_ZAP=False
+	ARG EXPLOITATION_CRACKMAPEXEC=False
+	ARG EXPLOITATION_IMPACKET=False
+	ARG EXPLOITATION_POWERSHELL=False
+
+	ENV EXPLOITATION_BURP $EXPLOITATION_BURP
+	ENV EXPLOITATION_ZAP $EXPLOITATION_ZAP
+	ENV EXPLOITATION_CRACKMAPEXEC $EXPLOITATION_CRACKMAPEXEC
+	ENV EXPLOITATION_IMPACKET $EXPLOITATION_IMPACKET
+	ENV EXPLOITATION_POWERSHELL $EXPLOITATION_POWERSHELL
+
 
 	########################################
 	#	GLOBAL VARIABLES FROM ESCALATION PRIVILEGES IMAGE
@@ -385,8 +397,13 @@ FROM base AS kraken-delivery
 # EXPLOITATION IMAGE 																							          
 # DESCRIPTION:																									  
 # Include the tools for the compromise stage.						 								  
-# TOOLS:																										  
-#	[^] xxxx: 														  
+# TOOLS:
+#	[^] Burp: https://portswigger.net/burp
+#	[^] ZAP: https://github.com/zaproxy/zaproxy/releases/download/v2.10.0/ZAP_2.10.0_Crossplatform.zip
+#	[^] CrackMapExec: https://github.com/byt3bl33d3r/CrackMapExec
+#	[^] Impacket: https://github.com/SecureAuthCorp/impacket/
+#	[^] PowerShell (pwsh): https://github.com/PowerShell/PowerShell/releases/
+
 ###################################################################################################################
 FROM base AS kraken-exploitation
 	LABEL author="Adastra"
@@ -395,6 +412,12 @@ FROM base AS kraken-exploitation
 	SHELL ["/bin/bash", "-c"]
 	#Copy resources to EXPLOITATION directory.
 	COPY data/README-exploitation.txt ${WORKDIR_EXPLOITATION}
+
+	RUN if [ "$EXPLOITATION_BURP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && mkdir Burp && cd Burp && curl -L https://portswigger.net/burp/releases/download?product=community&version=2020.12.1&type=Jar; fi ; \
+		if [ "$EXPLOITATION_ZAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && wget https://github.com/zaproxy/zaproxy/releases/download/v2.10.0/ZAP_2.10.0_Crossplatform.zip && unzip ZAP_2.10.0_Crossplatform.zip && rm -rf ZAP_2.10.0_Crossplatform.zip fi ; \
+		if [ "$EXPLOITATION_CRACKMAPEXEC" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && wget https://github.com/byt3bl33d3r/CrackMapExec/releases/download/v5.1.1dev/cme-ubuntu-latest.4.zip && unzip cme-ubuntu-latest.4.zip && rm -rf cme-ubuntu-latest.4.zip; fi ; \
+		if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && git clone https://github.com/SecureAuthCorp/impacket impacket; fi ; \
+		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl -L  https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz && mkdir -p powershell/7 && tar zxf /tmp/powershell.tar.gz -C powershell/7 && chmod +x powershell/7/pwsh && ln -s ${WORKDIR_EXPLOITATION}/powershell/7/pwsh /usr/bin/pwsh; fi ; 
 
 ###################################################################################################################
 # ESCALATION PRIVILEGES 																							          
@@ -586,6 +609,9 @@ FROM base as kraken-composition
 	#Programs and dependencies for WEAPON.
 	#Programs and dependencies for DELIVERY.
 	#Programs and dependencies for EXPLOITATION.
+	RUN	if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/impacket && pip3 install requirements.txt ; fi ; \
+		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && apt-get install -y less locales ca-certificates libicu63 libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6
+
 	#Programs and dependencies for ESCALATION.
 	#Programs and dependencies for COMMANDANDCONTROL.
 	#Programs and dependencies for INTERNALRECON.

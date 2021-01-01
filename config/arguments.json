@@ -231,7 +231,31 @@
 		
 	}, 
 	{
-		"name":	"",
+		"name":	"EXPLOITATION_BURP",
+		"value": "True",
+		"type": "exploitation"
+		
+	}, 
+	{
+		"name":	"EXPLOITATION_ZAP",
+		"value": "True",
+		"type": "exploitation"
+		
+	}, 
+	{
+		"name":	"EXPLOITATION_CRACKMAPEXEC",
+		"value": "True",
+		"type": "exploitation"
+		
+	}, 
+	{
+		"name":	"EXPLOITATION_IMPACKET",
+		"value": "True",
+		"type": "exploitation"
+		
+	}, 
+	{
+		"name":	"EXPLOITATION_POWERSHELL",
 		"value": "True",
 		"type": "exploitation"
 		
