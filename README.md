@@ -65,7 +65,7 @@ To see the full list of tools and the arg name see **Toolbox**
 
 Just use the image created. Example:
 
-**`docker run --name krakencontainer -it --rm adastraa/krakenrdi:base`**
+**`docker run --name krakencontainer -it --rm adastraa/krakenrdi:base bash`**
 
 ## KrakenRDI Rest API and Platform Management
 

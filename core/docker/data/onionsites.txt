@@ -1,27 +1,21 @@
-DIRECTORIES
-Hidden Wiki: 			http://wiki5kauuihowqi5.onion/
-TOR Links: 	 			http://torlinkbgs6aabns.onion/
-ONION Links Directory: 	http://aaalinktbyhxngho.onion/
-HD Wiki:				http://hdwikicorldcisiy.onion/
-TOR Wiki:				http://torwikignoueupfm.onion/index.php?title=Main_Page
-Hacking wiki links:		http://wikilink77h7lrbi.onion/dir/hacking.html
-OnionDir: 				http://dirnxxdraygbifgc.onion
-DeepLink: 				http://deeplinkdeatbml7.onion
-Onion List Links: 		http://onionsnjajzkhm5g.onion/onions.php
-
 SEARCHERS
-Visitor: 		http://visitorfi5kl7q7i.onion/ 
-TORCH: 			http://xmh57jrzrnw6insl.onion/
-SearchX:		http://5plvrsgydwy2sgce.onion/
-Phobos:			http://phobosxilamwcg75xt22id7aywkzol6q6rfl2flipcqoc4e4ahima5id.onion 
-NotEvil: 		http://hss3uro2hsxfogfq.onion/ 
-Ahmia: 			http://msydqstlz2kzerdg.onion
-TORSearcher: 	http://jdpskjmgy6kk4urv.onion/ 
-UnderDIR:		http://underdj5ziov3ic7.onion/
-OnionLinks:		http://onionlnkooppcbrs.onion 
-Atlayo: 		http://xvwhmrw3sgwwmkko.onion
-CB3ROB: 		http://acjhxk5yqwnw2jdu.onion
-FreshOnions: 	http://zlal32teyptf4tvi.onion/?is_up=on
+Kraken:	            http://krakenai2gmgwwqyo7bcklv2lzcvhe7cxzzva2xpygyax5f33oqnxpad.onion/ 
+TOR SE: 	        http://searchesqafmar2ocusr443hnolhmrxek5xu3hrw3wliwlzmdywvjtqd.onion/index.php
+DeepSearch:         http://search7tdrcvri22rieiwgi5g46qnwsesvnubqav2xakhezv4hjzkkad.onion/
+Phobos:             http://phobosxilamwcg75xt22id7aywkzol6q6rfl2flipcqoc4e4ahima5id.onion/ 
+Excavator:          http://2fd6cemt4gmccflhm6imvdfvli3nf7zn6rfrwpsy7uhxrgbypvwf5fad.onion/
+OurRealm:           http://orealmvxooetglfeguv2vp65a3rig2baq2ljc7jxxs4hsqsrcemkxcad.onion/
+Venus SE:           http://venusoseaqnafjvzfmrcpcq6g47rhd7sa6nmzvaa4bj5rp6nm5jl7gad.onion/
+HayStak:            http://haystak5njsmn2hqkewecpaxetahtwhsbsa64jom2k22z5afxhnpxfid.onion/
+UnderDIR:           http://underdiriled6lvdfgiw4e5urfofuslnz7ewictzf76h4qb73fxbsxad.onion/
+TORLand:            http://torlgu6zhhtwe73fdu76uiswgnkfvukqfujofxjfo7vzoht2rndyhxyd.onion/
+Google.Onion:       http://ggonijhjnpgo5z7xaudbor2ivpycaq3kecrjggav4svftbycu3fkawyd.onion/
+Torgle:             http://iy3544gmoeclh5de6gez2256v6pjh4omhpqdh2wpeeppjtvqmjhkfwad.onion/torgle/
+SearchDaemon:       http://srcdemonm74icqjvejew6fprssuolyoc2usjdwflevbdpqoetw4x3ead.onion/
+MetaGer:            http://metagerv65pwclop2rsfzg4jwowpavpwd6grhhlvdgsswvo6ii4akgyd.onion/
+Ahmia:              http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/
+Signpost Directory: http://signpostcjbbviqdhfbtocj6dthbd7cpvo3tpwrrfhkkk4fafjd53nyd.onion/
+FreedoomHQ:         http://freedomzw5x5tzeit4jgc3gvic3bmecje53hwcoc3nnwe2c3gsukdfid.onion/databases
 
 MISC
 Tor Links: 			http://torlinkbgs6aabns.onion #Onion Links
