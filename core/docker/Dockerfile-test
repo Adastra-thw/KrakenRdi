@@ -1,6 +1,0 @@
-ARG VERSION=latest
-
-FROM debian:${VERSION}
-ARG TEST=True
-ENV VAR $TEST
-RUN echo $VAR
