@@ -51,7 +51,6 @@ FROM debian:${VERSION} AS base
 	ARG RECON_RECONNG=True
 	ARG RECON_PHOTON=True
 	ARG RECON_THEHARVESTER=True
-	ARG RECON_SKIPTRACER=True
 	ARG RECON_METAGOOFIL=True
 	ARG RECON_JUSTMETADATA=True
 	ARG RECON_SPIDERFOOT=True
@@ -62,7 +61,6 @@ FROM debian:${VERSION} AS base
 	ENV RECON_RECONNG $RECON_RECONNG
 	ENV RECON_PHOTON $RECON_PHOTON
 	ENV RECON_THEHARVESTER $RECON_THEHARVESTER
-	ENV RECON_SKIPTRACER $RECON_SKIPTRACER
 	ENV RECON_METAGOOFIL $RECON_METAGOOFIL
 	ENV RECON_JUSTMETADATA $RECON_JUSTMETADATA
 	ENV RECON_SPIDERFOOT $RECON_SPIDERFOOT
@@ -95,7 +93,6 @@ FROM debian:${VERSION} AS base
 # TOOLS:																										  
 #	[^]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
 #	[^] Photon: https://github.com/s0md3v/Photon  																  
-#	[^] skiptracer: https://github.com/xillwillx/skiptracer	        											  
 #	[^] theHarvester: https://github.com/laramies/theHarvester 													  
 #	[^] metagoofil: https://github.com/laramies/metagoofil 														  
 #	[^] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
@@ -114,7 +111,6 @@ FROM base AS kraken-recon
 	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/lanmaster53/recon-ng.git ; fi ; \
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON} &&  git clone https://github.com/s0md3v/Photon ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/theHarvester ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/xillwillx/skiptracer.git ; fi ; \
 		if [ "$RECON_METAGOOFIL" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/metagoofil ; fi ; \
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
@@ -138,7 +134,6 @@ FROM base as kraken-composition
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
 		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make && make install; fi
 

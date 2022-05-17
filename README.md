@@ -123,7 +123,6 @@ Tools in this section helps in reconnaissance stage of a RT campaign or a pentes
 |Recon-NG|`https://github.com/lanmaster53/recon-ng`            |Recon-NG            |recon  |
 |Photon|`https://github.com/s0md3v/Photon`            |Photon            |recon  |
 |The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
-|SkipTracer|`https://github.com/xillwillx/skiptracer`            |SkipTracer            |recon  |
 |Metagoofil|`https://github.com/laramies/metagoofil`            |Metagoofil            |recon  |
 |JustMetadata|`https://github.com/FortyNorthSecurity/Just-Metadata`            |JustMetadata            |recon  |
 |SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
