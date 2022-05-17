@@ -46,24 +46,26 @@ If you want to build an image downloaded from this repository:
 Build the image only with tools for anonimity.
 
 **`cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
-**`docker build -t adastra/KrakenRDI:anon -f Dockerfile-anon .`**
+**`docker build -t adastra/krakenrdi:anon -f Dockerfile-anon .`**
 
 Build the image only with tools for recon.
-**`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
+**`cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
 
-**`# docker build -t adastra/KrakenRDI:recon -f Dockerfile-recon .`**
+**`docker build -t adastra/krakenrdi:recon -f Dockerfile-recon .`**
 
 Build the image with specified tools (all of them updated): NMAP, SpiderFoot, MaliciousMacroGenerator, Demiguise.
-**`# cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
+**`cd  <KRAKENRDI_ROOT_DIR>/core/docker`**
 
-**`# docker build -f Dockerfile-base -t adastraa/krakenrdi:base --build-arg RECON_NMAP=True --build-arg RECON_SPIDERFOOT=True --build-arg WEAPON_MALICIOUSMACROGENERATOR=True --build-arg WEAPON_DEMIGUISE=True .`**
+**`docker build -f Dockerfile-base -t adastraa/krakenrdi:base --build-arg RECON_NMAP=True --build-arg RECON_SPIDERFOOT=True --build-arg WEAPON_MALICIOUSMACROGENERATOR=True --build-arg WEAPON_DEMIGUISE=True .`**
 
 > **NOTE:**  The file **Dockerfile-base** could be useful to create a image with the specified tools. However, if you don't specify that tools it just create a Debian image as base **without any tool.**
 To see the full list of tools and the arg name see **Toolbox**
 
 ### Create containers
 
-Just use the image created previously
+Just use the image created. Example:
+
+**`docker run --name krakencontainer -it --rm adastraa/krakenrdi:base`**
 
 ## KrakenRDI Rest API and Platform Management
 

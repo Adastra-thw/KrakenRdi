@@ -48,7 +48,7 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	CONFIGURATION AND SYSTEM VARIABLES
 	########################################
-	ARG TOR_LATEST_VERSION=0.4.2.7
+	ARG TOR_LATEST_VERSION=0.4.7.7
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
@@ -80,13 +80,13 @@ FROM debian:${VERSION} AS base
 	#	GLOBAL VARIABLES FROM ANON IMAGE
 	########################################
 	ARG ANON_TOR_SOURCE=False
-	ARG ANON_TOR_APT=False	
+	ARG ANON_TOR_APT=False
 	ARG ANON_TORBROWSER=False
 	ARG ANON_TORSOCKS=False
 	ARG ANON_PROXYCHAINS=False
 
 	ENV ANON_TOR_SOURCE $ANON_TOR_SOURCE
-	ENV ANON_TOR_APT $ANON_TOR_APT	
+	ENV ANON_TOR_APT $ANON_TOR_APT
 	ENV ANON_TORBROWSER $ANON_TORBROWSER
 	ENV ANON_TORSOCKS $ANON_TORSOCKS
 	ENV ANON_PROXYCHAINS $ANON_PROXYCHAINS
@@ -309,7 +309,7 @@ FROM base AS kraken-anon
 	COPY data/README-anon.txt ${WORKDIR_ANON}
 	COPY data/torrc ${WORKDIR_ANON}
 
-	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz && tar -xvf tor-browser-linux64-9.0.9_en-US.tar.xz && rm -rf tor-browser-linux64-9.0.9_en-US.tar.xz; fi ; \
+	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/11.0.11/tor-browser-linux64-11.0.11_en-US.tar.xz && tar -xvf tor-browser-linux64-11.0.11_en-US.tar.xz && rm -rf tor-browser-linux64-11.0.11_en-US.tar.xz; fi ; \
 		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
 
 
@@ -413,11 +413,11 @@ FROM base AS kraken-exploitation
 	#Copy resources to EXPLOITATION directory.
 	COPY data/README-exploitation.txt ${WORKDIR_EXPLOITATION}
 
-	RUN if [ "$EXPLOITATION_BURP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && mkdir Burp && cd Burp && curl -L https://portswigger.net/burp/releases/download?product=community&version=2020.12.1&type=Jar; fi ; \
-		if [ "$EXPLOITATION_ZAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && wget https://github.com/zaproxy/zaproxy/releases/download/v2.10.0/ZAP_2.10.0_Crossplatform.zip && unzip ZAP_2.10.0_Crossplatform.zip && rm -rf ZAP_2.10.0_Crossplatform.zip fi ; \
+	RUN if [ "$EXPLOITATION_BURP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && mkdir Burp && cd Burp && curl "https://portswigger.net/burp/releases/download?product=community&version=v2022.3.7&type=Jar" --output Burp-v2022.3.7.jar ; fi ; \
+		if [ "$EXPLOITATION_ZAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl "https://github.com/zaproxy/zaproxy/releases/download/v2.11.1/ZAP_2.11.1_Crossplatform.zip" --output ZAP_2.11.1_Crossplatform.zip ; fi ; \
 		if [ "$EXPLOITATION_CRACKMAPEXEC" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && wget https://github.com/byt3bl33d3r/CrackMapExec/releases/download/v5.1.1dev/cme-ubuntu-latest.4.zip && unzip cme-ubuntu-latest.4.zip && rm -rf cme-ubuntu-latest.4.zip; fi ; \
 		if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && git clone https://github.com/SecureAuthCorp/impacket impacket; fi ; \
-		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl -L  https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz && mkdir -p powershell/7 && tar zxf /tmp/powershell.tar.gz -C powershell/7 && chmod +x powershell/7/pwsh && ln -s ${WORKDIR_EXPLOITATION}/powershell/7/pwsh /usr/bin/pwsh; fi ; 
+		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl -L  https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz && mkdir -p powershell/7 && tar zxf /tmp/powershell.tar.gz -C powershell/7 && chmod +x powershell/7/pwsh && ln -s ${WORKDIR_EXPLOITATION}/powershell/7/pwsh /usr/bin/pwsh; fi ;
 
 ###################################################################################################################
 # ESCALATION PRIVILEGES 																							          
@@ -610,7 +610,7 @@ FROM base as kraken-composition
 	#Programs and dependencies for DELIVERY.
 	#Programs and dependencies for EXPLOITATION.
 	RUN	if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/impacket && pip3 install requirements.txt ; fi ; \
-		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && apt-get install -y less locales ca-certificates libicu63 libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6
+		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && apt-get install -y less locales ca-certificates libicu63 libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6 ; fi ;
 
 	#Programs and dependencies for ESCALATION.
 	#Programs and dependencies for COMMANDANDCONTROL.

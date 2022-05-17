@@ -37,7 +37,7 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	CONFIGURATION AND SYSTEM VARIABLES
 	########################################
-	ARG TOR_LATEST_VERSION=0.4.2.7
+	ARG TOR_LATEST_VERSION=0.4.7.7
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
@@ -100,7 +100,7 @@ FROM base AS kraken-anon
 	COPY data/README-anon.txt ${WORKDIR_ANON}
 	COPY data/torrc ${WORKDIR_ANON}
 
-	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz && tar -xvf tor-browser-linux64-9.0.9_en-US.tar.xz && rm -rf tor-browser-linux64-9.0.9_en-US.tar.xz; fi ; \
+	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/11.0.11/tor-browser-linux64-11.0.11_en-US.tar.xz && tar -xvf tor-browser-linux64-11.0.11_en-US.tar.xz && rm -rf tor-browser-linux64-11.0.11_en-US.tar.xz; fi ; \
 		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
 
 ###################################################################################################################

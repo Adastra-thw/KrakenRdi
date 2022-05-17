@@ -74,3 +74,19 @@ DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/78507
 DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/exec/dbfe9de00a927e54e9da32a86b217fc919cb121304aa1bdd19a654b1d92242a5/start HTTP/1.1" 101 0
 DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/exec/dbfe9de00a927e54e9da32a86b217fc919cb121304aa1bdd19a654b1d92242a5/json HTTP/1.1" 200 407
 INFO:werkzeug:127.0.0.1 - - [14/Dec/2020 11:28:24] "[37mPOST /container/create HTTP/1.1[0m" 200 -
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+DEBUG:docker.utils.config:Trying paths: ['/home/adastra/.docker/config.json', '/home/adastra/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/adastra/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='https://index.docker.io/v1/', username='adastraa')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/_ping HTTP/1.1" 200 2
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 693-867-471
+INFO:werkzeug:127.0.0.1 - - [03/Feb/2021 21:18:28] "[37mGET /build/list HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Feb/2021 21:19:40] "[37mPOST /build/detail HTTP/1.1[0m" 200 -
