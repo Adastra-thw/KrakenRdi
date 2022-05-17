@@ -37,12 +37,10 @@ FROM debian:${VERSION} AS base
 	########################################
 	#	CONFIGURATION AND SYSTEM VARIABLES
 	########################################
-	ARG TOR_LATEST_VERSION=0.4.7.7
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
 
-	ENV TOR_LATEST_VERSION $TOR_LATEST_VERSION
 	ENV USERNAME $USERNAME
 	ENV PASSWORD $PASSWORD
 	ENV EXPOSE_PORTS $EXPOSE_PORTS
@@ -57,7 +55,7 @@ FROM debian:${VERSION} AS base
 	ARG ANON_PROXYCHAINS=True
 
 	ENV ANON_TOR_SOURCE $ANON_TOR_SOURCE
-	ENV ANON_TOR_APT $ANON_TOR_APT	
+	ENV ANON_TOR_APT $ANON_TOR_APT
 	ENV ANON_TORBROWSER $ANON_TORBROWSER
 	ENV ANON_TORSOCKS $ANON_TORSOCKS
 	ENV ANON_PROXYCHAINS $ANON_PROXYCHAINS
@@ -101,7 +99,7 @@ FROM base AS kraken-anon
 	COPY data/torrc ${WORKDIR_ANON}
 
 	RUN if [ "$ANON_TORBROWSER" = "True" ] ; then wget https://www.torproject.org/dist/torbrowser/11.0.11/tor-browser-linux64-11.0.11_en-US.tar.xz && tar -xvf tor-browser-linux64-11.0.11_en-US.tar.xz && rm -rf tor-browser-linux64-11.0.11_en-US.tar.xz; fi ; \
-		if [ "$ANON_TOR_SOURCE" = "True" ] ; then wget https://dist.torproject.org/tor-${TOR_LATEST_VERSION}.tar.gz && tar -xvf tor-${TOR_LATEST_VERSION}.tar.gz && rm -rf tor-${TOR_LATEST_VERSION}.tar.gz && mv tor-${TOR_LATEST_VERSION} tor-latest; fi ; 
+		if [ "$ANON_TOR_SOURCE" = "True" ] ; then export TOR_VERSION=$(curl -s https://www.torproject.org/download/tor/ | grep gitweb | grep "0." | cut -d "=" -f 3 | cut -d "-" -f 2 | cut -d "\"" -f 1) && wget https://dist.torproject.org/tor-$TOR_VERSION.tar.gz && tar -xvf tor-$TOR_VERSION.tar.gz && rm -rf tor-$TOR_VERSION.tar.gz && mv tor-$TOR_VERSION tor-latest; fi ; 
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
