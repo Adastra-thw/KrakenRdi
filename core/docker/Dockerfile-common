@@ -40,7 +40,7 @@ FROM debian:${VERSION} AS base
 	ARG USERNAME=krakenrdi
 	ARG PASSWORD=krakenrdi
 	ARG EXPOSE_PORTS="22 80 443 3306 5432 8080 8081 8000"
-	ARG RUBY_VERSION=2.6.6
+	ARG RUBY_VERSION=3.0.0
 	ARG RVM_DIR=/usr/local/rvm/
 	ARG RVM_LOADER=/etc/profile.d/rvm.sh
 
