@@ -124,7 +124,6 @@ Tools in this section helps in reconnaissance stage of a RT campaign or a pentes
 |Photon|`https://github.com/s0md3v/Photon`            |Photon            |recon  |
 |The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
 |Metagoofil|`https://github.com/laramies/metagoofil`            |Metagoofil            |recon  |
-|JustMetadata|`https://github.com/FortyNorthSecurity/Just-Metadata`            |JustMetadata            |recon  |
 |SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
 |Maltego CE|`https://www.maltego.com`            |Maltego            |recon  |
 |Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |Nmap            |recon  |

@@ -97,9 +97,7 @@ FROM debian:${VERSION} AS base
 	ARG RECON_RECONNG=False
 	ARG RECON_PHOTON=False
 	ARG RECON_THEHARVESTER=False
-	ARG RECON_SKIPTRACER=False
 	ARG RECON_METAGOOFIL=False
-	ARG RECON_JUSTMETADATA=False
 	ARG RECON_SPIDERFOOT=False
 	ARG RECON_MALTEGO=False
 	ARG RECON_PHONEINFOGA=False
@@ -108,9 +106,7 @@ FROM debian:${VERSION} AS base
 	ENV RECON_RECONNG $RECON_RECONNG
 	ENV RECON_PHOTON $RECON_PHOTON
 	ENV RECON_THEHARVESTER $RECON_THEHARVESTER
-	ENV RECON_SKIPTRACER $RECON_SKIPTRACER
 	ENV RECON_METAGOOFIL $RECON_METAGOOFIL
-	ENV RECON_JUSTMETADATA $RECON_JUSTMETADATA
 	ENV RECON_SPIDERFOOT $RECON_SPIDERFOOT
 	ENV RECON_MALTEGO $RECON_MALTEGO
 	ENV RECON_PHONEINFOGA $RECON_PHONEINFOGA
@@ -318,14 +314,11 @@ FROM base AS kraken-anon
 # DESCRIPTION:																									  
 # Include the tools for the Intelligence gathering stage.						 								  
 # TOOLS:																										  
-#	[^]	Recon-ng: https://github.com/lanmaster53/recon-ng 														  
-#	[^] Photon: https://github.com/s0md3v/Photon  																  
-#	[^] skiptracer: https://github.com/xillwillx/skiptracer	        											  
-#	[^] theHarvester: https://github.com/laramies/theHarvester 													  
-#	[^] metagoofil: https://github.com/laramies/metagoofil 														  
-#	[^] JustMetadata: https://github.com/FortyNorthSecurity/Just-Metadata 										  	
-#	[^] Maltego: https://www.paterva.com/web7/downloads.php 														  
-#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot
+#	[^]	Recon-ng: https://github.com/lanmaster53/recon-ng
+#	[^] Photon: https://github.com/s0md3v/Photon
+#	[^] theHarvester: https://github.com/laramies/theHarvester
+#	[^] metagoofil: https://github.com/laramies/metagoofil
+#	[^] Maltego: https://www.paterva.com/web7/downloads.php 			#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot
 #	[^] Nmap: https://github.com/nmap/nmap.git								  
 ###################################################################################################################
 FROM base AS kraken-recon
@@ -339,9 +332,7 @@ FROM base AS kraken-recon
 	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/lanmaster53/recon-ng.git ; fi ; \
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON} &&  git clone https://github.com/s0md3v/Photon ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/theHarvester ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/xillwillx/skiptracer.git ; fi ; \
 		if [ "$RECON_METAGOOFIL" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/metagoofil ; fi ; \
-		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/FortyNorthSecurity/Just-Metadata.git && cd Just-Metadata/setup && ./setup.sh ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
 		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
@@ -601,8 +592,6 @@ FROM base as kraken-composition
 	RUN if [ "$RECON_RECONNG" = "True" ] ; then cd ${WORKDIR_RECON}/recon-ng && pip3 install -r REQUIREMENTS; fi ; \
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
-		if [ "$RECON_JUSTMETADATA" = "True" ] ; then cd ${WORKDIR_RECON}/Just-Metadata/setup && ./setup.sh ; fi ; \
-		if [ "$RECON_SKIPTRACER" = "True" ] ; then cd ${WORKDIR_RECON}/skiptracer && pip install -r requirements.txt ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make && make install; fi
 
