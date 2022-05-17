@@ -53,7 +53,7 @@ FROM debian:${VERSION} AS base
 	ARG RECON_THEHARVESTER=True
 	ARG RECON_METAGOOFIL=True
 	ARG RECON_SPIDERFOOT=True
-	ARG RECON_MALTEGO=False
+	ARG RECON_MALTEGO=True
 	ARG RECON_PHONEINFOGA=True
 	ARG RECON_NMAP=True
 
@@ -109,7 +109,7 @@ FROM base AS kraken-recon
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/theHarvester ; fi ; \
 		if [ "$RECON_METAGOOFIL" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/laramies/metagoofil ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
-		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.2.9.12898.linux.zip && unzip Maltego.v4.2.9.12898.linux.zip ; fi ; \
+		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.3.0.linux.zip && unzip Maltego.v4.3.0.linux.zip ; fi ; \
 		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
 
