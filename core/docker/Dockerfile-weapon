@@ -58,6 +58,7 @@ FROM debian:${VERSION} AS base
 	ARG WEAPON_DONTKILLMYCAT=True
 	ARG WEAPON_EMBEDINHTML=True
 	ARG WEAPON_MACRO_PACK=True
+	ARG WEAPON_NTLM_THEFT=True
 
 	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
 	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
@@ -69,6 +70,8 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_DONTKILLMYCAT $WEAPON_DONTKILLMYCAT
 	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
 	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
+	ENV WEAPON_NTLM_THEFT $WEAPON_NTLM_THEFT
+
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -98,7 +101,9 @@ FROM debian:${VERSION} AS base
 #	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
 #	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
 #	[^] Demiguise: https://github.com/nccgroup/demiguise
-#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+#	[^] EmbedInHTML: https://github.com/Arno0x/EmbedInHTML
+#	[^] NTLM_Theft: https://github.com/Greenwolf/ntlm_theft
+
 ###################################################################################################################
 FROM base AS kraken-weapon
 	LABEL author="Adastra"
@@ -115,7 +120,8 @@ FROM base AS kraken-weapon
 		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
 		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
 		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
-		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi
+		if [ "$WEAPON_NTLM_THEFT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Greenwolf/ntlm_theft && pip3 install xlsxwriter; fi ; \
+		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v2.2.0/macro_pack.exe; fi
 
 ###################################################################################################################
 # COMPOSITION LAYER 																							          

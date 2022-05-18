@@ -92,6 +92,7 @@ Tools in this section can be applied for general purposes and can be very useful
 |Postman|`https://dl.pstmn.io/download/latest/linux64`            |Postman            |common            |
 |FuzzDB|`https://github.com/fuzzdb-project/fuzzdb.git`            |FuzzDB            |common            |
 |DirBuster|`https://github.com/Adastra-thw/DirBuster-1.0`            |DirBuster            |common            |
+|SSLH|`https://github.com/yrutschle/sslh`            |SSLH            |common            |
 
 ## Frameworks
 
@@ -125,6 +126,7 @@ Tools in this section helps in reconnaissance stage of a RT campaign or a pentes
 |The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
 |Metagoofil|`https://github.com/laramies/metagoofil`            |Metagoofil            |recon  |
 |SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
+|Sherlock|`https://github.com/sherlock-project/sherlock`            |Sherlock            |recon  |
 |Maltego CE|`https://www.maltego.com`            |Maltego            |recon  |
 |Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |Nmap            |recon  |
 

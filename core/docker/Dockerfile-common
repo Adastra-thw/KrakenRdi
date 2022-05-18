@@ -47,7 +47,7 @@ FROM debian:${VERSION} AS base
 	ENV EXPOSE_PORTS $EXPOSE_PORTS
 	ENV RUBY_VERSION $RUBY_VERSION
 	ENV RVM_DIR $RVM_DIR
-	ENV RVM_LOADER $RVM_LOADER	
+	ENV RVM_LOADER $RVM_LOADER
 
 
 	########################################
@@ -59,6 +59,7 @@ FROM debian:${VERSION} AS base
 	ARG COMMON_FUZZDB=True
 	ARG COMMON_DIRBUSTER=True
 	ARG COMMON_HASHIDENTIFIER=True
+	ARG COMMON_SSLH=True
 
 	ENV COMMON_THC_HYDRA $COMMON_THC_HYDRA
 	ENV COMMON_CWEL $COMMON_CWEL
@@ -66,6 +67,7 @@ FROM debian:${VERSION} AS base
 	ENV COMMON_FUZZDB $COMMON_FUZZDB
 	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
 	ENV COMMON_HASHIDENTIFIER $COMMON_HASHIDENTIFIER
+	ENV COMMON_SSLH $COMMON_SSLH
 
 
 	########################################
@@ -80,7 +82,9 @@ FROM debian:${VERSION} AS base
 		firefox-esr xfce4-terminal \
 		autoconf automake libtool apt-utils \
 		openssh-server openssl \
-		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		build-essential libpcap-dev libpq-dev \
+		libsqlite3-dev libsqlite3-0 \ 
+		libconfig-dev libwrap0-dev libsystemd-dev libcap-dev \
 		software-properties-common sudo locate \
 		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
@@ -114,6 +118,8 @@ FROM debian:${VERSION} AS base
 #	[^] POSTMAN: https://dl.pstmn.io/download/latest/linux64
 #	[^] FuzzDB: https://github.com/fuzzdb-project/fuzzdb
 #	[^] DirBuster: https://github.com/Adastra-thw/DirBuster-1.0
+#	[^] SSLH: https://github.com/yrutschle/sslh
+
 ###################################################################################################################
 FROM base AS kraken-common
 	LABEL author="Adastra"
@@ -126,6 +132,7 @@ FROM base AS kraken-common
 		if [ "$COMMON_POSTMAN" = "True" ] ; then cd ${WORKDIR_COMMON} && wget https://dl.pstmn.io/download/latest/linux64 -O Postman.tar.gz && tar -xvf Postman.tar.gz && rm -rf Postman.tar.gz ; fi ; \
 		if [ "$COMMON_FUZZDB" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/fuzzdb-project/fuzzdb.git ; fi ; \
 		if [ "$COMMON_DIRBUSTER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/Adastra-thw/DirBuster-1.0 DirBuster && cd DirBuster && tar -xvf DirBuster-1.0-RC1.tar.bz2 && rm -rf DirBuster-1.0-RC1.tar.bz2 ; fi ; \
+		if [ "$COMMON_SSLH" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/yrutschle/sslh && cd sslh && make install ; fi ; \
 		if [ "$COMMON_HASHIDENTIFIER" = "True" ] ; then cd ${WORKDIR_COMMON} && git clone https://github.com/blackploit/hash-identifier Hash-Identifier ; fi ;
 
 ###################################################################################################################
