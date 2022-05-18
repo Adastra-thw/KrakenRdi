@@ -129,6 +129,7 @@ FROM debian:${VERSION} AS base
 	ARG WEAPON_DONTKILLMYCAT=False
 	ARG WEAPON_EMBEDINHTML=False
 	ARG WEAPON_MACRO_PACK=False
+	ARG WEAPON_NTLM_THEFT=True
 
 	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
 	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
@@ -140,6 +141,7 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_DONTKILLMYCAT $WEAPON_DONTKILLMYCAT
 	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
 	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
+	ENV WEAPON_NTLM_THEFT $WEAPON_NTLM_THEFT
 
 	########################################
 	#	GLOBAL VARIABLES FROM WEAPON IMAGE
@@ -245,8 +247,8 @@ FROM debian:${VERSION} AS base
 		libevent-dev libssl-dev zlib1g zlib1g-dev \
 		firefox-esr xfce4-terminal \
 		autoconf automake libtool apt-utils \
-		openssh-server openssl \
-		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		openssh-server openssl libgbm-dev \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev \ libsqlite3-0 libconfig-dev libwrap0-dev libsystemd-dev \ libcap-dev libev-dev \
 		software-properties-common sudo locate \
 		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
@@ -325,6 +327,7 @@ FROM base AS kraken-anon
 #	[^] Maltego: https://www.paterva.com/web7/downloads.php 			#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot
 #	[^] Nmap: https://github.com/nmap/nmap.git
 #	[^] Sherlock: https://github.com/sherlock-project/sherlock.git
+#	[^] PhoneInfoga: https://github.com/sundowndev/phoneinfoga/
 
 ###################################################################################################################
 FROM base AS kraken-recon
@@ -356,6 +359,8 @@ FROM base AS kraken-recon
 #	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
 #	[^] Demiguise: https://github.com/nccgroup/demiguise
 #	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+#	[^] NTLM_Theft: https://github.com/Greenwolf/ntlm_theft
+
 ###################################################################################################################
 FROM base AS kraken-weapon
 	LABEL author="Adastra"
@@ -374,6 +379,7 @@ FROM base AS kraken-weapon
 		if [ "$WEAPON_OFFICEDDEPAYLOADS" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads && cd Office-DDE-Payloads && pip install -r requirements.txt; fi ; \
 		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
 		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
+		if [ "$WEAPON_NTLM_THEFT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Greenwolf/ntlm_theft && pip3 install xlsxwriter; fi ; \
 		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi
 
 ###################################################################################################################

@@ -44,11 +44,12 @@ FROM debian:${VERSION} AS base
 	ARG RVM_DIR=/usr/local/rvm/
 	ARG RVM_LOADER=/etc/profile.d/rvm.sh
 
+	ENV USERNAME $USERNAME
+	ENV PASSWORD $PASSWORD
 	ENV EXPOSE_PORTS $EXPOSE_PORTS
 	ENV RUBY_VERSION $RUBY_VERSION
 	ENV RVM_DIR $RVM_DIR
 	ENV RVM_LOADER $RVM_LOADER
-
 
 	########################################
 	#	GLOBAL VARIABLES FROM COMMON IMAGE
@@ -83,8 +84,8 @@ FROM debian:${VERSION} AS base
 		autoconf automake libtool apt-utils \
 		openssh-server openssl \
 		build-essential libpcap-dev libpq-dev \
-		libsqlite3-dev libsqlite3-0 \ 
-		libconfig-dev libwrap0-dev libsystemd-dev libcap-dev \
+		libsqlite3-dev libsqlite3-0 libgbm-dev \ 
+		libconfig-dev libwrap0-dev libsystemd-dev libcap-dev libev-dev  \
 		software-properties-common sudo locate \
 		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \

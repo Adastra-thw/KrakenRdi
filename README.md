@@ -87,12 +87,13 @@ Tools in this section can be applied for general purposes and can be very useful
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|THC Hydra|`https://github.com/vanhauser-thc/thc-hydra.git`            |THC_HYDRA            |common            |
-|CeWL|`https://github.com/digininja/CeWL`            |CeWL            |common            |
-|Postman|`https://dl.pstmn.io/download/latest/linux64`            |Postman            |common            |
-|FuzzDB|`https://github.com/fuzzdb-project/fuzzdb.git`            |FuzzDB            |common            |
-|DirBuster|`https://github.com/Adastra-thw/DirBuster-1.0`            |DirBuster            |common            |
-|SSLH|`https://github.com/yrutschle/sslh`            |SSLH            |common            |
+|THC Hydra|`https://github.com/vanhauser-thc/thc-hydra.git`            |COMMON_THC_HYDRA            |common            |
+|CeWL|`https://github.com/digininja/CeWL`            |COMMON_CWEL            |common            |
+|Postman|`https://dl.pstmn.io/download/latest/linux64`            |COMMON_POSTMAN            |common            |
+|FuzzDB|`https://github.com/fuzzdb-project/fuzzdb.git`            |COMMON_FUZZDB            |common            |
+|DirBuster|`https://github.com/Adastra-thw/DirBuster-1.0`            |COMMON_DIRBUSTER            |common            |
+|SSLH|`https://github.com/yrutschle/sslh`            |COMMON_SSLH            |common            |
+|HASHIDENTIFIER|`https://github.com/blackploit/hash-identifier`            |COMMON_HASHIDENTIFIER            |common         |
 
 ## Frameworks
 
@@ -100,9 +101,9 @@ Tools in this section include sets of modules that can be used in multiple stage
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|Metasploit Framework|`https://github.com/rapid7/metasploit-framework`            |MetasploitFramework            |frameworks            |
-|BeEF Browser Exploitation Framework|`https://github.com/beefproject/beef`            |BeEF            |frameworks            |
-|Bettercap|`https://github.com/bettercap/bettercap`            |Bettercap            |frameworks            |
+|Metasploit Framework|`https://github.com/rapid7/metasploit-framework`            |FRAMEWORK_METASPLOIT            |frameworks            |
+|BeEF Browser Exploitation Framework|`https://github.com/beefproject/beef`            |FRAMEWORK_BEEF            |frameworks            |
+|Bettercap|`https://github.com/bettercap/bettercap`            |FRAMEWORK_BETTERCAP            |frameworks            |
 
 ## Anon
 
@@ -110,10 +111,11 @@ Tools in this section helps to anonymize the interaction between the attacker an
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|The Onion Router (from APT install)|`https://dist.torproject.org/`            |TOR - From Debian repository            |anon   |
-|The Onion Router (from source code install)|`https://dist.torproject.org/`            |TOR - From source code            |anon   |
-|TORSocks|`https://trac.torproject.org/projects/tor/wiki/doc/torsocks`            |TORSocks            |anon   |
-|ProxyChains|`https://github.com/rofl0r/proxychains-ng`            |ProxyChains-ng            |anon   |
+|The Onion Router (from APT install)|`https://dist.torproject.org/`            |ANON_TOR_APT            |anon   |
+|TORBrowser|`https://www.torproject.org/dist/torbrowser/`            |ANON_TOR_APT            |anon   |
+|The Onion Router (from source code install)|`https://dist.torproject.org/`            |ANON_TOR_SOURCE            |anon   |
+|TORSocks|`https://trac.torproject.org/projects/tor/wiki/doc/torsocks`            |ANON_TORSOCKS            |anon   |
+|ProxyChains|`https://github.com/rofl0r/proxychains-ng`            |ANON_PROXYCHAINS            |anon   |
 
 ## Recon
 
@@ -121,14 +123,15 @@ Tools in this section helps in reconnaissance stage of a RT campaign or a pentes
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|Recon-NG|`https://github.com/lanmaster53/recon-ng`            |Recon-NG            |recon  |
-|Photon|`https://github.com/s0md3v/Photon`            |Photon            |recon  |
-|The Harvester|`https://github.com/laramies/theHarvester`            |theHarvester            |recon  |
-|Metagoofil|`https://github.com/laramies/metagoofil`            |Metagoofil            |recon  |
-|SpiderFoot|`https://github.com/smicallef/spiderfoot`            |SpiderFoot            |recon  |
-|Sherlock|`https://github.com/sherlock-project/sherlock`            |Sherlock            |recon  |
-|Maltego CE|`https://www.maltego.com`            |Maltego            |recon  |
-|Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |Nmap            |recon  |
+|Recon-NG|`https://github.com/lanmaster53/recon-ng`            |RECON_RECONNG            |recon  |
+|Photon|`https://github.com/s0md3v/Photon`            |RECON_PHOTON            |recon  |
+|The Harvester|`https://github.com/laramies/theHarvester`            |RECON_THEHARVESTER            |recon  |
+|Metagoofil|`https://github.com/laramies/metagoofil`            |RECON_METAGOOFIL            |recon  |
+|SpiderFoot|`https://github.com/smicallef/spiderfoot`            |RECON_SPIDERFOOT            |recon  |
+|Sherlock|`https://github.com/sherlock-project/sherlock`            |RECON_SHERLOCK            |recon  |
+|Maltego CE|`https://www.maltego.com`            |RECON_MALTEGO            |recon  |
+|Network Mapper (Nmap)|`https://github.com/nmap/nmap`            |RECON_NMAP            |recon  |
+|PhoneInfoga|`https://github.com/sundowndev/phoneinfoga/`            |RECON_PHONEINFOGA            |recon  |
 
 ## Weaponization
 
