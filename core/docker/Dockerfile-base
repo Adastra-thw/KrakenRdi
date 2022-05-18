@@ -102,6 +102,8 @@ FROM debian:${VERSION} AS base
 	ARG RECON_MALTEGO=False
 	ARG RECON_PHONEINFOGA=False
 	ARG RECON_NMAP=False
+	ARG RECON_SHERLOCK=True
+
 
 	ENV RECON_RECONNG $RECON_RECONNG
 	ENV RECON_PHOTON $RECON_PHOTON
@@ -111,6 +113,8 @@ FROM debian:${VERSION} AS base
 	ENV RECON_MALTEGO $RECON_MALTEGO
 	ENV RECON_PHONEINFOGA $RECON_PHONEINFOGA
 	ENV RECON_NMAP $RECON_NMAP
+	ENV RECON_SHERLOCK $RECON_SHERLOCK 
+
 
 	########################################
 	#	GLOBAL VARIABLES FROM WEAPON IMAGE
@@ -319,7 +323,9 @@ FROM base AS kraken-anon
 #	[^] theHarvester: https://github.com/laramies/theHarvester
 #	[^] metagoofil: https://github.com/laramies/metagoofil
 #	[^] Maltego: https://www.paterva.com/web7/downloads.php 			#	[^] Spiderfoot: https://github.com/smicallef/spiderfoot
-#	[^] Nmap: https://github.com/nmap/nmap.git								  
+#	[^] Nmap: https://github.com/nmap/nmap.git
+#	[^] Sherlock: https://github.com/sherlock-project/sherlock.git
+
 ###################################################################################################################
 FROM base AS kraken-recon
 	LABEL author="Adastra"
@@ -336,6 +342,7 @@ FROM base AS kraken-recon
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/smicallef/spiderfoot.git ; fi ; \
 		if [ "$RECON_MALTEGO" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir maltego && cd maltego && wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.3.0.linux.zip && unzip Maltego.v4.3.0.linux.zip ; fi ; \
 		if [ "$RECON_PHONEINFOGA" = "True" ] ; then cd ${WORKDIR_RECON} && mkdir phoneinfoga && cd phoneinfoga && curl -L "https://github.com/sundowndev/phoneinfoga/releases/download/v2.0.5/phoneinfoga_$(uname -s)_$(uname -m).tar.gz" -o phoneinfoga.tar.gz && tar xvf phoneinfoga.tar.gz && rm -rf phoneinfoga.tar.gz; fi ; \
+		if [ "$RECON_SHERLOCK" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/sherlock-project/sherlock ; fi ; \	
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON} && git clone https://github.com/nmap/nmap.git; fi
 
 ###################################################################################################################
@@ -593,6 +600,7 @@ FROM base as kraken-composition
 		if [ "$RECON_PHOTON" = "True" ] ; then cd ${WORKDIR_RECON}/Photon && pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_THEHARVESTER" = "True" ] ; then cd ${WORKDIR_RECON}/theHarvester && pip3 install -r requirements/base.txt ; fi ; \
 		if [ "$RECON_SPIDERFOOT" = "True" ] ; then cd ${WORKDIR_RECON}/spiderfoot &&  pip3 install -r requirements.txt ; fi ; \
+		if [ "$RECON_SHERLOCK" = "True" ] ; then cd ${WORKDIR_RECON}/sherlock &&  pip3 install -r requirements.txt ; fi ; \
 		if [ "$RECON_NMAP" = "True" ] ; then cd ${WORKDIR_RECON}/nmap && ./configure && make && make install; fi
 
 	#Programs and dependencies for WEAPON.
