@@ -3,7 +3,7 @@ from flask import abort
 from flask import make_response
 from flask import request
 from flask_pymongo import PyMongo
-from celery import Celery, task
+from celery import Celery, shared_task
 import sys
 from core.krakenrdi.server.CoreObjects import KrakenConfiguration
 from core.krakenrdi.backend.ServiceManager import KrakenManager
@@ -47,10 +47,11 @@ class KrakenServer():
 				for collectionDB in KrakenConfiguration.database.list_collection_names():
 					KrakenConfiguration.database.drop_collection(collectionDB)
 			if "arguments" not in KrakenConfiguration.database.list_collection_names():
-				KrakenConfiguration.database.arguments.insert(arguments)
+				KrakenConfiguration.database.arguments.insert_many(arguments)
 			if "tools" not in KrakenConfiguration.database.list_collection_names():
-				KrakenConfiguration.database.tools.insert(tools)
-		except:
+				KrakenConfiguration.database.tools.insert_many(tools)
+		except Exception as e:
+			print(e)
 			print("Error in initialization of database. Check that your Mongo server is running at "+configuration['config']['databaseURI'])
 			sys.exit(1)
 		#KrakenServer.manager = KrakenManager(database=KrakenServer.database, 

@@ -139,16 +139,17 @@ Tools in this section helps in weaponization stage of a RT campaign.
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|CVE2018_20250|`https://github.com/WyAtu/CVE-2018-20250`            |CVE2018_20250            |weaponization  |
-|CVE2017_8759|`https://github.com/bhdresh/CVE-2017-8759`            |CVE2017_8759            |weaponization  |
-|CVE2017_8570|`https://github.com/rxwx/CVE-2017-8570`            |CVE2017_8570            |weaponization  |
-|CVE2017_0199|`https://github.com/bhdresh/CVE-2017-0199`            |CVE2017_0199            |weaponization  |
-|DEMIGUISE|`https://github.com/nccgroup/demiguise`            |DEMIGUISE            |weaponization  |
-|MALICIOUS MACRO GENERATOR|`https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator`            |MALICIOUSMACROGENERATOR            |weaponization  |
-|OFFICEDDEPAYLOADS|`https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads`            |OFFICEDDEPAYLOADS            |weaponization  |
-|DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |DONTKILLMYCAT(DKMC)            |weaponization  |
-|EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |EMBEDINHTML            |weaponization  |
-|MACRO PACK|`https://github.com/sevagas/macro_pack`            |MACRO_PACK            |weaponization  |
+|CVE2018_20250|`https://github.com/WyAtu/CVE-2018-20250`            |WEAPON_CVE2018_20250            |weaponization  |
+|CVE2017_8759|`https://github.com/bhdresh/CVE-2017-8759`            |WEAPON_CVE2017_8759            |weaponization  |
+|CVE2017_8570|`https://github.com/rxwx/CVE-2017-8570`            |WEAPON_CVE2017_8570            |weaponization  |
+|CVE2017_0199|`https://github.com/bhdresh/CVE-2017-0199`            |WEAPON_CVE2017_0199            |weaponization  |
+|DEMIGUISE|`https://github.com/nccgroup/demiguise`            |WEAPON_DEMIGUISE            |weaponization  |
+|MALICIOUS MACRO GENERATOR|`https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator`            |WEAPON_MALICIOUSMACROGENERATOR            |weaponization  |
+|OFFICEDDEPAYLOADS|`https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads`            |WEAPON_OFFICEDDEPAYLOADS            |weaponization  |
+|DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |WEAPON_DONTKILLMYCAT(DKMC)            |weaponization  |
+|EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |WEAPON_EMBEDINHTML            |weaponization  |
+|MACRO PACK|`https://github.com/sevagas/macro_pack`            |WEAPON_MACRO_PACK            |weaponization  |
+|NTLM THEFT|`https://github.com/sevagas/macro_pack`            |WEAPON_NTLM_THEFT            |weaponization  |
 
 ## Exploitation
 
@@ -156,11 +157,11 @@ Tools in this section helps in exploitation stage of a RT campaign or a pentest 
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|Burp|`https://portswigger.net/burp`            |Burp            |exploitation  |
-|ZAP|`https://github.com/zaproxy/zaproxy`            |ZAP            |exploitation  |
-|CrackMapExec (CME) |`https://github.com/byt3bl33d3r/CrackMapExec`            |CrackMapExec            |exploitation  |
-|Impacket|`https://github.com/SecureAuthCorp/impacket/`            |Impacket            |exploitation  |
-|Powershell|`https://github.com/PowerShell/PowerShell/releases`            |Powershell            |exploitation  |
+|Burp|`https://portswigger.net/burp`            |EXPLOITATION_BURP            |exploitation  |
+|ZAP|`https://github.com/zaproxy/zaproxy`            |EXPLOITATION_ZAP            |exploitation  |
+|CrackMapExec (CME) |`https://github.com/byt3bl33d3r/CrackMapExec`            |EXPLOITATION_CRACKMAPEXEC            |exploitation  |
+|Impacket|`https://github.com/SecureAuthCorp/impacket/`            |EXPLOITATION_IMPACKET            |exploitation  |
+|Powershell|`https://github.com/PowerShell/PowerShell/releases`            |EXPLOITATION_POWERSHELL            |exploitation  |
 
 ## Privilege Escalation
 
@@ -168,14 +169,14 @@ Tools in this section helps in privilege escalation stage of a RT campaign or a 
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|BeRoot|`https://github.com/AlessandroZ/BeRoot.git`            |BeRoot            |escalation  |
-|LinEnum|`https://github.com/rebootuser/LinEnum`            |LinEnum            |escalation  |
-|Linux_Exploit_Suggester|`https://github.com/InteliSecureLabs/Linux_Exploit_Suggester`            |Linux_Exploit_Suggester            |escalation  |
-|linuxprivchecker|`https://github.com/sleventyeleven/linuxprivchecker`            |linuxprivchecker            |escalation  |
-|linux-smart-enumeration|`https://github.com/diego-treitos/linux-smart-enumeration`            |linux-smart-enumeration            |escalation  |
-|JAWS|`https://github.com/411Hall/JAWS`            |JAWS            |escalation  |
-|WESNG|`https://github.com/bitsadmin/wesng`            |WESNG            |escalation  |
-|Windows-Enum|`https://github.com/absolomb/WindowsEnum`            |Windows-Enum            |escalation  |
+|BeRoot|`https://github.com/AlessandroZ/BeRoot.git`            |ESCALATION_BEROOT            |escalation  |
+|LinEnum|`https://github.com/rebootuser/LinEnum`            |ESCALATION_LINENUM            |escalation  |
+|Linux_Exploit_Suggester|`https://github.com/InteliSecureLabs/Linux_Exploit_Suggester`            |ESCALATION_LINUX_EXPLOIT_SUGGESTER            |escalation  |
+|linuxprivchecker|`https://github.com/sleventyeleven/linuxprivchecker`            |ESCALATION_LINUX_PRIV_CHECKER            |escalation  |
+|linux-smart-enumeration|`https://github.com/diego-treitos/linux-smart-enumeration`            |ESCALATION_LINUX_SMART_ENUMERATION            |escalation  |
+|JAWS|`https://github.com/411Hall/JAWS`            |ESCALATION_JAWS            |escalation  |
+|WESNG|`https://github.com/bitsadmin/wesng`            |ESCALATION_WESNG            |escalation  |
+|Windows-Enum|`https://github.com/absolomb/WindowsEnum`            |ESCALATION_WINDOWSENUM            |escalation  |
 
 ## Exfiltration
 
@@ -183,7 +184,7 @@ Tools in this section helps in exfiltration stage of a RT campaign. Useful to ge
 
 |Tool name                |Website                          |KrakenRDI name|Scope 
 |----------------|-------------------------------|-----------------------------|----------------------------|
-|MISTICA|`https://github.com/IncideDigital/Mistica`            |MISTICA            |exfiltration  |
+|MISTICA|`https://github.com/IncideDigital/Mistica`            |EXFILTRATION_MISTICA            |exfiltration  |
 
 # Demo videos
 

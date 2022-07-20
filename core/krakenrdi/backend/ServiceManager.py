@@ -1,4 +1,4 @@
-from core.krakenrdi.backend.async.tasks import createBuild
+from core.krakenrdi.backend.asyncro.tasks import createBuild
 from core.krakenrdi.backend.connector.entities import Image, Container, Tool
 from core.krakenrdi.backend.connector.builder import DockerManagerConnection
 from core.krakenrdi.api.common.validations import BusinessValidations

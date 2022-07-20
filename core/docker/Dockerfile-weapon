@@ -101,8 +101,14 @@ FROM debian:${VERSION} AS base
 #	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
 #	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
 #	[^] Demiguise: https://github.com/nccgroup/demiguise
+#	[^] Demiguise: https://github.com/nccgroup/demiguise
+#	[^] MaliciousMacroGenerator: https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator
+#	[^] Office DDE Payloads: https://github.com/0xdeadbeefJERKY/Office-DDE-Payloads
+#	[^] Dont Kill My Cat: https://github.com/Mr-Un1k0d3r/DKMC
 #	[^] EmbedInHTML: https://github.com/Arno0x/EmbedInHTML
 #	[^] NTLM_Theft: https://github.com/Greenwolf/ntlm_theft
+#	[^] Macro_Pack: https://github.com/sevagas/macro_pack/releases/
+
 
 ###################################################################################################################
 FROM base AS kraken-weapon

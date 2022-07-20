@@ -1,10 +1,10 @@
-################# RECON LAYER ################# 
-In <REDTEAM_TOOLS>/recon you will find  the following tools in Frameworks:
+################# FRAMEWORK LAYER ################# 
+In <REDTEAM_TOOLS>/frameworks you will find  the following tools in Frameworks:
 
 Metasploit Framework:
 The popular explotaitation Framework. In this installation there's no database connection, but you can create a new connection very easily with db_connect command. You can use the default settings of the PostgreSQL engine installed or your own if you set it.
 	db_connect userdb:password@127.0.0.1/database_pg 
-Remember to check if PostgreSQL is started.
+Remember to check if PostgreSQL is started before execute this command in msfconsole.
 
 BeEF:
 BeEF is short for The Browser Exploitation Framework. It is a penetration testing tool that focuses on the web browser.

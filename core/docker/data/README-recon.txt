@@ -19,6 +19,9 @@ The popular Network Mapper.
 phoneinfoga:
 PhoneInfoga is one of the most advanced tools to scan phone numbers using only free resources.
 
+sherlock:
+ Hunt down social media accounts by username across social networks 
+
 Spiderfoot:
 Framework for OSINT automation with a powerful web interface. Very recommended. Works with Python 3.x
 

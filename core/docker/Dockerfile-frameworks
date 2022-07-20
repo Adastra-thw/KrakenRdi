@@ -117,14 +117,11 @@ FROM debian:${VERSION} AS base
 ###################################################################################################################
 # FRAMEWORK IMAGE 																							          
 # DESCRIPTION:																									  
-# Include the tools for the Weaponization stage.						 								  
+# Include the tools for the frameworks stage.						 								  
 # TOOLS:
-#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
-#	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
-#	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
-#	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
-#	[^] Demiguise: https://github.com/nccgroup/demiguise
-#	[^] EmbedInHTML; https://github.com/Arno0x/EmbedInHTML
+#	[^] Metasploit Framework: https://github.com/rapid7/metasploit-framework.git
+#	[^] Beef: https://github.com/beefproject/beef 
+#	[^] BetterCap: https://github.com/bettercap/bettercap.git
 ###################################################################################################################
 FROM base AS kraken-framework
 	LABEL author="Adastra"

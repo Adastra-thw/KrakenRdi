@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import time
-from celery import Celery, task
+from celery import Celery, shared_task
 import json
 
 from core.krakenrdi.server.CoreObjects import KrakenConfiguration
