@@ -3,7 +3,7 @@ requests
 jsonschema
 pymongo
 Flask-PyMongo
-celery==4.4.7
+celery==5.2.7
 plumbum
 jsonpickle
 docker
