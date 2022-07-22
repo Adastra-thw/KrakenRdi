@@ -115,7 +115,7 @@ class BuildService():
 		if numberBuilds > 0 and request["overwrite"] == True:
 			#The build exist in database and "overwrite" is True, it should be deleted from Database.
 			self.manager.database.builds.delete_one({'buildName': buildName})
-		self.manager.database.builds.insert(result)
+		self.manager.database.builds.insert_many([result])
 		#Run celery task with apply_async
 		createBuild.apply_async((encode(imageCreate),), task_id=taskId)
 		del(result["_id"])
@@ -222,7 +222,7 @@ class ContainerService():
 					self.manager.database.containers.delete_one({'containerName': dockerContainer.name } )
 					containerJson = json.loads(encode(container).replace("\\","").replace(".",""))
 					containerJson.pop("py/object", None)
-					self.manager.database.containers.insert(containerJson)
+					self.manager.database.containers.insert_many(containerJson)
 
 				else:
 					result = {"message": "The image "+request['buildName']+" is not ready yet. The image is still in creation process."}

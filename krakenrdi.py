@@ -57,6 +57,8 @@ class KrakenRDI(cli.Application):
 		from celery import current_app
 		from celery.bin import worker 
 		
+		'''
+		Before Celery 5.x
 		application = current_app._get_current_object()
 		worker = worker.worker(app=application)
 		options = {
@@ -65,7 +67,13 @@ class KrakenRDI(cli.Application):
 			'traceback': True,
 		}
 		worker.run(**options)
-		#print("Worker started successfully. Now, from other terminal start the Rest Api to complete the Kraken startup...")
+		'''
+
+		#Celery 5.x https://stackoverflow.com/questions/23389104/how-to-start-a-celery-worker-from-a-script-module-main 
+		worker = KrakenConfiguration.taskEngine.Worker(include=['core.krakenrdi.backend.asyncro.tasks'])
+		worker.start()
+
+		print("Worker started successfully. Now, from other terminal start the Rest Api to complete the Kraken startup...")
 
 if __name__ == '__main__':
 	KrakenRDI.run()
