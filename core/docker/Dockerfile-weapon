@@ -85,7 +85,7 @@ FROM debian:${VERSION} AS base
 		firefox-esr xfce4-terminal \
 		autoconf automake libtool apt-utils \
 		openssh-server openssl \
-		build-essential libpcap-dev libpq-dev libsqlite3-dev libsqlite3-0 \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev \
 		software-properties-common sudo locate \
 		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \

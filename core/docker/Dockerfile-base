@@ -250,7 +250,7 @@ FROM debian:${VERSION} AS base
 		firefox-esr xfce4-terminal \
 		autoconf automake libtool apt-utils \
 		openssh-server openssl libgbm-dev \
-		build-essential libpcap-dev libpq-dev libsqlite3-dev \ libsqlite3-0 libconfig-dev libwrap0-dev libsystemd-dev \ libcap-dev libev-dev \
+		build-essential libpcap-dev libpq-dev libsqlite3-dev libconfig-dev libwrap0-dev libsystemd-dev \ 
 		software-properties-common sudo locate \
 		&& useradd -m ${USERNAME} \
 		&& echo "${USERNAME}:${PASSWORD}" | chpasswd \
