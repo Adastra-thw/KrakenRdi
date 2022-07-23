@@ -52,8 +52,8 @@ class ImageBuilder():
 		print("Finish to build image...")
 		print("Cleaning the dangling images from Docker service")
 		self.imageDockerObject.prune(filters={"dangling": True})
-		print(buildLogs)
-		print(type(buildLogs))
+		#print(buildLogs)
+		#print(type(buildLogs))
 		logs = []
 		for log in list(buildLogs):
 			for dictValue in log.values():

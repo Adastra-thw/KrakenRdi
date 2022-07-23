@@ -266,3 +266,13 @@ INFO:werkzeug:127.0.0.1 - - [23/Jul/2022 16:27:04] "POST /build/create HTTP/1.1"
 INFO:werkzeug:127.0.0.1 - - [23/Jul/2022 16:27:45] "POST /build/list HTTP/1.1" 200 -
 INFO:werkzeug:127.0.0.1 - - [23/Jul/2022 16:31:41] "[35m[1mPOST /build/list HTTP/1.1[0m" 500 -
 INFO:werkzeug:127.0.0.1 - - [23/Jul/2022 16:33:49] "POST /build/list HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in '/media/sf_KrakenRDI/core/krakenrdi/backend/connector/builder.py', reloading
+INFO:werkzeug: * Restarting with stat
+DEBUG:docker.utils.config:Trying paths: ['/home/curso/.docker/config.json', '/home/curso/.dockercfg']
+DEBUG:docker.utils.config:Found file at path: /home/curso/.docker/config.json
+DEBUG:docker.auth:Found 'auths' section
+DEBUG:docker.auth:Found entry (registry='localhost:443', username='user')
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /version HTTP/1.1" 200 842
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.41/_ping HTTP/1.1" 200 2
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 269-457-966
