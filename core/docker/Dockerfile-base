@@ -631,7 +631,8 @@ FROM base as kraken-composition
 	#Programs and dependencies for EXPLOITATION.
 	RUN	if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/impacket && pip3 install -r requirements.txt ; fi ; \
 		if [ "$EXPLOITATION_SMBMAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/smbmap && pip3 install -r requirements.txt ; fi ; \
-		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && apt-get install -y less locales ca-certificates libicu63 libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6 ; fi ;
+		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && wget http://ftp.es.debian.org/debian/pool/main/i/icu/libicu63_63.1-6+deb10u3_amd64.deb && apt install ./libicu63_63.1-6+deb10u3_amd64.deb && rm libicu63_63.1-6+deb10u3_amd64.deb && apt-get install -y less locales ca-certificates libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6 ; fi ;
+
 
 	#Programs and dependencies for ESCALATION.
 	#Programs and dependencies for COMMANDANDCONTROL.
