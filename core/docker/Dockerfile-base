@@ -159,12 +159,15 @@ FROM debian:${VERSION} AS base
 	ARG EXPLOITATION_CRACKMAPEXEC=False
 	ARG EXPLOITATION_IMPACKET=False
 	ARG EXPLOITATION_POWERSHELL=False
+	ARG EXPLOITATION_SMBMAP=False
+
 
 	ENV EXPLOITATION_BURP $EXPLOITATION_BURP
 	ENV EXPLOITATION_ZAP $EXPLOITATION_ZAP
 	ENV EXPLOITATION_CRACKMAPEXEC $EXPLOITATION_CRACKMAPEXEC
 	ENV EXPLOITATION_IMPACKET $EXPLOITATION_IMPACKET
 	ENV EXPLOITATION_POWERSHELL $EXPLOITATION_POWERSHELL
+	ENV EXPLOITATION_SMBMAP $EXPLOITATION_SMBMAP
 
 
 	########################################
@@ -229,6 +232,7 @@ FROM debian:${VERSION} AS base
 	ARG COMMON_DIRBUSTER=False
 	ARG COMMON_SSLH=False
 	ARG COMMON_HASHIDENTIFIER=False
+	ARG WEAPON_CVE2022_30190=True
 
 	ENV COMMON_THC_HYDRA $COMMON_THC_HYDRA
 	ENV COMMON_CWEL $COMMON_CWEL
@@ -237,6 +241,7 @@ FROM debian:${VERSION} AS base
 	ENV COMMON_DIRBUSTER $COMMON_DIRBUSTER
 	ENV COMMON_SSLH=$COMMON_SSLH
 	ENV COMMON_HASHIDENTIFIER $COMMON_HASHIDENTIFIER
+	ENV WEAPON_CVE2022_30190 $WEAPON_CVE2022_30190
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -367,6 +372,7 @@ FROM base AS kraken-recon
 #	[^] EmbedInHTML: https://github.com/Arno0x/EmbedInHTML
 #	[^] NTLM_Theft: https://github.com/Greenwolf/ntlm_theft
 #	[^] Macro_Pack: https://github.com/sevagas/macro_pack/releases/
+#	[^] CVE-2022-30190: https://github.com/chvancooten/follina.py
 
 ###################################################################################################################
 FROM base AS kraken-weapon
@@ -387,7 +393,8 @@ FROM base AS kraken-weapon
 		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
 		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
 		if [ "$WEAPON_NTLM_THEFT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Greenwolf/ntlm_theft && pip3 install xlsxwriter; fi ; \
-		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi
+		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi ; \
+		if [ "$WEAPON_CVE2022_30190" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/JohnHammond/msdt-follina CVE2022_30190; fi
 
 ###################################################################################################################
 # DELIVERY IMAGE 																							          
@@ -414,6 +421,8 @@ FROM base AS kraken-delivery
 #	[^] CrackMapExec: https://github.com/byt3bl33d3r/CrackMapExec
 #	[^] Impacket: https://github.com/SecureAuthCorp/impacket/
 #	[^] PowerShell (pwsh): https://github.com/PowerShell/PowerShell/releases/
+#	[^] SMBMap: https://github.com/ShawnDEvans/smbmap
+
 
 ###################################################################################################################
 FROM base AS kraken-exploitation
@@ -428,6 +437,7 @@ FROM base AS kraken-exploitation
 		if [ "$EXPLOITATION_ZAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl "https://github.com/zaproxy/zaproxy/releases/download/v2.11.1/ZAP_2.11.1_Crossplatform.zip" --output ZAP_2.10.0_Crossplatform.zip ; fi ; \
 		if [ "$EXPLOITATION_CRACKMAPEXEC" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && wget https://github.com/Porchetta-Industries/CrackMapExec/releases/download/v5.3.0/cme-ubuntu-latest-3.10.zip && unzip cme-ubuntu-latest-3.10.zip && rm -rf cme-ubuntu-latest-3.10.zip; fi ; \
 		if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && git clone https://github.com/SecureAuthCorp/impacket impacket; fi ; \
+		if [ "$EXPLOITATION_SMBMAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && git clone https://github.com/ShawnDEvans/smbmap smbmap; fi ; \
 		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION} && curl -L  https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz && mkdir -p powershell/7 && tar zxf /tmp/powershell.tar.gz -C powershell/7 && chmod +x powershell/7/pwsh && ln -s ${WORKDIR_EXPLOITATION}/powershell/7/pwsh /usr/bin/pwsh; fi ;
 
 
@@ -620,6 +630,7 @@ FROM base as kraken-composition
 	#Programs and dependencies for DELIVERY.
 	#Programs and dependencies for EXPLOITATION.
 	RUN	if [ "$EXPLOITATION_IMPACKET" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/impacket && pip3 install -r requirements.txt ; fi ; \
+		if [ "$EXPLOITATION_SMBMAP" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/smbmap && pip3 install -r requirements.txt ; fi ; \
 		if [ "$EXPLOITATION_POWERSHELL" = "True" ] ; then cd ${WORKDIR_EXPLOITATION}/powershell/7 && apt-get install -y less locales ca-certificates libicu63 libssl1.1 libc6 libgcc1 libgssapi-krb5-2 liblttng-ust0 libstdc++6 ; fi ;
 
 	#Programs and dependencies for ESCALATION.

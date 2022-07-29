@@ -149,7 +149,8 @@ Tools in this section helps in weaponization stage of a RT campaign.
 |DONT KILL MY CAT|`https://github.com/Mr-Un1k0d3r/DKMC`            |WEAPON_DONTKILLMYCAT(DKMC)            |weaponization  |
 |EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |WEAPON_EMBEDINHTML            |weaponization  |
 |MACRO PACK|`https://github.com/sevagas/macro_pack`            |WEAPON_MACRO_PACK            |weaponization  |
-|NTLM THEFT|`https://github.com/sevagas/macro_pack`            |WEAPON_NTLM_THEFT            |weaponization  |
+|NTLM THEFT|`https://github.com/Greenwolf/ntlm_theft`            |WEAPON_NTLM_THEFT            |weaponization  |
+|FOLLINA|`https://github.com/JohnHammond/msdt-follina`            |WEAPON_CVE2022_30190            |weaponization  |
 
 ## Exploitation
 
@@ -161,6 +162,7 @@ Tools in this section helps in exploitation stage of a RT campaign or a pentest 
 |ZAP|`https://github.com/zaproxy/zaproxy`            |EXPLOITATION_ZAP            |exploitation  |
 |CrackMapExec (CME) |`https://github.com/byt3bl33d3r/CrackMapExec`            |EXPLOITATION_CRACKMAPEXEC            |exploitation  |
 |Impacket|`https://github.com/SecureAuthCorp/impacket/`            |EXPLOITATION_IMPACKET            |exploitation  |
+|SMBMap|`https://github.com/ShawnDEvans/smbmap/`            |EXPLOITATION_SMBMAP            |exploitation  |
 |Powershell|`https://github.com/PowerShell/PowerShell/releases`            |EXPLOITATION_POWERSHELL            |exploitation  |
 
 ## Privilege Escalation

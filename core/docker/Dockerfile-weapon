@@ -59,6 +59,7 @@ FROM debian:${VERSION} AS base
 	ARG WEAPON_EMBEDINHTML=True
 	ARG WEAPON_MACRO_PACK=True
 	ARG WEAPON_NTLM_THEFT=True
+	ARG WEAPON_CVE2022_30190=True
 
 	ENV WEAPON_CVE2018_20250 $WEAPON_CVE2018_20250
 	ENV WEAPON_CVE2017_8759 $WEAPON_CVE2017_8759
@@ -71,7 +72,7 @@ FROM debian:${VERSION} AS base
 	ENV WEAPON_EMBEDINHTML $WEAPON_EMBEDINHTML
 	ENV WEAPON_MACRO_PACK $WEAPON_MACRO_PACK
 	ENV WEAPON_NTLM_THEFT $WEAPON_NTLM_THEFT
-
+	ENV WEAPON_CVE2022_30190 $WEAPON_CVE2022_30190
 
 	########################################
 	#	BASE SOFTWARE INSTALLATION
@@ -96,7 +97,7 @@ FROM debian:${VERSION} AS base
 # DESCRIPTION:																									  
 # Include the tools for the Weaponization stage.						 								  
 # TOOLS:
-#	[^] CVE-2018-20250: https://github.com/WyAtu/CVE-2018-20250
+#	[^] CVE-2018-20250: https://github.com/JohnHammond/msdt-follina
 #	[^] CVE-2017-8759: https://github.com/bhdresh/CVE-2017-8759 
 #	[^] CVE-2017-8570: https://github.com/rxwx/CVE-2017-8570
 #	[^] CVE-2017-0199: https://github.com/bhdresh/CVE-2017-0199
@@ -108,7 +109,7 @@ FROM debian:${VERSION} AS base
 #	[^] EmbedInHTML: https://github.com/Arno0x/EmbedInHTML
 #	[^] NTLM_Theft: https://github.com/Greenwolf/ntlm_theft
 #	[^] Macro_Pack: https://github.com/sevagas/macro_pack/releases/
-
+#	[^] CVE-2022-30190: https://github.com/chvancooten/follina.py
 
 ###################################################################################################################
 FROM base AS kraken-weapon
@@ -127,8 +128,8 @@ FROM base AS kraken-weapon
 		if [ "$WEAPON_DONTKILLMYCAT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Mr-Un1k0d3r/DKMC && cd DKMC && mkdir output; fi ; \
 		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
 		if [ "$WEAPON_NTLM_THEFT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Greenwolf/ntlm_theft && pip3 install xlsxwriter; fi ; \
-		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v2.2.0/macro_pack.exe; fi
-
+		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v2.2.0/macro_pack.exe; fi ; \
+		if [ "$WEAPON_CVE2022_30190" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/JohnHammond/msdt-follina CVE2022_30190; fi
 ###################################################################################################################
 # COMPOSITION LAYER 																							          
 # DESCRIPTION:																									  
