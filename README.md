@@ -150,7 +150,7 @@ Tools in this section helps in weaponization stage of a RT campaign.
 |EMBEDINHTML|`https://github.com/Arno0x/EmbedInHTML`            |WEAPON_EMBEDINHTML            |weaponization  |
 |MACRO PACK|`https://github.com/sevagas/macro_pack`            |WEAPON_MACRO_PACK            |weaponization  |
 |NTLM THEFT|`https://github.com/Greenwolf/ntlm_theft`            |WEAPON_NTLM_THEFT            |weaponization  |
-|FOLLINA|`https://github.com/JohnHammond/msdt-follina`            |WEAPON_CVE2022_30190            |weaponization  |
+|FOLLINA|`https://github.com/chvancooten/follina.py`            |WEAPON_CVE2022_30190            |weaponization  |
 
 ## Exploitation
 

@@ -394,7 +394,7 @@ FROM base AS kraken-weapon
 		if [ "$WEAPON_EMBEDINHTML" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Arno0x/EmbedInHTML; fi ; \
 		if [ "$WEAPON_NTLM_THEFT" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/Greenwolf/ntlm_theft && pip3 install xlsxwriter; fi ; \
 		if [ "$WEAPON_MACRO_PACK" = "True" ] ; then cd ${WORKDIR_WEAPON} && mkdir macro_pack && cd macro_pack && wget https://github.com/sevagas/macro_pack/releases/download/v1.7/macro_pack.exe; fi ; \
-		if [ "$WEAPON_CVE2022_30190" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/JohnHammond/msdt-follina CVE2022_30190; fi
+		if [ "$WEAPON_CVE2022_30190" = "True" ] ; then cd ${WORKDIR_WEAPON} && git clone https://github.com/chvancooten/follina.py CVE2022_30190; fi
 
 ###################################################################################################################
 # DELIVERY IMAGE 																							          
